@@ -38,11 +38,23 @@
   src: url("../assets/fonts/Figtree-SemiBold.woff2") format("woff2");
 }
 
-/* Metric-matched fallbacks (tuned in Plan 03 from tools/font-metrics-test.js) */
+/* Metric-matched fallbacks (tuned in Plan 03 from tools/font-metrics-test.js).
+ *
+ * Coverage (best effort, see WR-03 in 01-REVIEW.md):
+ * - macOS/Windows: Georgia and Arial resolve; overrides measured in desktop Chrome.
+ * - Linux/ChromeOS: Gelasio (Georgia clone), Liberation Sans and Arimo (Arial
+ *   clones) are metric-compatible, so the same tuned overrides apply. Not
+ *   measured on those platforms.
+ * - Android: none of the above ship. The "... Fallback Android" faces below map
+ *   Noto Serif / Roboto with vertical metrics only (ascent/descent taken from
+ *   the real Fraunces/Figtree files, size-adjust left at 100%). Widths are NOT
+ *   tuned and a small horizontal reflow on swap is still expected there.
+ *   Preload + font-display: swap keep the swap window short.
+ */
 @font-face {
   font-family: "Fraunces Fallback";
   font-weight: 600;
-  src: local("Georgia Bold"), local("Georgia-Bold"), local("Georgia");
+  src: local("Georgia Bold"), local("Georgia-Bold"), local("Gelasio Bold"), local("Gelasio-Bold"), local("Georgia");
   size-adjust: 93.7%;
   ascent-override: 104.5%;
   descent-override: 27.7%;
@@ -52,7 +64,7 @@
 @font-face {
   font-family: "Figtree Fallback";
   font-weight: 400;
-  src: local("Arial"), local("ArialMT");
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"), local("Arimo"), local("Arimo-Regular");
   size-adjust: 99.6%;
   ascent-override: 95.4%;
   descent-override: 25.1%;
@@ -63,10 +75,38 @@
 @font-face {
   font-family: "Figtree Fallback";
   font-weight: 600;
-  src: local("Arial Bold"), local("Arial-BoldMT");
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"), local("Arimo Bold"), local("Arimo-Bold");
   size-adjust: 94.4%;
   ascent-override: 100.6%;
   descent-override: 26.5%;
+  line-gap-override: 0%;
+}
+
+/* Android best effort: vertical metrics only (untuned widths, unmeasured) */
+@font-face {
+  font-family: "Fraunces Fallback Android";
+  font-weight: 600;
+  src: local("Noto Serif Bold"), local("NotoSerif-Bold"), local("Noto Serif");
+  ascent-override: 97.9%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Figtree Fallback Android";
+  font-weight: 400;
+  src: local("Roboto"), local("Roboto-Regular");
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Figtree Fallback Android";
+  font-weight: 600;
+  src: local("Roboto Medium"), local("Roboto-Medium"), local("Roboto Bold"), local("Roboto-Bold");
+  ascent-override: 95%;
+  descent-override: 25%;
   line-gap-override: 0%;
 }
 
@@ -107,8 +147,8 @@
   --hero-underline-offset: var(--space-xs);
 
   /* Type */
-  --font-display: "Fraunces", "Fraunces Fallback", Georgia, serif;
-  --font-body: "Figtree", "Figtree Fallback", system-ui, sans-serif;
+  --font-display: "Fraunces", "Fraunces Fallback", "Fraunces Fallback Android", Georgia, serif;
+  --font-body: "Figtree", "Figtree Fallback", "Figtree Fallback Android", system-ui, sans-serif;
   --fs-body: 1.125rem;
   --fs-label: 0.875rem;
   --fs-heading: 1.75rem;
