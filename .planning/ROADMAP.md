@@ -11,7 +11,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Foundation & Design System** - File skeleton, design tokens, self-hosted fonts, bright social-network palette and handcrafted accent kit
+- [x] **Phase 1: Foundation & Design System** - File skeleton, design tokens, self-hosted fonts, bright social-network palette and handcrafted accent kit (completed 2026-10-12)
 - [ ] **Phase 2: Shared Shell & Static Home** - Header/nav/footer and a complete, readable Home page with placeholder content system
 - [ ] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe
 - [ ] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic
@@ -32,7 +32,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
   3. Self-hosted fonts render on load without a noticeable layout jump
   4. All body text/background token pairings meet WCAG AA contrast (4.5:1 or better)
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 **Wave 1**
@@ -45,7 +45,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md — Font fallback metric tuning (no layout jump), 320px hero-word fit, human sign-off
+- [x] 01-03-PLAN.md — Font fallback metric tuning (no layout jump), 320px hero-word fit, human sign-off
 
 **UI hint**: yes
 
@@ -122,7 +122,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Design System | 2/3 | In Progress|  |
+| 1. Foundation & Design System | 3/3 | Complete   | 2026-10-12 |
 | 2. Shared Shell & Static Home | 0/TBD | Not started | - |
 | 3. Kinetic Hero | 0/TBD | Not started | - |
 | 4. Contact Page | 0/TBD | Not started | - |
