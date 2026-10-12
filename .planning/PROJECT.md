@@ -12,7 +12,8 @@ The home page must make a strong first impression: polished, professional and wa
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Subtle handcrafted accents (squiggle dividers, hero underline) and a bright "social network" palette (white, social blue, coral pop, navy) on a clean professional layout — Validated in Phase 1: Foundation & Design System
+- [x] Runs as a static site: opens locally or deploys to any static host — Validated in Phase 1: Foundation & Design System
 
 ### Active
 
@@ -20,11 +21,9 @@ The home page must make a strong first impression: polished, professional and wa
 - [ ] Services section featuring four offerings: Social media, Local SEO & Google, Ads & campaigns, Branding & design
 - [ ] Warm, human tone throughout: friendly first-person copy and a freelancer intro/about block with a placeholder photo
 - [ ] Community proof: placeholder testimonials and logos from local businesses
-- [ ] Subtle handcrafted accents (squiggle dividers, hero underline) and a bright "social network" palette (white, social blue, coral pop, navy) on a clean professional layout
 - [ ] Contact page with a realistic form (name, email, business, message) that validates input and shows a success message, with no backend
 - [ ] Shared header/navigation and footer linking the two pages, with clear "get in touch" calls to action
 - [ ] Responsive: polished on desktop and phone
-- [ ] Runs as a static site: opens locally or deploys to any static host
 
 ### Out of Scope
 
@@ -76,4 +75,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-12 after initialization*
+*Last updated: 2026-10-12 after Phase 1 completion*
