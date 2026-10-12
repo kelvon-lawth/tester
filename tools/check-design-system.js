@@ -27,21 +27,33 @@ else {
     else if (css[i] === "}" && --depth === 0) { end = i; break; }
   }
 }
-const outside = start < 0 ? css : css.slice(0, start) + css.slice(end + 1);
+if (start >= 0 && end === -1) fail("css/styles.css", ":root block has unbalanced braces");
+const outside = start < 0 || end === -1 ? css : css.slice(0, start) + css.slice(end + 1);
 // data-URIs may legitimately contain encoded characters; ignore url(...) contents
 const scanned = outside.replace(/@font-face\s*\{[^}]*\}/g, "").replace(/url\(\s*(["']?)data:[^)]*?\1\s*\)/gi, "url()");
 
-const hexes = scanned.match(/#[0-9a-fA-F]{3,8}\b(?![-\w])/g);
-// ignore id selectors: only flag hex used as a value (after ':' or whitespace within declarations)
-for (const decl of scanned.match(/[a-z-]+\s*:[^;{}]*;/gi) || []) {
-  if (/#[0-9a-fA-F]{3,8}\b/.test(decl.replace(/^[^:]+:/, ""))) fail("css/styles.css", "hex colour outside :root: " + decl.trim());
-}
-void hexes;
-for (const decl of scanned.match(/font-size\s*:[^;}]*/gi) || []) {
-  if (!/var\(--fs-/.test(decl)) fail("css/styles.css", "font-size not a token: " + decl.trim());
-}
-for (const decl of scanned.match(/font-weight\s*:[^;}]*/gi) || []) {
-  if (!/var\(--fw-/.test(decl)) fail("css/styles.css", "font-weight not a token: " + decl.trim());
+// Per-declaration scan. Accepts a missing trailing ';' before '}'. Selectors and
+// @media preludes end in '{', so they never match.
+const NAMED_COLOURS = [
+  "black", "white", "red", "green", "blue", "yellow", "orange", "purple", "pink", "brown",
+  "gray", "grey", "navy", "teal", "coral", "tomato", "gold", "silver", "maroon", "olive",
+  "lime", "aqua", "cyan", "magenta", "fuchsia", "indigo", "violet", "salmon", "crimson",
+  "beige", "ivory", "khaki", "lavender", "turquoise", "tan", "plum", "orchid", "chocolate",
+];
+const namedRe = new RegExp("(?<![-\\w])(" + NAMED_COLOURS.join("|") + ")(?![-\\w])", "i");
+const declRe = /([a-z-]+)\s*:\s*([^;{}]+)(?=;|\})/gi;
+let d;
+while ((d = declRe.exec(scanned))) {
+  const prop = d[1].toLowerCase();
+  const value = d[2].trim();
+  const decl = prop + ": " + value;
+  if (/#[0-9a-fA-F]{3,8}\b/.test(value)) fail("css/styles.css", "hex colour outside :root: " + decl);
+  if (/\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\s*\(/i.test(value))
+    fail("css/styles.css", "colour function outside :root: " + decl);
+  if (namedRe.test(value)) fail("css/styles.css", "named colour outside :root: " + decl);
+  if (prop === "font") fail("css/styles.css", "font shorthand bypasses size/weight tokens: " + decl);
+  if (prop === "font-size" && !/var\(--fs-/.test(value)) fail("css/styles.css", "font-size not a token: " + decl);
+  if (prop === "font-weight" && !/var\(--fw-/.test(value)) fail("css/styles.css", "font-weight not a token: " + decl);
 }
 
 if (!/\.divider-squiggle\b/.test(css)) fail("css/styles.css", ".divider-squiggle not defined");
