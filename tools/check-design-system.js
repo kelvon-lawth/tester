@@ -88,8 +88,10 @@ for (const file of htmlFiles) {
   if (/\sstyle\s*=/i.test(text)) fail(file, "inline style= attribute");
   if (file !== "styleguide.html") {
     const sq = (text.match(/class="[^"]*\bdivider-squiggle\b[^"]*"/g) || []);
-    if (sq.length > 2) fail(file, "more than 2 divider-squiggle elements");
-    if (sq.filter((c) => /divider-squiggle--coral/.test(c)).length > 1) fail(file, "more than 1 coral squiggle");
+    // Squiggle budget: dividers plus the Home timeline connector (steps__connector) count together.
+    const conn = (text.match(/class="[^"]*\bsteps__connector\b[^"]*"/g) || []).length;
+    if (sq.length + conn > 2) fail(file, "more than 2 squiggles (divider-squiggle + steps__connector)");
+    if (sq.filter((c) => /divider-squiggle--coral/.test(c)).length + conn > 1) fail(file, "more than 1 coral squiggle (divider-squiggle--coral + steps__connector)");
   }
   for (const tag of text.match(/<[^>]*\baccent-underline\b[^>]*>/g) || []) {
     if (!/\bhero-word\b/.test(tag) && !/class="accent-underline__svg"/.test(tag)) fail(file, "accent-underline outside .hero-word: " + tag);
@@ -107,6 +109,64 @@ for (const file of htmlFiles) {
       if (!new RegExp("\\b" + attr + "=\"").test(img)) fail(file, "remote <img> missing " + attr);
     }
     if (!/referrerpolicy="no-referrer"/.test(img)) fail(file, 'remote <img> missing referrerpolicy="no-referrer"');
+  }
+}
+
+// ---- Blue allow-list: --color-blue is reserved (UI-SPEC accent list)
+const BLUE_ALLOWED = new Set([
+  ":focus-visible",                 // reserved item 4: focus ring
+  "a",                              // item 3: inline text links
+  '.site-nav a[aria-current="page"]', // item 3: current page indicator
+  ".btn--primary",                  // item 1: primary CTA
+  ".is-focus",                      // item 4: focus ring (style guide state)
+  ".prose a",
+  ".field__input:focus",
+  ".field__input.is-focus",
+  ".link-cta",                      // item 3: text CTA link
+  ".service-card__icon",            // item 5 (Phase 2): service icons
+  ".step__badge",                   // item 6 (Phase 2): step badges
+]);
+{
+  const ruleRe = /([^{}]+)\{([^{}]*)\}/g;
+  let r;
+  while ((r = ruleRe.exec(outside))) {
+    if (!/var\(--color-blue\)/.test(r[2])) continue;
+    for (const raw of r[1].split(",")) {
+      const sel = raw.replace(/\s+/g, " ").trim();
+      if (!BLUE_ALLOWED.has(sel) && !sel.startsWith(".sg-")) fail("css/styles.css", "blue used outside the reserved list: " + sel);
+    }
+  }
+}
+
+// ---- Shell parity and typographic apostrophes (index.html, contact.html only)
+{
+  const block = (text, name) => {
+    const a = text.indexOf("<!-- SHELL:" + name + " START -->");
+    const b = text.indexOf("<!-- SHELL:" + name + " END -->");
+    return a < 0 || b < 0 ? null : text.slice(a, b).replace(/ aria-current="page"/g, "");
+  };
+  for (const name of ["HEADER", "FOOTER"]) {
+    const blocks = ["index.html", "contact.html"].map((f) => {
+      const b = block(read(f), name);
+      if (b === null) fail(f, "SHELL:" + name + " marker missing");
+      return b;
+    });
+    if (blocks[0] !== null && blocks[1] !== null && blocks[0] !== blocks[1]) fail("index.html", "SHELL:" + name + " differs between index.html and contact.html");
+  }
+  for (const file of ["index.html", "contact.html"]) {
+    const stripped = read(file)
+      .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+      .replace(/<style\b[\s\S]*?<\/style>/gi, "")
+      .replace(/<!--[\s\S]*?-->/g, "");
+    const bodyText = stripped.replace(/<[^>]*>/g, "\u0001");
+    const bad = /'|&#39;|&apos;/.exec(bodyText);
+    if (bad) fail(file, "straight apostrophe in visible text: " + bodyText.slice(Math.max(0, bad.index - 15), bad.index + 15).replace(/\u0001/g, " ").replace(/\s+/g, " "));
+    for (const a of stripped.match(/\b(?:title|alt|aria-label|content)="[^"]*'[^"]*"/g) || []) {
+      fail(file, "straight apostrophe in visible text: " + a.slice(0, 30));
+    }
+    for (const t of stripped.match(/<title>[^<]*<\/title>/g) || []) {
+      if (t.includes("'")) fail(file, "straight apostrophe in visible text: " + t.slice(0, 30));
+    }
   }
 }
 

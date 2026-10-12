@@ -59,6 +59,9 @@ const FORBIDDEN = ["coral/white", "blue/navy"];
 const NON_TEXT = {
   "field-border/white": 7.53,
   "field-border/tint": 6.9,
+  "blue/tint": 4.69,  // Phase 2: service icon (blue) on its tint tile, blue reserved item 5
+  "blue/white": 5.12, // Phase 2: step badge fill (blue) against white page, reserved item 6
+  "white/navy": 14.22, // Phase 2: 2px white border of .btn--on-navy against the navy band
 };
 
 function channel(c) {
