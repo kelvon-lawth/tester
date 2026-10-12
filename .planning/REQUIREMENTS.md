@@ -9,11 +9,11 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 ### Foundation & Design
 
-- [ ] **FND-01**: Visitor can open the site by double-clicking `index.html` (no server, no build step) and every page, style, script and font loads via relative paths
-- [ ] **FND-02**: Visitor sees a consistent bright, friendly "social network" visual identity (limited palette of white, social blue, coral pop and navy; 2 font families) applied from shared design tokens across both pages
-- [ ] **FND-03**: Visitor sees subtle handcrafted accents (squiggle section dividers and a hand-drawn underline under the hero word) — 1–4 accent types, per Phase 1 discussion — layered on a clean professional grid
+- [x] **FND-01**: Visitor can open the site by double-clicking `index.html` (no server, no build step) and every page, style, script and font loads via relative paths
+- [x] **FND-02**: Visitor sees a consistent bright, friendly "social network" visual identity (limited palette of white, social blue, coral pop and navy; 2 font families) applied from shared design tokens across both pages
+- [x] **FND-03**: Visitor sees subtle handcrafted accents (squiggle section dividers and a hand-drawn underline under the hero word) — 1–4 accent types, per Phase 1 discussion — layered on a clean professional grid
 - [ ] **FND-04**: Visitor sees self-hosted fonts render without noticeable layout jump on load
-- [ ] **FND-05**: Text meets WCAG AA contrast (≥ 4.5:1 for body text) throughout
+- [x] **FND-05**: Text meets WCAG AA contrast (≥ 4.5:1 for body text) throughout
 
 ### Shared Shell
 
@@ -91,11 +91,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FND-01 | Phase 1 | Pending |
-| FND-02 | Phase 1 | Pending |
-| FND-03 | Phase 1 | Pending |
+| FND-01 | Phase 1 | Complete |
+| FND-02 | Phase 1 | Complete |
+| FND-03 | Phase 1 | Complete |
 | FND-04 | Phase 1 | Pending |
-| FND-05 | Phase 1 | Pending |
+| FND-05 | Phase 1 | Complete |
 | SHL-01 | Phase 2 | Pending |
 | SHL-02 | Phase 2 | Pending |
 | SHL-03 | Phase 2 | Pending |
