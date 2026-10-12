@@ -460,15 +460,16 @@ main:focus {
 .accent-underline {
   position: relative;
   display: inline-block;
+  /* Reserve room under the descenders for the underline so it never overlaps glyphs. */
+  padding-block-end: calc(var(--hero-underline-offset) + var(--hero-underline-height));
 }
 
 .accent-underline__svg {
   position: absolute;
   inset-inline: 0;
-  top: calc(100% - var(--space-sm));
+  inset-block-end: 0;
   inline-size: 100%;
   block-size: var(--hero-underline-height);
-  margin-top: var(--hero-underline-offset);
   pointer-events: none;
   stroke: var(--hero-underline-color);
   fill: none;
@@ -476,6 +477,88 @@ main:focus {
   stroke-linecap: round;
   stroke-linejoin: round;
   overflow: visible;
+}
+
+.accent-underline__svg path {
+  vector-effect: non-scaling-stroke;
+}
+
+/* ==========================================================================
+   Home hero (split layout, D-01..D-05)
+   ========================================================================== */
+.hero {
+  padding-block: var(--space-2xl) var(--space-3xl);
+}
+
+.hero__text {
+  min-inline-size: 0;
+}
+
+.hero__lede {
+  max-inline-size: var(--measure);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md) var(--space-lg);
+  margin-block-start: var(--space-xl);
+}
+
+.trust-cue {
+  margin-block-start: var(--space-lg);
+  font-size: var(--fs-label);
+  color: var(--color-ink-soft);
+}
+
+.trust-cue strong {
+  font-weight: var(--fw-semibold);
+}
+
+.link-cta {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-blue);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: var(--space-xs);
+}
+
+.link-cta:hover {
+  color: var(--color-blue-hover);
+}
+
+.hero__media {
+  max-inline-size: 400px;
+  margin-inline: auto;
+}
+
+.hero__media .media {
+  inline-size: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.media--placeholder {
+  inline-size: 100%;
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    padding-block: calc(var(--space-3xl) + var(--space-xl));
+  }
+  .hero__grid {
+    align-items: center;
+  }
+  .hero__media {
+    max-inline-size: none;
+    margin-inline: 0;
+  }
 }
 
 /* ==========================================================================
@@ -684,7 +767,9 @@ a.is-hover {
 @media (min-width: 1024px) {
   .grid-12 { grid-template-columns: repeat(12, 1fr); }
   .span-4 { grid-column: span 4; }
+  .span-5 { grid-column: span 5; }
   .span-6 { grid-column: span 6; }
+  .span-7 { grid-column: span 7; }
   .span-8 { grid-column: span 8; }
   .span-12 { grid-column: span 12; }
 }

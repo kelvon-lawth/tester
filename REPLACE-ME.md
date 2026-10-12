@@ -23,7 +23,7 @@ Everything listed here is fictional or sample content and must be swapped before
 
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
-| Client count | 40+ | `index.html` | `.trust-cue` (filled in by a later Phase 2 plan) | [ ] |
+| Client count | 40+ | `index.html` | `.trust-cue` (hero, under the CTAs) | [ ] |
 | Years of experience | ten years | `index.html` | `#about` (filled in by a later Phase 2 plan) | [ ] |
 
 ## Photos
@@ -33,6 +33,7 @@ Hotlinked stock photos (D-13). Replace each with a real photo and host it in `as
 | Where used (file and element) | Full URL | Photographer | Source page URL | Licence | Done |
 |-------------------------------|----------|--------------|-----------------|---------|------|
 | styleguide.html (sg-photo, dev only) | https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=70&auto=format | Unsplash contributor, photo id 1509440159596 (name not confirmed) | https://unsplash.com/photos/1509440159596 | Unsplash licence | [ ] |
+| `index.html` `.hero__media img` | https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&h=1000&q=55 | Unsplash contributor, photo id 1556740738-b6a63e27c4df (name not confirmed, look up at https://unsplash.com/photos/1556740738-b6a63e27c4df); also replace the alt text, it describes a café counter | https://unsplash.com/photos/1556740738-b6a63e27c4df | Unsplash licence | [ ] |
 
 ## Testimonials
 
@@ -50,6 +51,8 @@ Filled in by Plan 04.
 | Contact page title | Contact \| Sam Whitlock, local marketer in Elmhollow | `contact.html` | `<title>` | [ ] |
 | Home meta description | Friendly, local marketing help for Elmhollow bakeries, gyms, salons and shops. Sample content for a prototype. | `index.html` | `<meta name="description">` | [ ] |
 | Footer tagline | Helping local businesses in Elmhollow and nearby villages get found and get busy. | `index.html`, `contact.html` | SHELL:FOOTER block | [ ] |
+| Hero support line | I’m Sam, a marketer right here in Elmhollow. I help neighbourhood businesses get found and get busy. | `index.html` | `.hero__lede` | [ ] |
+| Hero text link | See how I help | `index.html` | `.link-cta` | [ ] |
 
 ## Shell
 
