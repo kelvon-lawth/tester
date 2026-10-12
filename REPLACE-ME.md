@@ -53,6 +53,8 @@ Filled in by Plan 04.
 | Footer tagline | Helping local businesses in Elmhollow and nearby villages get found and get busy. | `index.html`, `contact.html` | SHELL:FOOTER block | [ ] |
 | Hero support line | I’m Sam, a marketer right here in Elmhollow. I help neighbourhood businesses get found and get busy. | `index.html` | `.hero__lede` | [ ] |
 | Hero text link | See how I help | `index.html` | `.link-cta` | [ ] |
+| Services heading | Four ways I help local businesses get found, get remembered and get busy. | `index.html` | `#services-title` | [ ] |
+| Service titles and descriptions | Social media, Local SEO & Google, Ads & campaigns, Branding & design (and their descriptions) | `index.html` | `.service-card` (4 cards) | [ ] |
 
 ## Shell
 
