@@ -35,10 +35,19 @@ Hotlinked stock photos (D-13). Replace each with a real photo and host it in `as
 | styleguide.html (sg-photo, dev only) | https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=70&auto=format | Unsplash contributor, photo id 1509440159596 (name not confirmed) | https://unsplash.com/photos/1509440159596 | Unsplash licence | [ ] |
 | `index.html` `.hero__media img` | https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&h=1000&q=55 | Unsplash contributor, photo id 1556740738-b6a63e27c4df (name not confirmed, look up at https://unsplash.com/photos/1556740738-b6a63e27c4df); also replace the alt text, it describes a café counter | https://unsplash.com/photos/1556740738-b6a63e27c4df | Unsplash licence | [ ] |
 | `index.html` `#about .about__media` | GAP: no verified photo matched the alt text (candid person walking a high street with a coffee), so a tint `media--placeholder` box is in place. Add an `<img class="media" width="800" height="800" loading="lazy" referrerpolicy="no-referrer">` with a square photo and update the alt text | n/a | n/a | n/a | [ ] |
+| `index.html` `#kind-words .avatar` (Priya Nair) | https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop&q=70&auto=format | Photographer unknown, Unsplash photo id 1494790108377-be9c29b29330 | https://unsplash.com/photos/1494790108377-be9c29b29330 | Unsplash licence. Replace with a real headshot of the real client and update the alt text (smiling woman, dark wavy hair, red top). | [ ] |
+| `index.html` `#kind-words .avatar` (Marcus Bell) | https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&q=70&auto=format | Photographer unknown, Unsplash photo id 1507003211169-0a1dd7228f2d | https://unsplash.com/photos/1507003211169-0a1dd7228f2d | Unsplash licence. Replace with a real headshot of the real client and update the alt text (smiling man, white t-shirt). | [ ] |
+| `index.html` `#kind-words .avatar` (Lena Fischer) | https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&q=70&auto=format | Photographer unknown, Unsplash photo id 1438761681033-6461ffad8d80 | https://unsplash.com/photos/1438761681033-6461ffad8d80 | Unsplash licence. Replace with a real headshot of the real client and update the alt text (woman with short auburn hair by a lake). | [ ] |
 
 ## Testimonials
 
-Filled in by Plan 04.
+All names, businesses and quotes are invented. Swap for real, permissioned testimonials.
+
+| Quote | Name | Role | Business | Town | Headshot | Done |
+|-------|------|------|----------|------|----------|------|
+| Sam got us onto Google Maps and our Saturday queue doubled. Everything was explained in plain English. | Priya Nair | Owner | Rise & Crumb Bakery | Elmhollow | Photos row `#kind-words .avatar` (Priya Nair) | [ ] |
+| I’m no marketer and Sam never made me feel it. One small ad brought in three new members a week. | Marcus Bell | Owner | Iron Orchard Gym | Fenwick Cross | Photos row `#kind-words .avatar` (Marcus Bell) | [ ] |
+| Our new logo and Instagram finally feel like us. Clients keep mentioning them at the chair. | Lena Fischer | Founder | Studio Marigold Salon | Elmhollow | Photos row `#kind-words .avatar` (Lena Fischer) | [ ] |
 
 ## Logos
 

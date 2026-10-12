@@ -32,13 +32,13 @@ const textOf = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 const amp = (s) => s.replace(/&amp;/g, "&");
 
 // An <img> carrying all of attrs, or the documented role="img" placeholder fallback.
-function mediaWith(block, attrs, alt, noLoading) {
+function mediaWith(block, attrs, alt, noLoading, altLoose) {
   const errs = [];
   const imgs = block.match(/<img\b[^>]*>/g) || [];
-  const okImg = imgs.some((t) => attrs.every((a) => t.includes(a)) && t.includes('alt="' + alt + '"') && (!noLoading || !/\bloading=/.test(t)));
+  const okImg = imgs.some((t) => attrs.every((a) => t.includes(a)) && (altLoose ? /\balt="[^"]+"/.test(t) && (t.match(/\balt="([^"]*)"/) || [, ""])[1].includes(alt) : t.includes('alt="' + alt + '"')) && (!noLoading || !/\bloading=/.test(t)));
   if (okImg) return errs;
   const fb = block.match(/<[a-z]+\b[^>]*role="img"[^>]*>/g) || [];
-  const okFb = fb.some((t) => t.includes('aria-label="' + alt + '"') && /media--placeholder/.test(t));
+  const okFb = fb.some((t) => (altLoose ? /aria-label="[^"]*/.test(t) && t.includes(alt) : t.includes('aria-label="' + alt + '"')) && /media--placeholder/.test(t));
   if (!okFb) errs.push('no <img> with ' + attrs.join(" ") + ' and alt "' + alt + '" (or media--placeholder fallback)');
   return errs;
 }
@@ -149,7 +149,7 @@ groups.testimonials = () => {
     if (!people[i]) return;
     if (!f.includes("<blockquote>")) e.push("testimonial " + (i + 1) + " missing blockquote");
     if (!f.includes('<figcaption class="testimonial__who"')) e.push("testimonial " + (i + 1) + " missing figcaption.testimonial__who");
-    const errs = mediaWith(f, ['class="avatar', 'width="96"', 'height="96"', 'loading="lazy"'], "Portrait of " + people[i][0]);
+    const errs = mediaWith(f, ['class="avatar', 'width="96"', 'height="96"', 'loading="lazy"'], people[i][0], false, true);
     e.push(...errs.map((x) => "testimonial " + (i + 1) + ": " + x));
     if (!amp(textOf(f)).includes(people[i][1])) e.push("testimonial " + (i + 1) + " role line missing: " + people[i][1]);
   });

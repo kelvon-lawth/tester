@@ -856,6 +856,51 @@ a.is-hover {
 }
 
 /* ==========================================================================
+   Testimonials (HOME-04, D-10)
+   ========================================================================== */
+.testimonials-grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+.testimonial {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.testimonial blockquote { margin: 0; }
+.testimonial blockquote p { margin: 0; }
+.testimonial__who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-block-start: auto;
+  padding-block-start: var(--space-lg);
+}
+.avatar {
+  inline-size: var(--space-2xl);
+  block-size: var(--space-2xl);
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  background: var(--color-tint);
+  flex: none;
+}
+.testimonial__meta {
+  display: flex;
+  flex-direction: column;
+}
+.testimonial__name {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+}
+.testimonial__role {
+  font-size: var(--fs-label);
+  color: var(--color-ink-soft);
+}
+@media (min-width: 1024px) {
+  .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ==========================================================================
    Style guide (dev only, removed in Phase 5)
    ========================================================================== */
 .sg-swatch {
