@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Style guide | dev only</title>
+  <link rel="preload" href="assets/fonts/Fraunces-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/main.js"></script>
+  <script defer src="js/styleguide.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- SHELL:HEADER START -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <!-- SHELL:HEADER END -->
+
+  <main id="main" tabindex="-1">
+    <div class="container">
+      <h1>Style guide</h1>
+      <p class="sg-caption">Dev only. Every swatch, size and accent below is rendered from the shared tokens in css/styles.css.</p>
+
+      <section class="section" id="sg-colors">
+        <h2>1. Colours</h2>
+        <ul class="sg-swatches">
+        <li><figure>
+          <div class="sg-swatch sg-swatch--bg"></div>
+          <figcaption><code>--color-bg</code><br>#FFFFFF<br>Page background, most surfaces (60%)</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--tint"></div>
+          <figcaption><code>--color-tint</code><br>#F1F5FF<br>Cards, header, bands, form fields, image placeholder (30%)</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--navy"></div>
+          <figcaption><code>--color-navy</code><br>#1B2A4A<br>Closing CTA band and footer only</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--ink"></div>
+          <figcaption><code>--color-ink</code><br>#1C1E21<br>Body text and headings</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--ink-soft"></div>
+          <figcaption><code>--color-ink-soft</code><br>#4A5568<br>Captions, helper text</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--blue"></div>
+          <figcaption><code>--color-blue</code><br>#3B5BFD<br>Primary CTA, hero word, links, focus ring</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--blue-hover"></div>
+          <figcaption><code>--color-blue-hover</code><br>#2A44D4<br>Hover and pressed state of blue elements</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--coral"></div>
+          <figcaption><code>--color-coral</code><br>#FF6B6B<br>Decorative graphics; text only on navy</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--error"></div>
+          <figcaption><code>--color-error</code><br>#C62828<br>Form validation errors only</figcaption>
+        </figure></li>
+        <li><figure>
+          <div class="sg-swatch sg-swatch--line"></div>
+          <figcaption><code>--color-line</code><br>#C9D3EE<br>Dividers, default squiggle (decorative)</figcaption>
+        </figure></li>
+        </ul>
+      </section>
+
+      <section class="section" id="sg-contrast">
+        <h2>2. Contrast (WCAG AA)</h2>
+        <p class="sg-caption">Ratios are recalculated live from the CSS tokens when JavaScript is on; the printed values are the verified fallbacks.</p>
+        <div class="sg-table-wrap">
+          <table class="sg-table">
+            <thead><tr><th>Pairing</th><th>Ratio</th><th>Requirement</th><th>Result</th><th>Sample</th></tr></thead>
+            <tbody>
+          <tr data-fg="--color-ink" data-bg="--color-bg">
+            <td>ink on white</td>
+            <td class="sg-ratio">16.71:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-bg sg-fg-ink">Sample text</td>
+          </tr>
+          <tr data-fg="--color-ink" data-bg="--color-tint">
+            <td>ink on tint</td>
+            <td class="sg-ratio">15.31:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-tint sg-fg-ink">Sample text</td>
+          </tr>
+          <tr data-fg="--color-ink-soft" data-bg="--color-bg">
+            <td>ink-soft on white</td>
+            <td class="sg-ratio">7.53:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-bg sg-fg-ink-soft">Sample text</td>
+          </tr>
+          <tr data-fg="--color-ink-soft" data-bg="--color-tint">
+            <td>ink-soft on tint</td>
+            <td class="sg-ratio">6.90:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-tint sg-fg-ink-soft">Sample text</td>
+          </tr>
+          <tr data-fg="--color-blue" data-bg="--color-bg">
+            <td>blue on white</td>
+            <td class="sg-ratio">5.12:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-bg sg-fg-blue">Sample text</td>
+          </tr>
+          <tr data-fg="--color-blue" data-bg="--color-tint">
+            <td>blue on tint</td>
+            <td class="sg-ratio">4.69:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-tint sg-fg-blue">Sample text</td>
+          </tr>
+          <tr data-fg="--color-bg" data-bg="--color-blue">
+            <td>white on blue</td>
+            <td class="sg-ratio">5.12:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-blue sg-fg-bg">Sample text</td>
+          </tr>
+          <tr data-fg="--color-bg" data-bg="--color-blue-hover">
+            <td>white on blue-hover</td>
+            <td class="sg-ratio">7.30:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-blue-hover sg-fg-bg">Sample text</td>
+          </tr>
+          <tr data-fg="--color-blue-hover" data-bg="--color-bg">
+            <td>blue-hover on white</td>
+            <td class="sg-ratio">7.30:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-bg sg-fg-blue-hover">Sample text</td>
+          </tr>
+          <tr data-fg="--color-blue-hover" data-bg="--color-tint">
+            <td>blue-hover on tint</td>
+            <td class="sg-ratio">6.69:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-tint sg-fg-blue-hover">Sample text</td>
+          </tr>
+          <tr data-fg="--color-bg" data-bg="--color-navy">
+            <td>white on navy</td>
+            <td class="sg-ratio">14.22:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-navy sg-fg-bg">Sample text</td>
+          </tr>
+          <tr data-fg="--color-tint" data-bg="--color-navy">
+            <td>tint on navy</td>
+            <td class="sg-ratio">13.03:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-navy sg-fg-tint">Sample text</td>
+          </tr>
+          <tr data-fg="--color-coral" data-bg="--color-navy">
+            <td>coral on navy</td>
+            <td class="sg-ratio">5.12:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-navy sg-fg-coral">Sample text</td>
+          </tr>
+          <tr data-fg="--color-error" data-bg="--color-bg">
+            <td>error on white</td>
+            <td class="sg-ratio">5.62:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-bg sg-fg-error">Sample text</td>
+          </tr>
+          <tr data-fg="--color-error" data-bg="--color-tint">
+            <td>error on tint</td>
+            <td class="sg-ratio">5.15:1</td>
+            <td>4.5:1 required</td>
+            <td>Pass</td>
+            <td class="sg-sample sg-on-tint sg-fg-error">Sample text</td>
+          </tr>
+          <tr data-fg="--color-coral" data-bg="--color-bg">
+            <td>coral on white</td>
+            <td class="sg-ratio">2.78:1</td>
+            <td>Forbidden for text</td>
+            <td>Fails AA, never used</td>
+            <td class="sg-sample sg-on-bg sg-fg-coral">Sample text</td>
+          </tr>
+          <tr data-fg="--color-blue" data-bg="--color-navy">
+            <td>blue on navy</td>
+            <td class="sg-ratio">2.78:1</td>
+            <td>Forbidden for text</td>
+            <td>Fails AA, never used</td>
+            <td class="sg-sample sg-on-navy sg-fg-blue">Sample text</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="sg-type">
+        <h2>3. Type</h2>
+        <p class="sg-display">Display</p>
+        <p class="sg-caption">Fraunces, clamp(40px, 6.5vw + 8px, 72px), weight 600, line-height 1.1</p>
+        <p class="sg-heading">Heading</p>
+        <p class="sg-caption">Fraunces, 28px, weight 600, line-height 1.2</p>
+        <p>Body: a friendly local marketer who helps your shop get found.</p>
+        <p class="sg-caption">Figtree, 18px, weight 400, line-height 1.5</p>
+        <p class="sg-label">Label</p>
+        <p class="sg-caption">Figtree, 14px, weight 600, line-height 1.4. Weights in use: 400 and 600.</p>
+      </section>
+
+      <section class="section" id="sg-spacing">
+        <h2>4. Spacing</h2>
+        <div><span class="sg-label">xs 4px</span><div class="sg-space sg-space--xs"></div></div>
+        <div><span class="sg-label">sm 8px</span><div class="sg-space sg-space--sm"></div></div>
+        <div><span class="sg-label">md 16px</span><div class="sg-space sg-space--md"></div></div>
+        <div><span class="sg-label">lg 24px</span><div class="sg-space sg-space--lg"></div></div>
+        <div><span class="sg-label">xl 32px</span><div class="sg-space sg-space--xl"></div></div>
+        <div><span class="sg-label">2xl 48px</span><div class="sg-space sg-space--2xl"></div></div>
+        <div><span class="sg-label">3xl 64px</span><div class="sg-space sg-space--3xl"></div></div>
+        <p class="sg-caption">Desktop section padding = calc(3xl + xl) = 96px.</p>
+      </section>
+
+      <section class="section" id="sg-accents">
+        <h2>5. Handcrafted accents</h2>
+        <p class="sg-caption">Exactly two accent types: the squiggle divider and the hero underline.</p>
+        <p>Squiggle divider on white</p>
+        <div class="divider-squiggle" aria-hidden="true"></div>
+        <div class="sg-band">
+          <p>Squiggle divider on a tint band</p>
+          <div class="divider-squiggle" aria-hidden="true"></div>
+        </div>
+        <p>Coral variant (at most one per page)</p>
+        <div class="divider-squiggle divider-squiggle--coral" aria-hidden="true"></div>
+        <p class="sg-heading">Underline on white: <span class="hero-word accent-underline">bakery<svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></p>
+        <div class="sg-band">
+          <p class="sg-heading">Underline on tint: <span class="hero-word accent-underline">bakery<svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></p>
+        </div>
+        <div class="on-navy">
+          <p class="sg-heading">Coral works on navy for <span class="text-coral-on-navy">one word</span></p>
+        </div>
+      </section>
+
+      <section class="section" id="sg-hero">
+        <h2>6. Hero sample</h2>
+        <p class="hero-title sg-display">Marketing for your <span class="hero-word accent-underline">bakery<svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></p>
+        <p class="sg-caption">All seven business words at Display size. Check "restaurant" at 320px.</p>
+        <ul class="sg-list" data-words="bakery,café,salon,gym,florist,shop,restaurant">
+        <li><span class="hero-word sg-display">bakery</span></li>
+        <li><span class="hero-word sg-display">café</span></li>
+        <li><span class="hero-word sg-display">salon</span></li>
+        <li><span class="hero-word sg-display">gym</span></li>
+        <li><span class="hero-word sg-display">florist</span></li>
+        <li><span class="hero-word sg-display">shop</span></li>
+        <li><span class="hero-word sg-display">restaurant</span></li>
+        </ul>
+      </section>
+<!--SG:MORE-->
+    </div>
+  </main>
+
+  <!-- SHELL:FOOTER START -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>Prototype — sample content</p>
+    </div>
+  </footer>
+  <!-- SHELL:FOOTER END -->
+</body>
+</html>

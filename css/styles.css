@@ -72,6 +72,7 @@
   --color-coral: #FF6B6B;
   --color-error: #C62828;
   --color-line: #C9D3EE;
+  --color-on-navy-hover: rgba(255, 255, 255, .12);
 
   /* Spacing (no 4xl) */
   --space-xs: 4px;
@@ -312,3 +313,338 @@ main:focus {
   stroke-linejoin: round;
   overflow: visible;
 }
+
+/* ==========================================================================
+   Accent 1 of 2: squiggle divider (D-09, D-10). Markup:
+   <div class="divider-squiggle" aria-hidden="true"></div>
+   ========================================================================== */
+.divider-squiggle {
+  display: block;
+  inline-size: 100%;
+  block-size: 12px;
+  margin-block: var(--space-2xl);
+  background-color: var(--color-line);
+  pointer-events: none;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 12'%3E%3Cpath d='M0 6 Q6 0 12 6 T24 6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 12'%3E%3Cpath d='M0 6 Q6 0 12 6 T24 6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-size: auto 12px;
+  mask-size: auto 12px;
+}
+
+.divider-squiggle--coral {
+  background-color: var(--color-coral);
+}
+
+/* ==========================================================================
+   Links and inverse (navy) context
+   ========================================================================== */
+a {
+  color: var(--color-blue);
+  text-decoration-thickness: 2px;
+  text-underline-offset: var(--space-xs);
+}
+
+a:hover,
+a.is-hover {
+  color: var(--color-blue-hover);
+}
+
+.site-footer a,
+.on-navy a:not(.btn) {
+  color: var(--color-bg);
+}
+
+.on-navy {
+  background: var(--color-navy);
+  color: var(--color-bg);
+  padding: var(--space-xl);
+  border-radius: var(--radius-md);
+}
+
+.on-navy :focus-visible,
+.on-navy .is-focus {
+  outline-color: var(--color-bg);
+}
+
+.text-coral-on-navy {
+  color: var(--color-coral);
+}
+
+/* ==========================================================================
+   Buttons (coral is never a button colour, D-01a)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-lg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.btn--primary {
+  background-color: var(--color-blue);
+  color: var(--color-bg);
+}
+
+.btn--primary:hover,
+.btn--primary.is-hover {
+  background-color: var(--color-blue-hover);
+  color: var(--color-bg);
+}
+
+.btn--primary:active,
+.btn--primary.is-active {
+  background-color: var(--color-blue-hover);
+  color: var(--color-bg);
+  transform: translateY(1px);
+}
+
+.btn--ghost {
+  background-color: transparent;
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.btn--ghost:hover,
+.btn--ghost.is-hover {
+  background-color: var(--color-tint);
+  color: var(--color-ink);
+}
+
+.on-navy .btn--ghost {
+  border-color: var(--color-bg);
+  color: var(--color-bg);
+}
+
+.on-navy .btn--ghost:hover,
+.on-navy .btn--ghost.is-hover {
+  background-color: var(--color-on-navy-hover);
+  color: var(--color-bg);
+}
+
+.is-focus {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 3px;
+}
+
+.prose a {
+  color: var(--color-blue);
+}
+
+.prose a:hover,
+.prose a.is-hover {
+  color: var(--color-blue-hover);
+}
+
+/* ==========================================================================
+   Form fields (used in Phase 4)
+   ========================================================================== */
+.field__label {
+  display: block;
+  margin-block-end: var(--space-sm);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+}
+
+.field__input {
+  display: block;
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md);
+  background: var(--color-tint);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-ink);
+}
+
+.field__input:focus,
+.field__input.is-focus {
+  border-color: var(--color-blue);
+  outline: 3px solid var(--color-blue);
+  outline-offset: 3px;
+}
+
+.field__input--error,
+.field__input[aria-invalid="true"] {
+  border-color: var(--color-error);
+}
+
+.field__error {
+  margin: var(--space-sm) 0 0;
+  font-size: var(--fs-label);
+  color: var(--color-error);
+}
+
+/* ==========================================================================
+   Images, grid, cards, sections, icons
+   ========================================================================== */
+.media {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  background: var(--color-tint);
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+@media (min-width: 1024px) {
+  .grid-12 { grid-template-columns: repeat(12, 1fr); }
+  .span-4 { grid-column: span 4; }
+  .span-6 { grid-column: span 6; }
+  .span-8 { grid-column: span 8; }
+  .span-12 { grid-column: span 12; }
+}
+
+.card {
+  background: var(--color-tint);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.section {
+  padding-block: var(--space-3xl);
+}
+
+@media (min-width: 1024px) {
+  .section { padding-block: calc(var(--space-3xl) + var(--space-xl)); }
+}
+
+.icon {
+  inline-size: 24px;
+  block-size: 24px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--color-ink);
+  flex: none;
+}
+
+/* ==========================================================================
+   Style guide (dev only, removed in Phase 5)
+   ========================================================================== */
+.sg-swatch {
+  inline-size: 100%;
+  block-size: 64px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+.sg-swatch--bg { background-color: var(--color-bg); }
+.sg-swatch--tint { background-color: var(--color-tint); }
+.sg-swatch--navy { background-color: var(--color-navy); }
+.sg-swatch--ink { background-color: var(--color-ink); }
+.sg-swatch--ink-soft { background-color: var(--color-ink-soft); }
+.sg-swatch--blue { background-color: var(--color-blue); }
+.sg-swatch--blue-hover { background-color: var(--color-blue-hover); }
+.sg-swatch--coral { background-color: var(--color-coral); }
+.sg-swatch--error { background-color: var(--color-error); }
+.sg-swatch--line { background-color: var(--color-line); }
+
+.sg-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sg-swatches figure { margin: 0; }
+.sg-swatches figcaption { font-size: var(--fs-label); margin-block-start: var(--space-sm); }
+
+.sg-space {
+  block-size: var(--space-lg);
+  background-color: var(--color-blue);
+  border-radius: var(--radius-sm);
+  margin-block: var(--space-xs) var(--space-md);
+}
+.sg-space--xs { inline-size: var(--space-xs); }
+.sg-space--sm { inline-size: var(--space-sm); }
+.sg-space--md { inline-size: var(--space-md); }
+.sg-space--lg { inline-size: var(--space-lg); }
+.sg-space--xl { inline-size: var(--space-xl); }
+.sg-space--2xl { inline-size: var(--space-2xl); }
+.sg-space--3xl { inline-size: var(--space-3xl); }
+
+.sg-table-wrap { overflow-x: auto; }
+.sg-table {
+  border-collapse: collapse;
+  inline-size: 100%;
+  font-size: var(--fs-label);
+}
+.sg-table th,
+.sg-table td {
+  border: 1px solid var(--color-line);
+  padding: var(--space-sm) var(--space-md);
+  text-align: start;
+}
+
+.sg-sample { font-weight: var(--fw-semibold); }
+.sg-on-bg { background-color: var(--color-bg); }
+.sg-on-tint { background-color: var(--color-tint); }
+.sg-on-navy { background-color: var(--color-navy); }
+.sg-on-blue { background-color: var(--color-blue); }
+.sg-on-blue-hover { background-color: var(--color-blue-hover); }
+.sg-fg-ink { color: var(--color-ink); }
+.sg-fg-ink-soft { color: var(--color-ink-soft); }
+.sg-fg-blue { color: var(--color-blue); }
+.sg-fg-blue-hover { color: var(--color-blue-hover); }
+.sg-fg-bg { color: var(--color-bg); }
+.sg-fg-tint { color: var(--color-tint); }
+.sg-fg-coral { color: var(--color-coral); }
+.sg-fg-error { color: var(--color-error); }
+
+.sg-display {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  font-weight: var(--fw-semibold);
+  margin: 0 0 var(--space-md);
+}
+.sg-heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-heading);
+  line-height: var(--lh-heading);
+  font-weight: var(--fw-semibold);
+  margin: 0 0 var(--space-md);
+}
+.sg-label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+.sg-caption { font-size: var(--fs-label); color: var(--color-ink-soft); margin: 0 0 var(--space-md); }
+
+.sg-band { background: var(--color-tint); padding-block: var(--space-md); }
+.sg-row { display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center; margin-block-end: var(--space-lg); }
+.sg-list { list-style: none; margin: 0; padding: 0; }
+.sg-list li { margin-block-end: var(--space-lg); }
+.sg-icons { display: flex; flex-wrap: wrap; gap: var(--space-xl); list-style: none; margin: 0; padding: 0; }
+.sg-icons li { display: flex; align-items: center; gap: var(--space-sm); }
