@@ -34,7 +34,7 @@ Deliver the site's visual foundation: design tokens (palette, type, spacing, mot
 - **D-13:** Photos: real-looking free stock photos (royalty-free, e.g. Unsplash/Pexels license) **hotlinked** from the web rather than bundled. Accepted trade-off: photos won't show when offline; FND-01's "everything via relative paths" applies to pages, CSS, JS and fonts, not photos. Include sized `width`/`height` (or aspect-ratio) and meaningful `alt` so missing images don't shift layout, and list photo URLs + credits in `REPLACE-ME.md`.
 
 ### UI-SPEC alignment
-- **D-14:** The draft `01-UI-SPEC.md` must be revised to match D-01..D-04 (new palette + contrast table) and D-09..D-13 (remove paper grain and blob frames, icon style, photo approach) and to fix the UI checker's blocking spacing issue (remove 96px step; button padding from tokens only). Add the declared focal point (Display headline + blue hero word with coral underline, CTA second).
+- **D-14 [informational]:** (Completed before planning; UI-SPEC revised and approved.) The draft `01-UI-SPEC.md` must be revised to match D-01..D-04 (new palette + contrast table) and D-09..D-13 (remove paper grain and blob frames, icon style, photo approach) and to fix the UI checker's blocking spacing issue (remove 96px step; button padding from tokens only). Add the declared focal point (Display headline + blue hero word with coral underline, CTA second).
 
 ### Claude's Discretion
 - Exact spacing/type scale values, breakpoints and container width (within UI-SPEC rules).
