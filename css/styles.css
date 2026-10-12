@@ -138,6 +138,7 @@
   --space-xl: 32px;
   --space-2xl: 48px;
   --space-3xl: 64px;
+  --sticky-clearance: calc(var(--space-3xl) + var(--space-md)); /* 80px: sticky CTA clearance (UI-SPEC derived) */
 
   /* Hero word (D-04) */
   --color-hero-static: var(--color-ink);
@@ -211,6 +212,10 @@ p {
   text-wrap: pretty;
 }
 
+h1, h2, h3, p, ul, ol, figure, blockquote {
+  margin: 0;
+}
+
 h1 {
   font-family: var(--font-display);
   font-size: var(--fs-display);
@@ -274,13 +279,17 @@ h3 {
   transform: translateY(-300%);
 }
 
+.skip-link:hover {
+  color: var(--color-bg);
+}
+
 .skip-link:focus {
   transform: none;
   z-index: 10;
 }
 
 /* ==========================================================================
-   Stub shell (full shell arrives in Phase 2)
+   Shell: container, header, nav, footer (Phase 2)
    ========================================================================== */
 .container {
   max-inline-size: var(--container);
@@ -290,25 +299,61 @@ h3 {
 
 .site-header {
   background: var(--color-tint);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  min-block-size: var(--space-3xl);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+
+.wordmark:hover {
+  color: var(--color-blue-hover);
 }
 
 .site-nav ul {
   display: flex;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+@media (min-width: 640px) {
+  .site-nav ul { gap: var(--space-lg); }
 }
 
 .site-nav a {
   display: inline-flex;
   align-items: center;
   min-block-size: 44px;
+  padding-inline: var(--space-sm);
   font-size: var(--fs-label);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.02em;
   color: var(--color-ink);
   text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--color-blue-hover);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: var(--space-xs);
 }
 
 .site-nav a[aria-current="page"] {
@@ -318,23 +363,86 @@ h3 {
   text-underline-offset: var(--space-xs);
 }
 
-main {
-  padding-block: var(--space-3xl);
-}
-
 main:focus {
   outline: none;
+}
+
+.flow > * + * {
+  margin-block-start: var(--space-md);
+}
+
+.label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+}
+
+.section--tint {
+  background: var(--color-tint);
+}
+
+.section.section--tight {
+  padding-block: var(--space-2xl);
 }
 
 .site-footer {
   background: var(--color-navy);
   color: var(--color-bg);
-  font-size: var(--fs-label);
-  padding-block: var(--space-lg);
+  font-size: var(--fs-body);
+  padding-block: var(--space-2xl) var(--space-lg);
 }
 
-.site-footer p {
-  margin: 0;
+@media (max-width: 639px) {
+  .site-footer { padding-block-end: calc(var(--space-lg) + var(--sticky-clearance)); }
+}
+
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+@media (min-width: 1024px) {
+  .site-footer__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.site-footer__grid > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.site-footer .wordmark {
+  color: var(--color-bg);
+}
+
+.site-footer .wordmark:hover {
+  color: var(--color-bg);
+  text-decoration: underline;
+}
+
+.site-footer__grid a:not(.wordmark) {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+
+.site-footer__fine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+  font-size: var(--fs-label);
+  color: var(--color-tint);
+  border-block-start: 1px solid var(--color-on-navy-hover);
+  padding-block-start: var(--space-lg);
+  margin-block-start: var(--space-xl);
+}
+
+.site-footer__fine a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
 }
 
 /* ==========================================================================
@@ -407,9 +515,14 @@ a.is-hover {
   color: var(--color-blue-hover);
 }
 
-.site-footer a,
+.site-footer a:not(.btn),
 .on-navy a:not(.btn) {
   color: var(--color-bg);
+}
+
+.site-footer a:not(.btn):hover {
+  color: var(--color-bg);
+  text-decoration-thickness: 3px;
 }
 
 .on-navy {

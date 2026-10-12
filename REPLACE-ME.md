@@ -2,15 +2,62 @@
 
 Everything listed here is fictional or sample content and must be swapped before launch.
 
-## Names and places
+## Identity
 
-- `[Name]` appears in the page `<title>` of `index.html` and `contact.html`. Replace with the real name and town.
+| Item | Current placeholder | File | How to find it | Done |
+|------|---------------------|------|----------------|------|
+| Freelancer name | Sam Whitlock | `index.html`, `contact.html` | `.wordmark` in header and footer, `<title>`, copyright line | [ ] |
+| Town | Elmhollow | `index.html`, `contact.html` | `<title>`, meta description, footer tagline, hero copy | [ ] |
+| Nearby villages | Fenwick Cross, Thornby | `index.html`, `contact.html` | "Area served" in the SHELL:FOOTER block | [ ] |
+| Header and footer wordmark | Text "Sam Whitlock" | `index.html`, `contact.html` | `.wordmark` | [ ] |
 
-## Photos (hotlinked, D-13)
+## Contact details
 
-| Where used | URL | Photographer | Licence | Alt text |
-|------------|-----|--------------|---------|----------|
-| styleguide.html (sg-photo, dev only) | https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=70&auto=format | Unsplash contributor, photo id 1509440159596 (name not confirmed; look it up at https://unsplash.com/photos/1509440159596 when swapping) | Unsplash licence | Freshly baked rustic bread loaves with seeds and a sprig of wheat on a floured dark table |
+| Item | Current placeholder | File | How to find it | Done |
+|------|---------------------|------|----------------|------|
+| Email | hello@samwhitlock.example (and its `mailto:` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch" | [ ] |
+| Phone | (555) 555-0142 (and `tel:+15555550142` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch" | [ ] |
+| Area served | Elmhollow, Fenwick Cross and Thornby | `index.html`, `contact.html` | SHELL:FOOTER block, "Area served" | [ ] |
+
+## Numbers and claims
+
+| Item | Current placeholder | File | How to find it | Done |
+|------|---------------------|------|----------------|------|
+| Client count | 40+ | `index.html` | `.trust-cue` (filled in by a later Phase 2 plan) | [ ] |
+| Years of experience | ten years | `index.html` | `#about` (filled in by a later Phase 2 plan) | [ ] |
+
+## Photos
+
+Hotlinked stock photos (D-13). Replace each with a real photo and host it in `assets/`.
+
+| Where used (file and element) | Full URL | Photographer | Source page URL | Licence | Done |
+|-------------------------------|----------|--------------|-----------------|---------|------|
+| styleguide.html (sg-photo, dev only) | https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=70&auto=format | Unsplash contributor, photo id 1509440159596 (name not confirmed) | https://unsplash.com/photos/1509440159596 | Unsplash licence | [ ] |
+
+## Testimonials
+
+Filled in by Plan 04.
+
+## Logos
+
+Filled in by Plan 04.
+
+## Copy blocks
+
+| Item | Current placeholder | File | How to find it | Done |
+|------|---------------------|------|----------------|------|
+| Home page title | Sam Whitlock \| Local marketing help in Elmhollow | `index.html` | `<title>` | [ ] |
+| Contact page title | Contact \| Sam Whitlock, local marketer in Elmhollow | `contact.html` | `<title>` | [ ] |
+| Home meta description | Friendly, local marketing help for Elmhollow bakeries, gyms, salons and shops. Sample content for a prototype. | `index.html` | `<meta name="description">` | [ ] |
+| Footer tagline | Helping local businesses in Elmhollow and nearby villages get found and get busy. | `index.html`, `contact.html` | SHELL:FOOTER block | [ ] |
+
+## Shell
+
+| Item | Current placeholder | File | How to find it | Done |
+|------|---------------------|------|----------------|------|
+| Copyright line | © 2026 Sam Whitlock. All names and details are made up. | `index.html`, `contact.html` | `.site-footer__fine` | [ ] |
+| Prototype note | Prototype — sample content | `index.html`, `contact.html` | `.site-footer__fine` (remove at launch) | [ ] |
+| Dev style-guide link | Style guide (dev) | `index.html`, `contact.html` | `.site-footer__fine`, remove in Phase 5 | [ ] |
 
 ## Fonts
 
