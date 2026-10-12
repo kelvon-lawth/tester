@@ -18,7 +18,8 @@
 
   Promise.all([
     document.fonts.load("600 1em Fraunces"),
-    document.fonts.load("400 1em Figtree")
+    document.fonts.load("400 1em Figtree"),
+    document.fonts.load("600 1em Figtree")
   ]).then(function (results) {
     var ok = results.every(function (r) { return r && r.length >= 1; });
     root.classList.add(ok ? "fonts-loaded" : "fonts-failed");

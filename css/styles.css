@@ -51,10 +51,22 @@
 
 @font-face {
   font-family: "Figtree Fallback";
-  src: local("Arial");
+  font-weight: 400;
+  src: local("Arial"), local("ArialMT");
   size-adjust: 99.6%;
   ascent-override: 95.4%;
   descent-override: 25.1%;
+  line-gap-override: 0%;
+}
+
+/* 600 face: real Arial Bold (no synthetic bold), tuned against Figtree SemiBold */
+@font-face {
+  font-family: "Figtree Fallback";
+  font-weight: 600;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 94.4%;
+  ascent-override: 100.6%;
+  descent-override: 26.5%;
   line-gap-override: 0%;
 }
 

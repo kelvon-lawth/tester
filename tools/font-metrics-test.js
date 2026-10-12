@@ -93,7 +93,7 @@ async function measure(size) {
       fails.push(label + ": fonts did not load");
       continue;
     }
-    for (const k of ["display", "heading", "body"]) {
+    for (const k of ["display", "heading", "body", "label"]) {
       const d = r[k];
       console.log(
         k + ": real " + d.real.toFixed(1) + "px, fallback " + d.fallback.toFixed(1) +
@@ -111,7 +111,7 @@ async function measure(size) {
   }
 
   if (wide.fontsLoaded) {
-    for (const k of ["display", "heading", "body"]) {
+    for (const k of ["display", "heading", "body", "label"]) {
       if (Math.abs(wide[k].deltaPct) > MAX_DELTA)
         fails.push(k + " width delta " + wide[k].deltaPct.toFixed(2) + "% > " + MAX_DELTA + "%");
     }

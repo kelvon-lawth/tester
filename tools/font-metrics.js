@@ -43,7 +43,7 @@
     var doc = document.documentElement;
     var sample = "Marketing for your restaurant";
 
-    ["display", "heading", "body"].forEach(function (k) {
+    ["display", "heading", "body", "label"].forEach(function (k) {
       var r = width(k + "-real");
       var f = width(k + "-fb");
       var raw = width(k + "-raw");
@@ -98,6 +98,11 @@
         "400 100px Figtree",
         "400 100px Arial",
         "Four ways I help local businesses get found"
+      ),
+      "Figtree Fallback 600": recommend(
+        "600 100px Figtree",
+        "700 100px Arial",
+        "Home Contact Let's talk Your name Email What kind of business do you run?"
       ),
     };
 
