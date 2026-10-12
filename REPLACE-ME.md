@@ -51,7 +51,16 @@ All names, businesses and quotes are invented. Swap for real, permissioned testi
 
 ## Logos
 
-Filled in by Plan 04.
+Six invented inline-SVG wordmarks. Replace each with a real client logo.
+
+| Business name | File | How to find it | Replace with | Done |
+|---------------|------|----------------|--------------|------|
+| Rise & Crumb Bakery | `index.html` | `ul.logo-strip svg[aria-label="Rise & Crumb Bakery"]` | Real client logo (SVG or PNG) with permission | [ ] |
+| Iron Orchard Gym | `index.html` | `ul.logo-strip svg[aria-label="Iron Orchard Gym"]` | Real client logo (SVG or PNG) with permission | [ ] |
+| Studio Marigold Salon | `index.html` | `ul.logo-strip svg[aria-label="Studio Marigold Salon"]` | Real client logo (SVG or PNG) with permission | [ ] |
+| Fernside Florist | `index.html` | `ul.logo-strip svg[aria-label="Fernside Florist"]` | Real client logo (SVG or PNG) with permission | [ ] |
+| The Daily Pour Café | `index.html` | `ul.logo-strip svg[aria-label="The Daily Pour Café"]` | Real client logo (SVG or PNG) with permission | [ ] |
+| Copperline Hardware | `index.html` | `ul.logo-strip svg[aria-label="Copperline Hardware"]` | Real client logo (SVG or PNG) with permission | [ ] |
 
 ## Copy blocks
 

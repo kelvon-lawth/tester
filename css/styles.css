@@ -901,6 +901,42 @@ a.is-hover {
 }
 
 /* ==========================================================================
+   Logo strip (HOME-05, D-11)
+   ========================================================================== */
+.logo-strip__caption {
+  text-align: center;
+  font-size: var(--fs-label);
+  color: var(--color-ink-soft);
+  margin-block-end: var(--space-lg);
+}
+.logo-strip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+  justify-items: center;
+  align-items: center;
+}
+.logo {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 180px;
+  block-size: auto;
+  color: var(--color-ink-soft);
+}
+.logo__serif { font-family: var(--font-display); font-weight: var(--fw-semibold); }
+.logo__sans { font-family: var(--font-body); font-weight: var(--fw-semibold); }
+.logo__wide { font-family: var(--font-body); font-weight: var(--fw-regular); letter-spacing: 0.12em; }
+@media (min-width: 640px) {
+  .logo-strip { grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); }
+}
+@media (min-width: 1024px) {
+  .logo-strip { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* ==========================================================================
    Style guide (dev only, removed in Phase 5)
    ========================================================================== */
 .sg-swatch {
