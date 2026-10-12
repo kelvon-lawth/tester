@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Font metrics harness (dev only)</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .fm-real-display, .fm-real-heading { font-family: "Fraunces"; font-weight: var(--fw-semibold); }
+    .fm-fb-display, .fm-fb-heading { font-family: "Fraunces Fallback"; font-weight: var(--fw-semibold); }
+    .fm-raw-display, .fm-raw-heading { font-family: Georgia; font-weight: var(--fw-semibold); }
+    .fm-real-body { font-family: "Figtree"; font-weight: var(--fw-regular); }
+    .fm-fb-body { font-family: "Figtree Fallback"; font-weight: var(--fw-regular); }
+    .fm-raw-body { font-family: Arial; font-weight: var(--fw-regular); }
+    .fm-display { font-size: var(--fs-display); line-height: var(--lh-display); }
+    .fm-heading { font-size: var(--fs-heading); line-height: var(--lh-heading); }
+    .fm-body { font-size: var(--fs-body); line-height: var(--lh-body); }
+    .fm-line { display: inline-block; white-space: nowrap; }
+    .fm-box { inline-size: 600px; margin: 0; }
+    .fm-offscreen { position: fixed; left: 0; top: 0; visibility: hidden; }
+  </style>
+  <script defer src="font-metrics.js"></script>
+</head>
+<body>
+  <div class="fm-offscreen">
+    <div><span id="display-real" class="fm-line fm-display fm-real-display">Marketing for your restaurant</span></div>
+    <div><span id="display-fb" class="fm-line fm-display fm-fb-display">Marketing for your restaurant</span></div>
+    <div><span id="display-raw" class="fm-line fm-display fm-raw-display">Marketing for your restaurant</span></div>
+
+    <div><span id="heading-real" class="fm-line fm-heading fm-real-heading">Four ways I help local businesses get found</span></div>
+    <div><span id="heading-fb" class="fm-line fm-heading fm-fb-heading">Four ways I help local businesses get found</span></div>
+    <div><span id="heading-raw" class="fm-line fm-heading fm-raw-heading">Four ways I help local businesses get found</span></div>
+
+    <div><span id="body-real" class="fm-line fm-body fm-real-body">I am a local marketer who helps neighbourhood shops, salons, gyms and bakeries get found by the people who live down the road.</span></div>
+    <div><span id="body-fb" class="fm-line fm-body fm-fb-body">I am a local marketer who helps neighbourhood shops, salons, gyms and bakeries get found by the people who live down the road.</span></div>
+    <div><span id="body-raw" class="fm-line fm-body fm-raw-body">I am a local marketer who helps neighbourhood shops, salons, gyms and bakeries get found by the people who live down the road.</span></div>
+
+    <p id="para-real" class="fm-box fm-body fm-real-body">I am a local marketer who helps neighbourhood shops, salons, gyms and bakeries get found by the people who live down the road. I keep things simple and honest. No jargon, no long contracts, just a plain plan that fits your budget and your town. I answer my own phone and I know the best coffee near you.</p>
+    <p id="para-fb" class="fm-box fm-body fm-fb-body">I am a local marketer who helps neighbourhood shops, salons, gyms and bakeries get found by the people who live down the road. I keep things simple and honest. No jargon, no long contracts, just a plain plan that fits your budget and your town. I answer my own phone and I know the best coffee near you.</p>
+  </div>
+
+  <div class="container"><h1 class="hero-title"><span class="hero-word" id="fit-word">restaurant</span></h1></div>
+
+  <!-- Simulated 320px viewport (headless Chrome enforces a ~500px minimum window) -->
+  <div id="sim" style="inline-size: 320px; --gutter: var(--space-md);"><div class="container"><h1 class="hero-title" id="sim-title"><span class="hero-word" id="sim-word">restaurant</span></h1></div></div>
+
+  <pre id="results"></pre>
+</body>
+</html>
