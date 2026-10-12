@@ -17,8 +17,8 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 ### Shared Shell
 
-- [ ] **SHL-01**: Visitor can navigate between Home and Contact from an always-visible header nav on every page, with the current page indicated
-- [ ] **SHL-02**: Visitor sees a footer on both pages with placeholder contact details, area served and a subtle "Prototype — sample content" note
+- [x] **SHL-01**: Visitor can navigate between Home and Contact from an always-visible header nav on every page, with the current page indicated
+- [x] **SHL-02**: Visitor sees a footer on both pages with placeholder contact details, area served and a subtle "Prototype — sample content" note
 - [ ] **SHL-03**: Visitor can reach the contact page from repeated "Let's talk" calls to action on the home page (hero, mid-page, closing band)
 - [ ] **SHL-04**: Mobile visitor sees a sticky "Let's talk" button while scrolling the home page that links to the contact page
 
@@ -31,7 +31,7 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 - [ ] **HOME-05**: Visitor sees a strip of placeholder local-business logos
 - [ ] **HOME-06**: Visitor sees a 3-step "How it works" section (e.g. chat → plan → grow)
 - [ ] **HOME-07**: Visitor sees a closing CTA band inviting them to get in touch
-- [ ] **HOME-08**: All placeholder content (name, town, testimonials, contact details, photos) is clearly fictional and listed in a `REPLACE-ME.md` swap checklist
+- [x] **HOME-08**: All placeholder content (name, town, testimonials, contact details, photos) is clearly fictional and listed in a `REPLACE-ME.md` swap checklist
 
 ### Kinetic Hero
 
@@ -96,8 +96,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FND-03 | Phase 1 | Complete |
 | FND-04 | Phase 1 | Complete |
 | FND-05 | Phase 1 | Complete |
-| SHL-01 | Phase 2 | Pending |
-| SHL-02 | Phase 2 | Pending |
+| SHL-01 | Phase 2 | Complete |
+| SHL-02 | Phase 2 | Complete |
 | SHL-03 | Phase 2 | Pending |
 | SHL-04 | Phase 2 | Pending |
 | HOME-01 | Phase 2 | Pending |
@@ -107,7 +107,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOME-05 | Phase 2 | Pending |
 | HOME-06 | Phase 2 | Pending |
 | HOME-07 | Phase 2 | Pending |
-| HOME-08 | Phase 2 | Pending |
+| HOME-08 | Phase 2 | Complete |
 | HERO-01 | Phase 3 | Pending |
 | HERO-02 | Phase 3 | Pending |
 | HERO-03 | Phase 3 | Pending |
