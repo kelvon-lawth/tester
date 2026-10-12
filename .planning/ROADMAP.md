@@ -62,7 +62,7 @@ Plans:
   3. Visitor can reach the contact page from "Let's talk" CTAs in the hero, mid-page and closing band, and a phone visitor sees a sticky "Let's talk" button while scrolling
   4. All placeholder content is clearly fictional and every swappable item is listed in `REPLACE-ME.md`
 
-**Plans:** 1/6 plans executed
+**Plans:** 2/6 plans executed
 
 Plans:
 **Wave 1**
@@ -71,7 +71,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Split hero (lede, CTAs, trust cue, verified photo), descender-safe underline, CDP browser layout test
+- [x] 02-02-PLAN.md — Split hero (lede, CTAs, trust cue, verified photo), descender-safe underline, CDP browser layout test
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -148,7 +148,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Design System | 3/3 | Complete    | 2026-10-12 |
-| 2. Shared Shell & Static Home | 1/6 | In Progress|  |
+| 2. Shared Shell & Static Home | 2/6 | In Progress|  |
 | 3. Kinetic Hero | 0/TBD | Not started | - |
 | 4. Contact Page | 0/TBD | Not started | - |
 | 5. Polish & QA | 0/TBD | Not started | - |

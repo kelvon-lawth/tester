@@ -19,12 +19,12 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 - [x] **SHL-01**: Visitor can navigate between Home and Contact from an always-visible header nav on every page, with the current page indicated
 - [x] **SHL-02**: Visitor sees a footer on both pages with placeholder contact details, area served and a subtle "Prototype — sample content" note
-- [ ] **SHL-03**: Visitor can reach the contact page from repeated "Let's talk" calls to action on the home page (hero, mid-page, closing band)
+- [x] **SHL-03**: Visitor can reach the contact page from repeated "Let's talk" calls to action on the home page (hero, mid-page, closing band)
 - [ ] **SHL-04**: Mobile visitor sees a sticky "Let's talk" button while scrolling the home page that links to the contact page
 
 ### Home Content
 
-- [ ] **HOME-01**: Visitor sees a hero with a clear value proposition headline, supporting line and primary CTA, fully readable without JavaScript
+- [x] **HOME-01**: Visitor sees a hero with a clear value proposition headline, supporting line and primary CTA, fully readable without JavaScript
 - [ ] **HOME-02**: Visitor sees four services — Social media, Local SEO & Google, Ads & campaigns, Branding & design — each with an icon/illustration and a plain-language description
 - [ ] **HOME-03**: Visitor sees a first-person "About me" block with a placeholder photo and warm, neighborly copy
 - [ ] **HOME-04**: Visitor sees 2–3 placeholder testimonials from local businesses (name, business, short quote)
@@ -98,9 +98,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FND-05 | Phase 1 | Complete |
 | SHL-01 | Phase 2 | Complete |
 | SHL-02 | Phase 2 | Complete |
-| SHL-03 | Phase 2 | Pending |
+| SHL-03 | Phase 2 | Complete |
 | SHL-04 | Phase 2 | Pending |
-| HOME-01 | Phase 2 | Pending |
+| HOME-01 | Phase 2 | Complete |
 | HOME-02 | Phase 2 | Pending |
 | HOME-03 | Phase 2 | Pending |
 | HOME-04 | Phase 2 | Pending |
