@@ -19,18 +19,22 @@ const BLOCKED_HOSTS = [
   "cdnjs",
 ];
 
+// Recursive, so vendored code (assets/js/vendor/, js/vendor/) is scanned too.
 function listFiles(dir, ext) {
   const full = path.join(ROOT, dir);
   if (!fs.existsSync(full)) return [];
-  return fs
-    .readdirSync(full)
-    .filter((f) => f.endsWith(ext))
-    .map((f) => path.join(dir, f));
+  const out = [];
+  for (const entry of fs.readdirSync(full, { withFileTypes: true })) {
+    const rel = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...listFiles(rel, ext));
+    else if (entry.name.endsWith(ext)) out.push(rel);
+  }
+  return out;
 }
 
 const htmlFiles = fs.readdirSync(ROOT).filter((f) => f.endsWith(".html"));
 const cssFiles = listFiles("css", ".css");
-const jsFiles = listFiles("js", ".js");
+const jsFiles = [...listFiles("js", ".js"), ...listFiles("assets/js", ".js")];
 
 for (const page of REQUIRED_PAGES) {
   if (!fs.existsSync(path.join(ROOT, page))) fail(page, page + " missing");
@@ -49,11 +53,27 @@ function checkExists(file, baseDir, value) {
 
 for (const file of htmlFiles) {
   const text = read(file);
-  const tagRe = /<(\w+)\b[^>]*?\b(href|src)\s*=\s*"([^"]*)"[^>]*>/gi;
+  // Every URL attribute on every tag, single or double quoted. (?<![-\w]) skips data-src= etc.
+  const tagRe = /<(\w+)\b[^>]*>/gi;
+  const attrRe = /(?<![-\w])(href|src|srcset|poster)\s*=\s*(["'])(.*?)\2/gi;
+  const refs = [];
   let m;
   while ((m = tagRe.exec(text))) {
     const tag = m[1].toLowerCase();
-    const value = m[3];
+    let a;
+    attrRe.lastIndex = 0;
+    while ((a = attrRe.exec(m[0]))) {
+      if (a[1].toLowerCase() === "srcset") {
+        for (const part of a[3].split(",")) {
+          const url = part.trim().split(/\s+/)[0];
+          if (url) refs.push([tag, url]);
+        }
+      } else {
+        refs.push([tag, a[3]]);
+      }
+    }
+  }
+  for (const [tag, value] of refs) {
     if (tag === "a") {
       if (isExternal(value)) continue;
       if (isBadAbsolute(value)) {
@@ -105,6 +125,8 @@ for (const file of jsFiles) {
   const code = text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
   if (/\bfetch\s*\(/.test(code)) fail(file, "fetch( is not allowed (breaks over file://)");
   if (/^\s*import\s/m.test(code)) fail(file, "import statement is not allowed");
+  if (/\bimport\s*\(/.test(code)) fail(file, "dynamic import( is not allowed (breaks over file://)");
+  if (/\bXMLHttpRequest\b/.test(code)) fail(file, "XMLHttpRequest is not allowed (breaks over file://)");
 }
 
 for (const file of [...htmlFiles, ...cssFiles, ...jsFiles]) {
