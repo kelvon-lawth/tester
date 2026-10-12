@@ -20,7 +20,7 @@ The home page must make a strong first impression: polished, professional and wa
 - [ ] Services section featuring four offerings: Social media, Local SEO & Google, Ads & campaigns, Branding & design
 - [ ] Warm, human tone throughout: friendly first-person copy and a freelancer intro/about block with a placeholder photo
 - [ ] Community proof: placeholder testimonials and logos from local businesses
-- [ ] Handcrafted visual accents (textures, hand-drawn touches, earthy palette) layered on a clean professional layout
+- [ ] Subtle handcrafted accents (squiggle dividers, hero underline) and a bright "social network" palette (white, social blue, coral pop, navy) on a clean professional layout
 - [ ] Contact page with a realistic form (name, email, business, message) that validates input and shows a success message, with no backend
 - [ ] Shared header/navigation and footer linking the two pages, with clear "get in touch" calls to action
 - [ ] Responsive: polished on desktop and phone
@@ -56,6 +56,7 @@ The home page must make a strong first impression: polished, professional and wa
 | Kinetic typography with cycling business-type words as hero motion | User choice; shows "for anyone" while being the visual hook | — Pending |
 | Front-end-only contact form with validation and success state | Prototype; no backend needed | — Pending |
 | Local feel = warm & human + community proof + handcrafted look | User choice | — Pending |
+| Palette: "social network brights" (white, social blue #3B5BFD, coral pop #FF6B6B, navy #1B2A4A) instead of earthy tones | User asked for colors closer to networks (2026-10-12) | — Pending |
 
 ## Evolution
 

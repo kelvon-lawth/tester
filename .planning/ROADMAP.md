@@ -10,7 +10,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Foundation & Design System** - File skeleton, design tokens, self-hosted fonts, warm earthy identity and handcrafted accent kit
+- [ ] **Phase 1: Foundation & Design System** - File skeleton, design tokens, self-hosted fonts, bright social-network palette and handcrafted accent kit
 - [ ] **Phase 2: Shared Shell & Static Home** - Header/nav/footer and a complete, readable Home page with placeholder content system
 - [ ] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe
 - [ ] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic
@@ -19,13 +19,13 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 ## Phase Details
 
 ### Phase 1: Foundation & Design System
-**Goal**: The site has a consistent warm, earthy visual identity and a portable file structure that every page builds on
+**Goal**: The site has a consistent bright, social-network visual identity and a portable file structure that every page builds on
 **Mode:** mvp
 **Depends on**: Nothing (first phase)
 **Requirements**: FND-01, FND-02, FND-03, FND-04, FND-05
 **Success Criteria** (what must be TRUE):
   1. Double-clicking `index.html` (and `contact.html` stub) opens it with styles, scripts and fonts all loading, with no server or build step
-  2. A visible style-guide view shows the limited earthy palette, two font families and the handcrafted accents (squiggle divider and hero hand-drawn underline) applied from shared design tokens
+  2. A visible style-guide view shows the limited social-network palette, two font families and the handcrafted accents (squiggle divider and hero hand-drawn underline) applied from shared design tokens
   3. Self-hosted fonts render on load without a noticeable layout jump
   4. All body text/background token pairings meet WCAG AA contrast (4.5:1 or better)
 **Plans**: TBD

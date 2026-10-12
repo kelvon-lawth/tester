@@ -14,10 +14,11 @@ Deliver the site's visual foundation: design tokens (palette, type, spacing, mot
 ## Implementation Decisions
 
 ### Color palette
-- **D-01:** Earthy warm palette — cream paper base, sand secondary, olive dark band, dark brown ink text, terracotta as the single accent (draft UI-SPEC hex values are acceptable: paper `#FAF4E8`, sand `#F0E4CF`, olive `#33442B`, ink `#2B2118`, terracotta `#A8431F`, clay hover `#8A3517`, error `#A1272B`).
-- **D-02:** "Calm with pops" — pages are mostly light neutral backgrounds; accent appears only on CTAs, the hero word/underline and small highlights; exactly one dark band style (olive) used for the closing CTA band and footer. No color-blocked section rhythm.
+- **D-01:** "Social network brights" palette (revised 2026-10-12 — replaces the earlier earthy cream/olive/terracotta direction): background white `#FFFFFF`, secondary blue tint `#F1F5FF`, dark band navy `#1B2A4A`, text near-black `#1C1E21`, primary accent social blue `#3B5BFD` (hover: a darker blue chosen to keep ≥4.5:1), pop coral `#FF6B6B`, error a distinct red that is not coral (e.g. `#C62828`). Feel: social, energetic, approachable.
+- **D-01a:** Contrast rules (computed): blue on white 5.12:1 and on blue tint 4.69:1 — OK for text and buttons (white on blue 5.12:1). Coral on white is only 2.78:1 — coral must NOT be used for text or essential UI on light backgrounds; use it for decorative accents (squiggles, hero underline, small shapes) and for text only on the navy band (5.12:1). Ink on blue tint 15.31:1; white on navy 14.22:1.
+- **D-02:** "Calm with pops" — pages are mostly white/blue-tint backgrounds; blue appears on CTAs, links and the hero word; coral is a sparing decorative pop; exactly one dark band style (navy) used for the closing CTA band and footer. No color-blocked section rhythm.
 - **D-03:** Light theme only — no dark mode.
-- **D-04:** In the kinetic hero, static words are dark ink; the cycling business-type word is terracotta with a hand-drawn underline beneath it. Define tokens for this now (Phase 3 consumes them).
+- **D-04:** In the kinetic hero, static words are near-black ink; the cycling business-type word is social blue with a coral hand-drawn underline beneath it. Define tokens for this now (Phase 3 consumes them).
 
 ### Typography
 - **D-05:** Headings/display: warm soft serif — Fraunces (self-hosted WOFF2, OFL).
@@ -33,7 +34,7 @@ Deliver the site's visual foundation: design tokens (palette, type, spacing, mot
 - **D-13:** Photos: real-looking free stock photos (royalty-free, e.g. Unsplash/Pexels license) **hotlinked** from the web rather than bundled. Accepted trade-off: photos won't show when offline; FND-01's "everything via relative paths" applies to pages, CSS, JS and fonts, not photos. Include sized `width`/`height` (or aspect-ratio) and meaningful `alt` so missing images don't shift layout, and list photo URLs + credits in `REPLACE-ME.md`.
 
 ### UI-SPEC alignment
-- **D-14:** The draft `01-UI-SPEC.md` must be revised to match D-09..D-13 (remove paper grain and blob frames, icon style, photo approach) and to fix the UI checker's blocking spacing issue (remove 96px step; button padding from tokens only). Add the declared focal point (Display headline + terracotta underline, CTA second).
+- **D-14:** The draft `01-UI-SPEC.md` must be revised to match D-01..D-04 (new palette + contrast table) and D-09..D-13 (remove paper grain and blob frames, icon style, photo approach) and to fix the UI checker's blocking spacing issue (remove 96px step; button padding from tokens only). Add the declared focal point (Display headline + blue hero word with coral underline, CTA second).
 
 ### Claude's Discretion
 - Exact spacing/type scale values, breakpoints and container width (within UI-SPEC rules).
@@ -78,7 +79,7 @@ Deliver the site's visual foundation: design tokens (palette, type, spacing, mot
 <specifics>
 ## Specific Ideas
 
-- Hero headline pattern: "Marketing for your [word]" with the word in terracotta + hand-drawn underline.
+- Hero headline pattern: "Marketing for your [word]" with the word in social blue + coral hand-drawn underline.
 - Business words: bakery · café · salon · gym · florist · shop · restaurant.
 - Overall feel: professional first, local warmth through color, type and copy rather than heavy decoration.
 
