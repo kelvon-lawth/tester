@@ -44,7 +44,7 @@ Reviewable style guide (palette, live WCAG contrast table, type, spacing, both a
 |------|------|--------|
 | 1 | Contrast and design-system guards | c8156c1 |
 | 2 | Component CSS, style guide sections 1-6, styleguide.js | 2ca0179 |
-| 3 | Sections 7-10, REPLACE-ME.md, dev footer links | see git log (feat(01-02) style guide view commit) |
+| 3 | Sections 7-10, REPLACE-ME.md, dev footer links | 1e784df |
 
 ## Verification
 
@@ -72,4 +72,4 @@ None. T-01-04/05/06 mitigations applied (referrerpolicy, textContent only, Unspl
 
 ## Self-Check: PASSED
 
-Created files exist; commits c8156c1, 2ca0179 and the Task 3 commit present.
+Created files exist; commits c8156c1, 2ca0179 and 1e784df present.

@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 2 context gathered
-last_updated: "2026-10-12T20:30:14.976Z"
+last_updated: "2026-10-12T20:30:19.755Z"
 last_activity: 2026-10-12
 progress:
   total_phases: 5
@@ -49,6 +49,7 @@ Progress: [███████░░░] 67%
 ## Accumulated Context
 
 | Phase 1 P01 | 15min | 2 tasks | 12 files |
+| Phase 1 P02 | 20min | 3 tasks | 8 files |
 
 ### Decisions
 
@@ -56,6 +57,7 @@ Progress: [███████░░░] 67%
 - Hero technique defaults to CSS/WAAPI word-level, no dependencies; GSAP only if a Phase 3 spike justifies it
 - Classic `<script defer>` only (no ES modules/fetch) to keep `file://` double-click working
 - [Phase 1]: P01: static Fraunces SemiBold + Figtree 400/600 (41KB) self-hosted; smoke-test spawns Chrome and kills after </html>
+- [Phase 1]: Phase 1 Plan 02: --color-on-navy-hover token added; guards ignore @font-face and data-URIs
 
 ### Pending Todos
 
