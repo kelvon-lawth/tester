@@ -24,7 +24,7 @@ Everything listed here is fictional or sample content and must be swapped before
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
 | Client count | 40+ | `index.html` | `.trust-cue` (hero, under the CTAs) | [ ] |
-| Years of experience | ten years | `index.html` | `#about` (filled in by a later Phase 2 plan) | [ ] |
+| Years of experience | ten years | `index.html` | `#about` (first paragraph, "ten years") | [ ] |
 
 ## Photos
 
@@ -34,6 +34,7 @@ Hotlinked stock photos (D-13). Replace each with a real photo and host it in `as
 |-------------------------------|----------|--------------|-----------------|---------|------|
 | styleguide.html (sg-photo, dev only) | https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=70&auto=format | Unsplash contributor, photo id 1509440159596 (name not confirmed) | https://unsplash.com/photos/1509440159596 | Unsplash licence | [ ] |
 | `index.html` `.hero__media img` | https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&h=1000&q=55 | Unsplash contributor, photo id 1556740738-b6a63e27c4df (name not confirmed, look up at https://unsplash.com/photos/1556740738-b6a63e27c4df); also replace the alt text, it describes a café counter | https://unsplash.com/photos/1556740738-b6a63e27c4df | Unsplash licence | [ ] |
+| `index.html` `#about .about__media` | GAP: no verified photo matched the alt text (candid person walking a high street with a coffee), so a tint `media--placeholder` box is in place. Add an `<img class="media" width="800" height="800" loading="lazy" referrerpolicy="no-referrer">` with a square photo and update the alt text | n/a | n/a | n/a | [ ] |
 
 ## Testimonials
 
@@ -55,6 +56,9 @@ Filled in by Plan 04.
 | Hero text link | See how I help | `index.html` | `.link-cta` | [ ] |
 | Services heading | Four ways I help local businesses get found, get remembered and get busy. | `index.html` | `#services-title` | [ ] |
 | Service titles and descriptions | Social media, Local SEO & Google, Ads & campaigns, Branding & design (and their descriptions) | `index.html` | `.service-card` (4 cards) | [ ] |
+| About heading | Hi, I’m Sam. I live here too. | `index.html` | `#about-title` | [ ] |
+| About paragraphs | Two first-person paragraphs about growing up in Elmhollow and working locally | `index.html` | `.about__text p` | [ ] |
+| About CTA lead-in | Fancy a coffee and a chat? | `index.html` | `.about__lead` | [ ] |
 
 ## Shell
 

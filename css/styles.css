@@ -833,6 +833,29 @@ a.is-hover {
 }
 
 /* ==========================================================================
+   About (HOME-03, D-06, D-07)
+   ========================================================================== */
+.about__media .media {
+  inline-size: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+.about__media { max-inline-size: 320px; }
+.about__text p { max-inline-size: var(--measure); }
+.flow > .about__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md) var(--space-lg);
+  margin-block-start: var(--space-xl);
+}
+.about__lead { font-weight: var(--fw-semibold); }
+@media (min-width: 1024px) {
+  .about__media { max-inline-size: none; }
+  .about__grid { align-items: center; }
+}
+
+/* ==========================================================================
    Style guide (dev only, removed in Phase 5)
    ========================================================================== */
 .sg-swatch {
