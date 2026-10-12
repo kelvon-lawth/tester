@@ -93,7 +93,7 @@ function dumpDom(pageUrl, profile) {
       console.log("FAIL " + page + ": " + (e.message || e).split("\n")[0]);
       failed = true;
     } finally {
-      fs.rmSync(profile, { recursive: true, force: true });
+      try { fs.rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); } catch (e) { /* best effort */ }
     }
   }
   process.exit(failed ? 1 : 0);

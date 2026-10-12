@@ -38,22 +38,23 @@
   src: url("../assets/fonts/Figtree-SemiBold.woff2") format("woff2");
 }
 
-/* Metric-matched fallbacks (starting values; tuned in Plan 03) */
+/* Metric-matched fallbacks (tuned in Plan 03 from tools/font-metrics-test.js) */
 @font-face {
   font-family: "Fraunces Fallback";
-  src: local("Georgia");
-  size-adjust: 104%;
-  ascent-override: 92%;
-  descent-override: 24%;
+  font-weight: 600;
+  src: local("Georgia Bold"), local("Georgia-Bold"), local("Georgia");
+  size-adjust: 93.7%;
+  ascent-override: 104.5%;
+  descent-override: 27.7%;
   line-gap-override: 0%;
 }
 
 @font-face {
   font-family: "Figtree Fallback";
   src: local("Arial");
-  size-adjust: 100%;
-  ascent-override: 95%;
-  descent-override: 25%;
+  size-adjust: 99.6%;
+  ascent-override: 95.4%;
+  descent-override: 25.1%;
   line-gap-override: 0%;
 }
 

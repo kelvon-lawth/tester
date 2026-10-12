@@ -68,7 +68,7 @@ async function measure(size) {
     if (!m || !m[1].trim()) throw new Error("no results in DOM at " + size);
     return JSON.parse(decode(m[1]));
   } finally {
-    fs.rmSync(profile, { recursive: true, force: true });
+    try { fs.rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); } catch (e) { /* temp dir cleanup is best effort */ }
   }
 }
 
