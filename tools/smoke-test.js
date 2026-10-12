@@ -7,7 +7,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const url = require("url");
-const { execFileSync } = require("child_process");
+const { spawn } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
 const CHROME =
@@ -26,16 +26,11 @@ if (!fs.existsSync(CHROME)) {
   process.exit(1);
 }
 
-for (const page of pages) {
-  const file = path.join(ROOT, page);
-  if (!fs.existsSync(file)) {
-    console.log("FAIL " + page + ": page missing");
-    failed = true;
-    continue;
-  }
-  const profile = fs.mkdtempSync(path.join(os.tmpdir(), "smoke-"));
-  try {
-    const dom = execFileSync(
+// New headless Chrome can stay alive after --dump-dom on some systems, so spawn
+// (array args, no shell) and stop the process as soon as the closing </html> arrives.
+function dumpDom(pageUrl, profile) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(
       CHROME,
       [
         "--headless=new",
@@ -45,31 +40,61 @@ for (const page of pages) {
         "--user-data-dir=" + profile,
         "--virtual-time-budget=5000",
         "--dump-dom",
-        url.pathToFileURL(file).href,
+        pageUrl,
       ],
-      { encoding: "utf8", timeout: 30000, stdio: ["ignore", "pipe", "ignore"], maxBuffer: 20 * 1024 * 1024 }
+      { stdio: ["ignore", "pipe", "ignore"] }
     );
-    const tag = /<html\b[^>]*>/i.exec(dom);
-    const cls = tag && /class="([^"]*)"/i.exec(tag[0]);
-    const classes = cls ? cls[1].split(/\s+/).filter(Boolean) : [];
-    if (classes.includes("no-js")) {
-      console.log("FAIL " + page + ": still has no-js (" + classes.join(" ") + ")");
-      failed = true;
-    } else if (!classes.includes("js")) {
-      console.log("FAIL " + page + ": js class missing (" + classes.join(" ") + ")");
-      failed = true;
-    } else if (!classes.includes("fonts-loaded")) {
-      console.log("FAIL " + page + ": fonts-loaded missing (" + classes.join(" ") + ")");
-      failed = true;
-    } else {
-      console.log("PASS " + page + " (" + classes.join(" ") + ")");
-    }
-  } catch (e) {
-    console.log("FAIL " + page + ": " + (e.message || e).split("\n")[0]);
-    failed = true;
-  } finally {
-    fs.rmSync(profile, { recursive: true, force: true });
-  }
+    let out = "";
+    let settled = false;
+    const finish = (err) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      child.kill("SIGKILL");
+      err ? reject(err) : resolve(out);
+    };
+    const timer = setTimeout(() => finish(new Error("timed out after 30s")), 30000);
+    child.stdout.on("data", (d) => {
+      out += d;
+      if (/<\/html>\s*$/i.test(out)) finish();
+    });
+    child.on("error", finish);
+    child.on("close", () => finish());
+  });
 }
 
-process.exit(failed ? 1 : 0);
+(async () => {
+  for (const page of pages) {
+    const file = path.join(ROOT, page);
+    if (!fs.existsSync(file)) {
+      console.log("FAIL " + page + ": page missing");
+      failed = true;
+      continue;
+    }
+    const profile = fs.mkdtempSync(path.join(os.tmpdir(), "smoke-"));
+    try {
+      const dom = await dumpDom(url.pathToFileURL(file).href, profile);
+      const tag = /<html\b[^>]*>/i.exec(dom);
+      const cls = tag && /class="([^"]*)"/i.exec(tag[0]);
+      const classes = cls ? cls[1].split(/\s+/).filter(Boolean) : [];
+      if (classes.includes("no-js")) {
+        console.log("FAIL " + page + ": still has no-js (" + classes.join(" ") + ")");
+        failed = true;
+      } else if (!classes.includes("js")) {
+        console.log("FAIL " + page + ": js class missing (" + classes.join(" ") + ")");
+        failed = true;
+      } else if (!classes.includes("fonts-loaded")) {
+        console.log("FAIL " + page + ": fonts-loaded missing (" + classes.join(" ") + ")");
+        failed = true;
+      } else {
+        console.log("PASS " + page + " (" + classes.join(" ") + ")");
+      }
+    } catch (e) {
+      console.log("FAIL " + page + ": " + (e.message || e).split("\n")[0]);
+      failed = true;
+    } finally {
+      fs.rmSync(profile, { recursive: true, force: true });
+    }
+  }
+  process.exit(failed ? 1 : 0);
+})();
