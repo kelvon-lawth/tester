@@ -25,8 +25,8 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 ### Home Content
 
 - [x] **HOME-01**: Visitor sees a hero with a clear value proposition headline, supporting line and primary CTA, fully readable without JavaScript
-- [ ] **HOME-02**: Visitor sees four services — Social media, Local SEO & Google, Ads & campaigns, Branding & design — each with an icon/illustration and a plain-language description
-- [ ] **HOME-03**: Visitor sees a first-person "About me" block with a placeholder photo and warm, neighborly copy
+- [x] **HOME-02**: Visitor sees four services — Social media, Local SEO & Google, Ads & campaigns, Branding & design — each with an icon/illustration and a plain-language description
+- [x] **HOME-03**: Visitor sees a first-person "About me" block with a placeholder photo and warm, neighborly copy
 - [ ] **HOME-04**: Visitor sees 2–3 placeholder testimonials from local businesses (name, business, short quote)
 - [ ] **HOME-05**: Visitor sees a strip of placeholder local-business logos
 - [ ] **HOME-06**: Visitor sees a 3-step "How it works" section (e.g. chat → plan → grow)
@@ -101,8 +101,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHL-03 | Phase 2 | Complete |
 | SHL-04 | Phase 2 | Pending |
 | HOME-01 | Phase 2 | Complete |
-| HOME-02 | Phase 2 | Pending |
-| HOME-03 | Phase 2 | Pending |
+| HOME-02 | Phase 2 | Complete |
+| HOME-03 | Phase 2 | Complete |
 | HOME-04 | Phase 2 | Pending |
 | HOME-05 | Phase 2 | Pending |
 | HOME-06 | Phase 2 | Pending |
