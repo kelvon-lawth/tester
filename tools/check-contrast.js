@@ -33,6 +33,7 @@ const NAMES = {
   "blue-hover": "--color-blue-hover",
   coral: "--color-coral",
   error: "--color-error",
+  "field-border": "--color-field-border",
 };
 
 // fg/bg -> ratio stated in UI-SPEC
@@ -54,6 +55,11 @@ const REQUIRED = {
   "error/tint": 5.15,
 };
 const FORBIDDEN = ["coral/white", "blue/navy"];
+// Non-text UI boundaries (WCAG 1.4.11): fg/bg -> expected ratio, minimum 3:1
+const NON_TEXT = {
+  "field-border/white": 7.53,
+  "field-border/tint": 6.9,
+};
 
 function channel(c) {
   const s = c / 255;
@@ -86,6 +92,11 @@ const tokens = {};
 const re = /(--color-[a-z-]+)\s*:\s*(#[0-9a-fA-F]{6})\s*;/g;
 let m;
 while ((m = re.exec(rootBlock))) tokens[m[1]] = m[2].toUpperCase();
+// Resolve alias tokens such as --color-field-border: var(--color-ink-soft);
+const aliasRe = /(--color-[a-z-]+)\s*:\s*var\(\s*(--color-[a-z-]+)\s*\)\s*;/g;
+while ((m = aliasRe.exec(rootBlock))) {
+  if (tokens[m[2]]) tokens[m[1]] = tokens[m[2]];
+}
 
 for (const [name, value] of Object.entries(EXPECTED_TOKENS)) {
   if (!tokens[name]) failures.push("FAIL token missing: " + name);
@@ -107,6 +118,14 @@ for (const [pair, expected] of Object.entries(REQUIRED)) {
   if (r < 4.5) failures.push("FAIL " + pair + " " + shown + ":1 is below 4.5:1");
   else if (Math.abs(r - expected) > 0.02) failures.push("FAIL " + pair + " " + shown + ":1 differs from UI-SPEC " + expected);
   else lines.push("PASS " + pair + " " + shown + ":1");
+}
+for (const [pair, expected] of Object.entries(NON_TEXT)) {
+  const r = compute(pair);
+  if (r === null) { failures.push("FAIL cannot compute " + pair); continue; }
+  const shown = r.toFixed(2);
+  if (r < 3) failures.push("FAIL non-text " + pair + " " + shown + ":1 is below 3:1 (WCAG 1.4.11)");
+  else if (Math.abs(r - expected) > 0.02) failures.push("FAIL non-text " + pair + " " + shown + ":1 differs from expected " + expected);
+  else lines.push("PASS non-text " + pair + " " + shown + ":1");
 }
 for (const pair of FORBIDDEN) {
   const r = compute(pair);

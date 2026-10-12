@@ -73,6 +73,9 @@
   --color-coral: #FF6B6B;
   --color-error: #C62828;
   --color-line: #C9D3EE;
+  /* Form field boundary: must reach 3:1 on white and on tint (WCAG 1.4.11).
+     --color-line is decorative only (1.50:1 on white), so fields use ink-soft. */
+  --color-field-border: var(--color-ink-soft);
   --color-on-navy-hover: rgba(255, 255, 255, .12);
 
   /* Spacing (no 4xl) */
@@ -470,7 +473,7 @@ a.is-hover {
   padding-block: var(--space-sm);
   padding-inline: var(--space-md);
   background: var(--color-tint);
-  border: 2px solid var(--color-line);
+  border: 2px solid var(--color-field-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-size: var(--fs-body);
