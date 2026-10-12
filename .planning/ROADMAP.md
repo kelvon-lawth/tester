@@ -32,7 +32,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
   3. Self-hosted fonts render on load without a noticeable layout jump
   4. All body text/background token pairings meet WCAG AA contrast (4.5:1 or better)
 
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 Plans:
 **Wave 1**
@@ -41,7 +41,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Style guide view: contrast + design-system guards, component CSS, styleguide.html, REPLACE-ME.md
+- [x] 01-02-PLAN.md — Style guide view: contrast + design-system guards, component CSS, styleguide.html, REPLACE-ME.md
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -122,7 +122,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Design System | 1/3 | In Progress|  |
+| 1. Foundation & Design System | 2/3 | In Progress|  |
 | 2. Shared Shell & Static Home | 0/TBD | Not started | - |
 | 3. Kinetic Hero | 0/TBD | Not started | - |
 | 4. Contact Page | 0/TBD | Not started | - |
