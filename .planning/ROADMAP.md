@@ -25,7 +25,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 **Requirements**: FND-01, FND-02, FND-03, FND-04, FND-05
 **Success Criteria** (what must be TRUE):
   1. Double-clicking `index.html` (and `contact.html` stub) opens it with styles, scripts and fonts all loading, with no server or build step
-  2. A visible style-guide view shows the limited earthy palette, two font families and the 3-4 handcrafted accent types (e.g. hand-drawn underline, squiggle, paper grain) applied from shared design tokens
+  2. A visible style-guide view shows the limited earthy palette, two font families and the handcrafted accents (squiggle divider and hero hand-drawn underline) applied from shared design tokens
   3. Self-hosted fonts render on load without a noticeable layout jump
   4. All body text/background token pairings meet WCAG AA contrast (4.5:1 or better)
 **Plans**: TBD
