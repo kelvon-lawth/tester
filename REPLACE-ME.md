@@ -20,6 +20,6 @@ Fraunces and Figtree are SIL OFL and self-hosted. See `assets/fonts/SOURCES.md`.
 
 - `styleguide.html`
 - `js/styleguide.js`
-- `tools/`
+- `tools/` (dev-only harness: `font-metrics.html`, `font-metrics.js`, `*-test.js`, `check-*.js`; remove the whole folder, it must not ship, threat T-01-10)
 - the "Style guide (dev)" footer link in `index.html` and `contact.html`
 - the "Style guide (dev only)" block in `css/styles.css`
