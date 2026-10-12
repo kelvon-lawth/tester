@@ -82,6 +82,10 @@ for (const file of htmlFiles) {
   for (const tag of text.match(/<[^>]*\baccent-underline\b[^>]*>/g) || []) {
     if (!/\bhero-word\b/.test(tag) && !/class="accent-underline__svg"/.test(tag)) fail(file, "accent-underline outside .hero-word: " + tag);
   }
+  // Phase 3 swaps the cycling word's text; keep it in its own span so the SVG survives.
+  for (const tag of text.match(/<span\b[^>]*class="[^"]*\bhero-word\b[^"]*\baccent-underline\b[^"]*"[^>]*>(?!<span class="hero-word__text">)/g) || []) {
+    fail(file, "hero word text must be wrapped in .hero-word__text: " + tag);
+  }
   if (file === "index.html" && (text.match(/class="[^"]*\baccent-underline\b(?!__)[^"]*"/g) || []).length > 1) {
     fail(file, ".accent-underline appears more than once");
   }
