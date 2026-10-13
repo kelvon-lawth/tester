@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-12)
 Phase: 2 (Shared Shell & Static Home) — EXECUTING
 Plan: 5 of 6
 Status: Ready to execute
-Last activity: 2026-10-13
+Last activity: 2026-10-13 - Completed quick task 261013-eil: Contact page form with name, phone, email and message
 
 Progress: [█████████░] 89%
 
@@ -74,6 +74,12 @@ None yet.
 - Phase 3 needs research before planning (technique, slot sizing, WCAG 2.2.2, reduced motion)
 - Font selection and fallback metrics unresolved; settle in Phase 1
 - Screen-reader pattern needs real VoiceOver verification in Phase 5
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 261013-eil | Contact page form with name, phone, email and message (D-01: replaces CON-01 field list, drops CON-02/CON-03; CON-07 map stays in Phase 4) | 2026-10-13 | a726b30 | [261013-eil-contact-page-form-with-name-phone-email-](./quick/261013-eil-contact-page-form-with-name-phone-email-/) |
 
 ## Session Continuity
 
