@@ -153,7 +153,7 @@
   --fs-body: 1.125rem;
   --fs-label: 0.875rem;
   --fs-heading: 1.75rem;
-  --fs-display: clamp(2.75rem, 7vw + 0.5rem, 5rem);
+  --fs-display: clamp(3.25rem, 1.2rem + 6.4vw, 7.25rem); /* quick 261013-ffc: bold hero, cap 116px */
   --lh-body: 1.5;
   --lh-heading: 1.2;
   --lh-display: 1.05;
@@ -199,6 +199,22 @@
   --glow-section: radial-gradient(55% 70% at 8% 0%, var(--color-bg), transparent 70%), radial-gradient(40% 60% at 96% 100%, var(--glow-coral), transparent 70%);
   --glow-band: radial-gradient(60% 90% at 50% 0%, var(--glow-navy), transparent 72%), radial-gradient(35% 60% at 8% 100%, var(--glow-navy), transparent 70%);
 
+  /* Bold hero (quick 261013-ffc). Translucent fields are --glow-hero-*: tools/check-contrast.js stacks them
+     (worst-case overlap) over tint and white and checks ink and ink-soft at 4.5:1. */
+  --glow-hero-blue: rgba(59, 91, 253, .20);
+  --glow-hero-coral: rgba(255, 107, 107, .16);
+  --dot-ink: rgba(27, 42, 74, .26);
+  --chip-edge: rgba(27, 42, 74, .10);
+  --shadow-chip: 0 2px 4px rgba(27, 42, 74, .08), 0 18px 34px -12px rgba(27, 42, 74, .4);
+  --shadow-photo: 0 4px 10px rgba(27, 42, 74, .10), 0 44px 80px -26px rgba(27, 42, 74, .55);
+  --gradient-hero-base: linear-gradient(180deg, var(--color-tint) 0%, var(--color-bg) 100%);
+  --gradient-coral: linear-gradient(155deg, var(--color-coral) 0%, #FFB09A 100%);
+  --mask-fade-y: linear-gradient(180deg, #000 0%, transparent 88%);
+  --radius-arch: 50% 50% var(--radius-lg) var(--radius-lg) / 36% 36% var(--radius-lg) var(--radius-lg);
+  --hero-min-h: auto;
+  --drift-a: 26s;
+  --drift-b: 34s;
+
   /* Motion */
   --ease-out: cubic-bezier(.22, .8, .3, 1);
   --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
@@ -219,7 +235,13 @@
 }
 
 @media (min-width: 1024px) {
-  :root { --gutter: var(--space-xl); --accent-shift: var(--space-lg); }
+  :root { --gutter: var(--space-xl); --accent-shift: var(--space-lg); --hero-min-h: calc(100vh - var(--header-h)); }
+}
+
+@supports (min-height: 100svh) {
+  @media (min-width: 1024px) {
+    :root { --hero-min-h: calc(100svh - var(--header-h)); }
+  }
 }
 
 /* ==========================================================================
@@ -524,12 +546,55 @@ main:focus {
    ========================================================================== */
 .hero-title {
   color: var(--color-hero-static);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+}
+
+.hero-title__visual {
+  display: block;
+}
+
+/* The lead owns its line(s); the cycling word always sits on its own line, so a changing
+   word can never re-wrap the lead or move anything below it (HERO-02). */
+.hero-title__lead {
+  display: block;
+  text-wrap: balance;
 }
 
 .hero-word {
   color: var(--color-hero-word);
   white-space: nowrap;
+}
+
+/* Grid stack: every word shares cell 1/1, so the slot is exactly as wide as the longest word. */
+.hero-title__visual .hero-word {
+  display: inline-grid;
+  justify-items: start;
+  align-items: start;
+  vertical-align: top;
+}
+
+.hero-title__visual .hero-word > .hero-word__text,
+.hero-title__visual .hero-word > .hero-word__alt {
+  grid-area: 1 / 1;
+}
+
+.hero-word__alt {
+  white-space: nowrap;
+}
+
+/* motion-pending never hides content on its own; this only guards the alt words' insertion frame. */
+html.motion-pending .hero-word__alt {
+  opacity: 0;
+}
+
+/* SplitText masks (chars and words): padded so descenders and accents are never clipped, and the
+   negative margin cancels the padding so line height does not change. */
+.hw-mask,
+.hc-mask {
+  padding-block: 0.24em;
+  margin-block: -0.24em;
+  padding-inline: 0.02em;
+  margin-inline: -0.02em;
 }
 
 .accent-underline {
@@ -559,30 +624,79 @@ main:focus {
 }
 
 /* ==========================================================================
-   Home hero (split layout, D-01..D-05)
+   Home hero (split layout, D-01..D-05; bold redesign quick 261013-ffc)
+   Layers, back to front: tint-to-white base, soft colour fields (radial gradients, no blur),
+   dot grid, content. The fields drift only under html.has-motion with motion allowed.
    ========================================================================== */
 .hero {
   position: relative;
   isolation: isolate;
   overflow-x: clip;
+  min-block-size: var(--hero-min-h);
+  display: grid;
+  align-content: center;
   padding-block: var(--space-2xl) var(--space-3xl);
+}
+
+.hero > .container {
+  inline-size: 100%;
 }
 
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
-  background: var(--glow-hero);
+  z-index: -3;
+  background: var(--gradient-hero-base);
   pointer-events: none;
+}
+
+.hero__fields {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero__field {
+  position: absolute;
+  inline-size: 64vmax;
+  block-size: 64vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.hero__field--blue {
+  inset-block-start: -28vmax;
+  inset-inline-start: -18vmax;
+  background: radial-gradient(closest-side, var(--glow-hero-blue), transparent);
+}
+
+.hero__field--coral {
+  inset-block-end: -30vmax;
+  inset-inline-end: -16vmax;
+  background: radial-gradient(closest-side, var(--glow-hero-coral), transparent);
+}
+
+.hero__dots {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--dot-ink) 1.6px, transparent 1.8px);
+  background-size: 26px 26px;
+  -webkit-mask-image: var(--mask-fade-y);
+  mask-image: var(--mask-fade-y);
 }
 
 .hero__text {
   min-inline-size: 0;
+  position: relative;
 }
 
 .hero__lede {
-  max-inline-size: var(--measure);
+  max-inline-size: 34em;
   color: var(--color-ink-soft);
 }
 
@@ -604,6 +718,8 @@ main:focus {
   font-weight: var(--fw-semibold);
 }
 
+/* The hero's only blue text sits on a near-opaque glass pill, so it keeps 4.5:1 over the colour fields
+   (tools/check-contrast.js HERO group checks blue on --surface-glass-solid over the stacked fields). */
 .link-cta {
   display: inline-flex;
   align-items: center;
@@ -617,53 +733,180 @@ main:focus {
   text-underline-offset: var(--space-xs);
 }
 
+.hero__actions .link-cta {
+  padding-inline: var(--space-md);
+  background: var(--surface-glass-solid);
+  border: 1px solid var(--chip-edge);
+  border-radius: var(--radius-pill);
+}
+
 .link-cta:hover {
   color: var(--color-blue-hover);
 }
 
+/* Pause control (WCAG 2.2.2). Label text is fixed; aria-pressed is the single state signal and the
+   glyph swap is purely visual. */
+.hero-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-block-size: 44px;
+  margin-block-start: var(--space-lg);
+  padding-inline: var(--space-md);
+  background: var(--surface-glass-solid);
+  border: 1px solid var(--chip-edge);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.hero-toggle[hidden] {
+  display: none;
+}
+
+.hero-toggle:hover {
+  background: var(--color-bg);
+}
+
+.hero-toggle__icon {
+  inline-size: 18px;
+  block-size: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-toggle__play,
+.hero-toggle[aria-pressed="true"] .hero-toggle__pause {
+  display: none;
+}
+
+.hero-toggle[aria-pressed="true"] .hero-toggle__play {
+  display: inline;
+  fill: currentColor;
+}
+
 .hero__media {
   position: relative;
-  max-inline-size: 400px;
+  max-inline-size: min(100%, 420px);
   margin-inline: auto;
 }
 
-/* Offset accent shape behind a photo (depth, handmade feel) */
-.hero__media::before,
-.about__media::before {
-  content: "";
+/* Layered frame: dashed outline and coral arch sit behind an arch-masked photo. Their offsets live on
+   pseudo-elements so GSAP can animate the real elements (opacity, scale) without touching the placement. */
+.hero__frame {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero__accent,
+.hero__outline {
   position: absolute;
   inset: 0;
-  z-index: -1;
-  border-radius: var(--radius-lg);
-  background: var(--color-tint);
-  border: 2px solid var(--color-line);
-  transform: translate(var(--accent-shift), var(--accent-shift));
   pointer-events: none;
 }
 
-.about__media::before {
-  transform: translate(calc(var(--accent-shift) * -1), var(--accent-shift));
+.hero__accent { z-index: 1; }
+.hero__outline { z-index: 0; }
+
+.hero__accent::before,
+.hero__outline::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-arch);
 }
 
-.hero__media .media,
-.about__media .media {
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-media);
+.hero__accent::before {
+  background: var(--gradient-coral);
+  transform: translate(7%, 5%) rotate(4deg);
 }
 
-.hero__media .media {
+.hero__outline::before {
+  border: 3px dashed var(--color-navy);
+  transform: translate(-6%, -4%) rotate(-4deg);
+}
+
+.hero__photo {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: var(--radius-arch);
+  box-shadow: var(--shadow-photo);
+  background: var(--color-tint);
+}
+
+.hero__photo .media {
   inline-size: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-.media--placeholder {
-  inline-size: 100%;
+.hero-chip {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--surface-glass-solid);
+  border: 1px solid var(--chip-edge);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-chip);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.hero-chip__icon {
+  flex: none;
+  inline-size: 20px;
+  block-size: 20px;
+  fill: var(--color-coral);
+  stroke: var(--color-coral);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+
+.hero-chip--local .hero-chip__icon {
+  fill: none;
+  stroke: var(--color-navy);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.hero-chip--rating {
+  inset-inline-start: var(--space-sm);
+  inset-block-end: 18%;
+}
+
+.hero-chip--local {
+  inset-inline-end: var(--space-sm);
+  inset-block-start: 8%;
+}
+
+@media (min-width: 640px) {
+  .hero-chip--rating { inset-inline-start: -8%; }
+  .hero-chip--local { inset-inline-end: -6%; }
+}
+
+.hero-scroll-cue {
+  display: none;
 }
 
 @media (min-width: 1024px) {
   .hero {
-    padding-block: calc(var(--space-3xl) + var(--space-xl)) calc(var(--space-3xl) + var(--space-2xl));
+    padding-block: var(--space-2xl);
   }
   .hero__grid {
     align-items: center;
@@ -672,6 +915,85 @@ main:focus {
     max-inline-size: none;
     margin-inline: 0;
   }
+  .hero-scroll-cue {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-end: var(--space-md);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    translate: -50% 0;
+    font-size: var(--fs-label);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    pointer-events: none;
+  }
+  .hero-scroll-cue__line {
+    display: block;
+    inline-size: 2px;
+    block-size: 28px;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink-soft);
+  }
+}
+
+/* Ambient hero motion: transform and translate only, only with GSAP active and motion allowed, and all of it
+   pauses with the hero toggle (.hero.is-paused). */
+@keyframes field-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(9vmax, 6vmax, 0) scale(1.16); }
+}
+
+@keyframes field-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to { transform: translate3d(-8vmax, -7vmax, 0) scale(0.94); }
+}
+
+@keyframes chip-bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+@keyframes cue-bounce {
+  0%, 100% { translate: 0 0; opacity: 0.45; }
+  50% { translate: 0 8px; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.has-motion .hero__field--blue { animation: field-drift-a var(--drift-a) ease-in-out infinite alternate; }
+  html.has-motion .hero__field--coral { animation: field-drift-b var(--drift-b) ease-in-out infinite alternate; }
+  html.has-motion .hero-chip.is-bobbing { animation: chip-bob 5.5s ease-in-out infinite; }
+  html.has-motion .hero-chip--local.is-bobbing { animation-delay: -2.6s; }
+  html.has-motion .hero-scroll-cue__line { animation: cue-bounce 2.2s ease-in-out infinite; }
+  html.has-motion .hero.is-paused .hero__field,
+  html.has-motion .hero.is-paused .hero-chip,
+  html.has-motion .hero.is-paused .hero-scroll-cue__line { animation-play-state: paused; }
+}
+
+/* Offset accent shape behind the About photo (depth, handmade feel) */
+.about__media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--radius-lg);
+  background: var(--color-tint);
+  border: 2px solid var(--color-line);
+  transform: translate(calc(var(--accent-shift) * -1), var(--accent-shift));
+  pointer-events: none;
+}
+
+.about__media .media {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-media);
+}
+
+.media--placeholder {
+  inline-size: 100%;
 }
 
 /* ==========================================================================
@@ -1457,11 +1779,8 @@ html.js-reveal .step.is-revealed .step__badge {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .js .hero__media .media,
-  .js .about__media .media {
+  .js:not(.has-motion) .about__media .media {
     animation: photo-float var(--float-dur) ease-in-out infinite;
-  }
-  .js .about__media .media {
     animation-delay: -3.5s;
   }
 }

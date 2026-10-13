@@ -117,7 +117,8 @@ async function measure(size) {
     }
     if (wide.bodyLines.real !== wide.bodyLines.fallback)
       fails.push("body line count differs " + wide.bodyLines.real + " vs " + wide.bodyLines.fallback);
-    if (wide.fsDisplayPx > 80) fails.push("--fs-display " + wide.fsDisplayPx + "px > 80px at 1440");
+    // Cap raised 80 -> 116px in quick 261013-ffc: the user asked for a much bigger hero headline (--fs-display max 7.25rem = 116px).
+    if (wide.fsDisplayPx > 116) fails.push("--fs-display " + wide.fsDisplayPx + "px > 116px at 1440");
   }
   if (narrow.fontsLoaded) {
     // Headless Chrome enforces a minimum window width, so 320px is simulated in a 320px box
@@ -135,7 +136,7 @@ async function measure(size) {
       console.log("NOTE --fs-display at 320 is " + s.fontSizePx + "px (documented lowered minimum?)");
   }
   if (wide.fontsLoaded) {
-    if (wide.sim320 && wide.fsDisplayPx > 80) fails.push("--fs-display > 80px");
+    if (wide.sim320 && wide.fsDisplayPx > 116) fails.push("--fs-display > 116px (cap raised in quick 261013-ffc)");
   }
 
   if (fails.length) {

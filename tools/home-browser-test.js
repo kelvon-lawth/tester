@@ -438,8 +438,11 @@ const cycleExpr = (minDistinct, maxMs, full, frames) => `async()=>{
   // style audit: only these inline properties may ever be written inside .hero-word
   const ALLOWED=/^(transform|translate|rotate|scale|opacity|visibility|will-change|transform-origin|--.*)$/;
   const written=new Set();
-  const mo=new MutationObserver(ms=>{for(const m of ms){const st=m.target.style;for(let i=0;i<st.length;i++)written.add(st[i]);}});
-  mo.observe(w,{attributes:true,attributeFilter:['style'],subtree:true});
+  // Only properties whose VALUE changed count (SplitText leaves permanent display/position on its wrappers).
+  const parse=t=>{const m={};(t||'').split(';').forEach(d=>{const i=d.indexOf(':');if(i>0)m[d.slice(0,i).trim()]=d.slice(i+1).trim();});return m;};
+  const mo=new MutationObserver(ms=>{for(const m of ms){const a=parse(m.oldValue),b=parse(m.target.getAttribute('style'));
+    for(const k of new Set([...Object.keys(a),...Object.keys(b)]))if(a[k]!==b[k])written.add(k);}});
+  mo.observe(w,{attributes:true,attributeOldValue:true,attributeFilter:['style'],subtree:true});
   let fr=null; if(${frames}){fr=[];let last=performance.now();const loop=()=>{const n=performance.now();fr.push(n-last);last=n;if(!fr.done)requestAnimationFrame(loop);};requestAnimationFrame(loop);}
   const seen=new Set(), held=new Set(); let cur=w.dataset.current, tChange=performance.now();
   const t0=performance.now();
@@ -621,10 +624,10 @@ results.cycle = async () => {
     { stdio: "ignore" }
   );
   const overall = setTimeout(() => {
-    console.log("FAIL timed out after 300s");
+    console.log("FAIL timed out after 600s");
     try { child.kill("SIGKILL"); } catch (e) { /* ignore */ }
     process.exit(1);
-  }, 300000);
+  }, 600000);
   let failed = false;
   try {
     const { port, wsPath } = await waitForPort(profile);

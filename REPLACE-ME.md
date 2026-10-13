@@ -25,6 +25,8 @@ Everything listed here is fictional or sample content and must be swapped before
 |------|---------------------|------|----------------|------|
 | Client count | 40+ | `index.html` | `.trust-cue` (hero, under the CTAs) | [ ] |
 | Years of experience | ten years | `index.html` | `#about` (first paragraph, "ten years") | [ ] |
+| Hero proof chip: rating | 4.9 from local owners (placeholder claim, verify or remove: it is not a real rating) | `index.html` | `.hero-chip--rating` | [ ] |
+| Hero proof chip: local roots | Born and bred in Elmhollow (follows the Town row) | `index.html` | `.hero-chip--local` | [ ] |
 
 ## Photos
 
@@ -72,6 +74,8 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | Footer tagline | Helping local businesses in Elmhollow and nearby villages get found and get busy. | `index.html`, `contact.html` | SHELL:FOOTER block | [ ] |
 | Hero support line | I’m Sam, a marketer right here in Elmhollow. I help neighbourhood businesses get found and get busy. | `index.html` | `.hero__lede` | [ ] |
 | Hero text link | See how I help | `index.html` | `.link-cta` | [ ] |
+| Hero headline for screen readers | Marketing for your bakery, café, salon, gym, florist, shop or restaurant (keep in step with the cycling word list in `data-words`) | `index.html` | `.hero-title .visually-hidden` and `.hero-word[data-words]` | [ ] |
+| Hero animation pause button label | Pause animation | `index.html` | `.hero-toggle__label` | [ ] |
 | Services heading | Four ways I help local businesses get found, get remembered and get busy. | `index.html` | `#services-title` | [ ] |
 | Service titles and descriptions | Social media, Local SEO & Google, Ads & campaigns, Branding & design (and their descriptions) | `index.html` | `.service-card` (4 cards) | [ ] |
 | About heading | Hi, I’m Sam. I live here too. | `index.html` | `#about-title` | [ ] |

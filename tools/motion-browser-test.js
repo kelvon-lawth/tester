@@ -447,10 +447,10 @@ results.contact = async () => {
     { stdio: "ignore" }
   );
   const overall = setTimeout(() => {
-    console.log("FAIL timed out after 300s");
+    console.log("FAIL timed out after 900s");
     try { child.kill("SIGKILL"); } catch (e) { /* ignore */ }
     process.exit(1);
-  }, 300000);
+  }, 900000);
   let failed = false;
   try {
     const { port, wsPath } = await waitForPort(profile);

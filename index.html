@@ -8,7 +8,14 @@
   <link rel="preload" href="assets/fonts/Fraunces-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/Figtree-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    (function () { var d = document.documentElement, m = window.matchMedia; if (m && !m("(prefers-reduced-motion: reduce)").matches) { d.classList.add("motion-pending"); setTimeout(function () { d.classList.remove("motion-pending"); }, 2500); } })();
+  </script>
   <link rel="stylesheet" href="css/styles.css">
+  <!-- GSAP 3.15.0 (+ScrollTrigger, SplitText) vendored from npm gsap@3.15.0 dist, see assets/js/vendor/GSAP-VERSION.md -->
+  <script defer src="assets/js/vendor/gsap.min.js"></script>
+  <script defer src="assets/js/vendor/ScrollTrigger.min.js"></script>
+  <script defer src="assets/js/vendor/SplitText.min.js"></script>
   <script defer src="js/main.js"></script>
 </head>
 <body>
@@ -30,22 +37,37 @@
 
   <main id="main" tabindex="-1">
     <section class="hero" aria-label="Introduction">
+      <div class="hero__fields" aria-hidden="true">
+        <span class="hero__field hero__field--blue"></span>
+        <span class="hero__field hero__field--coral"></span>
+      </div>
+      <div class="hero__dots" aria-hidden="true"></div>
       <div class="container">
         <div class="hero__grid grid-12">
           <div class="hero__text span-7">
-            <h1 class="hero-title">Marketing for your <span class="hero-word accent-underline"><span class="hero-word__text">bakery</span><svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></h1>
+            <h1 class="hero-title"><span class="visually-hidden">Marketing for your bakery, café, salon, gym, florist, shop or restaurant</span><span class="hero-title__visual" aria-hidden="true"><span class="hero-title__lead">Marketing for your</span> <span class="hero-word accent-underline" data-words="bakery,café,salon,gym,florist,shop,restaurant"><span class="hero-word__text">bakery</span><svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></span></h1>
             <p class="hero__lede">I’m Sam, a marketer right here in Elmhollow. I help neighbourhood businesses get found and get busy.</p>
             <div class="hero__actions" id="hero-cta">
               <a class="btn btn--primary" href="contact.html">Let’s talk</a>
               <a class="link-cta" href="#services">See how I help</a>
             </div>
             <p class="trust-cue">Trusted by <strong>40+</strong> local businesses in Elmhollow</p>
+            <button class="hero-toggle" type="button" aria-pressed="false" hidden><svg class="hero-toggle__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="hero-toggle__pause" d="M8 5v14M16 5v14"/><path class="hero-toggle__play" d="M8 5l11 7-11 7z"/></svg><span class="hero-toggle__label">Pause animation</span></button>
           </div>
           <div class="hero__media span-5">
-            <img class="media" src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&amp;fit=crop&amp;w=640&amp;h=800&amp;q=55" width="800" height="1000" alt="A smiling shop owner at a counter taking a card payment in a bright, airy local salon" decoding="async" referrerpolicy="no-referrer">
+            <div class="hero__frame">
+              <span class="hero__outline" aria-hidden="true"></span>
+              <span class="hero__accent" aria-hidden="true"></span>
+              <div class="hero__photo">
+                <img class="media" src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&amp;fit=crop&amp;w=640&amp;h=800&amp;q=55" width="800" height="1000" alt="A smiling shop owner at a counter taking a card payment in a bright, airy local salon" decoding="async" referrerpolicy="no-referrer">
+              </div>
+            </div>
+            <p class="hero-chip hero-chip--rating"><svg class="hero-chip__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg>4.9 from local owners</p>
+            <p class="hero-chip hero-chip--local"><svg class="hero-chip__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21.5s-7-6.2-7-11.5a7 7 0 0 1 14 0c0 5.3-7 11.5-7 11.5z"/><circle cx="12" cy="10" r="2.5"/></svg>Born and bred in Elmhollow</p>
           </div>
         </div>
       </div>
+      <div class="hero-scroll-cue" aria-hidden="true"><span class="hero-scroll-cue__label">Scroll</span><span class="hero-scroll-cue__line"></span></div>
     </section>
 
     <section id="services" class="section section--tint" aria-labelledby="services-title">
