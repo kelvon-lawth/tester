@@ -20,7 +20,7 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 - [x] **SHL-01**: Visitor can navigate between Home and Contact from an always-visible header nav on every page, with the current page indicated
 - [x] **SHL-02**: Visitor sees a footer on both pages with placeholder contact details, area served and a subtle "Prototype — sample content" note
 - [x] **SHL-03**: Visitor can reach the contact page from repeated "Let's talk" calls to action on the home page (hero, mid-page, closing band)
-- [ ] **SHL-04**: Mobile visitor sees a sticky "Let's talk" button while scrolling the home page that links to the contact page
+- [x] **SHL-04**: Mobile visitor sees a sticky "Let's talk" button while scrolling the home page that links to the contact page
 
 ### Home Content
 
@@ -29,8 +29,8 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 - [x] **HOME-03**: Visitor sees a first-person "About me" block with a placeholder photo and warm, neighborly copy
 - [ ] **HOME-04**: Visitor sees 2–3 placeholder testimonials from local businesses (name, business, short quote)
 - [ ] **HOME-05**: Visitor sees a strip of placeholder local-business logos
-- [ ] **HOME-06**: Visitor sees a 3-step "How it works" section (e.g. chat → plan → grow)
-- [ ] **HOME-07**: Visitor sees a closing CTA band inviting them to get in touch
+- [x] **HOME-06**: Visitor sees a 3-step "How it works" section (e.g. chat → plan → grow)
+- [x] **HOME-07**: Visitor sees a closing CTA band inviting them to get in touch
 - [x] **HOME-08**: All placeholder content (name, town, testimonials, contact details, photos) is clearly fictional and listed in a `REPLACE-ME.md` swap checklist
 
 ### Kinetic Hero
@@ -99,14 +99,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHL-01 | Phase 2 | Complete |
 | SHL-02 | Phase 2 | Complete |
 | SHL-03 | Phase 2 | Complete |
-| SHL-04 | Phase 2 | Pending |
+| SHL-04 | Phase 2 | Complete |
 | HOME-01 | Phase 2 | Complete |
 | HOME-02 | Phase 2 | Complete |
 | HOME-03 | Phase 2 | Complete |
 | HOME-04 | Phase 2 | Pending |
 | HOME-05 | Phase 2 | Pending |
-| HOME-06 | Phase 2 | Pending |
-| HOME-07 | Phase 2 | Pending |
+| HOME-06 | Phase 2 | Complete |
+| HOME-07 | Phase 2 | Complete |
 | HOME-08 | Phase 2 | Complete |
 | HERO-01 | Phase 3 | Pending |
 | HERO-02 | Phase 3 | Pending |
