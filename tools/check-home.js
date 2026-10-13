@@ -91,7 +91,7 @@ groups.hero = () => {
   if (!/class="trust-cue"[^>]*>Trusted by <strong>40\+<\/strong> local businesses in Elmhollow/.test(h)) e.push("trust cue missing");
   const media = /hero__media[\s\S]*$/.exec(h);
   if (!media) e.push("no hero__media");
-  else e.push(...mediaWith(media[0], ['width="800"', 'height="1000"', 'decoding="async"', 'referrerpolicy="no-referrer"'], "Sam Whitlock smiling at the counter of a local café", true));
+  else e.push(...mediaWith(media[0], ['width="800"', 'height="1000"', 'decoding="async"', 'referrerpolicy="no-referrer"'], "A smiling shop owner at a counter", true, true));
   return e;
 };
 
@@ -126,7 +126,7 @@ groups.about = () => {
   if (!s) return ["no #about section"];
   if (!s.includes('aria-labelledby="about-title"')) e.push("about aria-labelledby missing");
   if (!/<h2\b[^>]*id="about-title"[^>]*>Hi, I’m Sam\. I live here too\.<\/h2>/.test(s)) e.push("about h2 wrong");
-  e.push(...mediaWith(s, ['width="800"', 'height="800"', 'loading="lazy"'], "Sam Whitlock walking down Elmhollow high street with a coffee"));
+  e.push(...mediaWith(s, ['width="800"', 'height="800"', 'loading="lazy"'], "A smiling woman", false, true));
   const c = /class="about__cta"[\s\S]*?<\/div>/.exec(s);
   if (!c || !c[0].includes("Fancy a coffee and a chat?") || !c[0].includes('class="btn btn--primary" href="contact.html">' + LETS + "</a>")) e.push("about__cta missing copy or button");
   return e;
@@ -255,7 +255,7 @@ groups.replace = () => {
   const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "(555) 555-0142", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer"].concat(LOGOS);
   for (const t of terms) if (!replaceMe.includes(t)) e.push("REPLACE-ME.md missing: " + t);
   for (const m of index.match(/<img\b[^>]*>/g) || []) {
-    const src = (m.match(/src="(https:\/\/[^"]+)"/) || [])[1];
+    const src = ((m.match(/src="(https:\/\/[^"]+)"/) || [])[1] || "").replace(/&amp;/g, "&");
     if (src && !replaceMe.includes(src)) e.push("img src not listed in REPLACE-ME.md: " + src);
   }
   for (const [n, h] of [["index.html", index], ["contact.html", contact]]) if (h.includes("[Name]")) e.push(n + " contains [Name]");
