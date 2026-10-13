@@ -77,6 +77,8 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | About heading | Hi, I’m Sam. I live here too. | `index.html` | `#about-title` | [ ] |
 | About paragraphs | Two first-person paragraphs about growing up in Elmhollow and working locally | `index.html` | `.about__text p` | [ ] |
 | About CTA lead-in | Fancy a coffee and a chat? | `index.html` | `.about__lead` | [ ] |
+| How it works heading | Three easy steps, no jargon | `index.html` | `#how-title` | [ ] |
+| How it works steps | Chat, Plan, Grow and their descriptions | `index.html` | `.step` (3 items) | [ ] |
 
 ## Shell
 
