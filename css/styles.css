@@ -837,6 +837,7 @@ a.is-hover {
   margin-block-start: 0;
 }
 
+.contact-form[hidden],
 .contact-success[hidden] {
   display: none;
 }

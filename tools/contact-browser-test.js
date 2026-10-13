@@ -156,7 +156,7 @@ const SUCCESS = `async()=>{
   ${FILL}
   const href=location.href;
   set('name','Jo Baker');set('phone','(555) 555-0100');set('email','jo@example.com');submit();await raf();
-  return{formHidden:q('#contact-form').hidden,successHidden:hidden('#contact-success'),text:q('#contact-success').textContent,active:document.activeElement.id,same:location.href===href};}`;
+  return{formHidden:q('#contact-form').hidden,formDisplay:getComputedStyle(q('#contact-form')).display,successHidden:hidden('#contact-success'),text:q('#contact-success').textContent,active:document.activeElement.id,same:location.href===href};}`;
 
 const LAYOUT = `async()=>{
   const r=s=>document.querySelector(s).getBoundingClientRect();
@@ -185,6 +185,7 @@ results.validate = async () => {
 results.success = async () => {
   const s = await scenario(1280, 900, false, SUCCESS);
   if (!s.formHidden) throw new Error("form not hidden after valid submit");
+  if (s.formDisplay !== "none") throw new Error("form has hidden attribute but still renders (display: " + s.formDisplay + ")");
   if (s.successHidden) throw new Error("success panel still hidden");
   if (!/nothing was actually sent/.test(s.text)) throw new Error("success text lacks honest prototype note");
   if (s.active !== "contact-success-title") throw new Error("focus on '" + s.active + "', expected contact-success-title");
