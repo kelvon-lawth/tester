@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-12)
 Phase: 2 (Shared Shell & Static Home) — EXECUTING
 Plan: 5 of 6
 Status: Ready to execute
-Last activity: 2026-10-13 - Completed quick task 261013-eil: Contact page form with name, phone, email and message
+Last activity: 2026-10-13 - Completed quick task 261013-ep2: Polished sleek restyle of Home page plus animations
 
 Progress: [█████████░] 89%
 
@@ -77,9 +77,10 @@ None yet.
 
 ### Quick Tasks Completed
 
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 261013-eil | Contact page form with name, phone, email and message (D-01: replaces CON-01 field list, drops CON-02/CON-03; CON-07 map stays in Phase 4) | 2026-10-13 | a726b30 | [261013-eil-contact-page-form-with-name-phone-email-](./quick/261013-eil-contact-page-form-with-name-phone-email-/) |
+| # | Description | Date | Commit | Status | Directory |
+|---|-------------|------|--------|--------|-----------|
+| 261013-eil | Contact page form with name, phone, email and message (D-01: replaces CON-01 field list, drops CON-02/CON-03; CON-07 map stays in Phase 4) | 2026-10-13 | a726b30 |  | [261013-eil-contact-page-form-with-name-phone-email-](./quick/261013-eil-contact-page-form-with-name-phone-email-/) |
+| 261013-ep2 | Polished sleek restyle of Home page plus animations; contact layout, note removed, button spacing | 2026-10-13 | 5d808c9 | Needs Review | [261013-ep2-polished-sleek-restyle-of-home-page-plus](./quick/261013-ep2-polished-sleek-restyle-of-home-page-plus/) |
 
 ## Session Continuity
 
