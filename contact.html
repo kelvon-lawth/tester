@@ -31,6 +31,56 @@
     <section class="section">
       <div class="container">
         <h1>Let’s talk</h1>
+        <p class="contact__intro">Whether you run a bakery, a gym or the shop on the corner, I’d love to hear what you’re working on. Drop me a note below or give me a ring, and I’ll get back to you within a day or two.</p>
+
+        <div class="contact__grid">
+          <div class="contact__form-wrap">
+            <form id="contact-form" class="contact-form" novalidate action="#" aria-describedby="contact-form-note">
+              <p id="contact-form-note" class="contact-form__note">Fields marked required are needed so I can get back to you.</p>
+
+              <div class="field">
+                <label class="field__label" for="name">Your name <span class="field__req">(required)</span></label>
+                <input class="field__input" id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error">
+                <p class="field__error" id="name-error" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="phone">Phone number <span class="field__req">(required)</span></label>
+                <input class="field__input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[0-9+\(\)\-. ]{7,}" aria-describedby="phone-error">
+                <p class="field__error" id="phone-error" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="email">Email address <span class="field__req">(required)</span></label>
+                <input class="field__input" id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error">
+                <p class="field__error" id="email-error" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="message">Message (optional)</label>
+                <p class="field__hint" id="message-hint">Tell me a bit about your business and what you’d like help with.</p>
+                <textarea class="field__input field__input--textarea" id="message" name="message" rows="5" aria-describedby="message-hint"></textarea>
+              </div>
+
+              <button class="btn btn--primary" type="submit">Send message</button>
+            </form>
+
+            <div id="contact-success" class="contact-success card" role="status" hidden>
+              <h2 id="contact-success-title" tabindex="-1">Thanks, that’s all looking good</h2>
+              <p>This is a prototype, so nothing was actually sent. When the site goes live, this is where your message would reach me. For now, you can email or ring me using the details on this page.</p>
+            </div>
+          </div>
+
+          <aside class="contact__details card" aria-labelledby="contact-details-title">
+            <h2 id="contact-details-title">Rather talk directly?</h2>
+            <p>I’m happy to chat by phone or email, whichever suits you.</p>
+            <ul class="contact__list">
+              <li><span class="label">Email</span> <a href="mailto:hello@samwhitlock.example">hello@samwhitlock.example</a></li>
+              <li><span class="label">Phone</span> <a href="tel:+15555550142">(555) 555-0142</a></li>
+              <li><span class="label">Based in</span> <span>Elmhollow, Fenwick Cross and Thornby</span></li>
+            </ul>
+          </aside>
+        </div>
       </div>
     </section>
   </main>

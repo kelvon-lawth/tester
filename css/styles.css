@@ -747,6 +747,109 @@ a.is-hover {
 }
 
 /* ==========================================================================
+   Contact page
+   ========================================================================== */
+.contact__intro {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-md);
+}
+
+.contact__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2xl);
+  margin-block-start: var(--space-2xl);
+}
+
+@media (min-width: 1024px) {
+  .contact__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+  }
+}
+
+.contact-form {
+  display: grid;
+  gap: var(--space-lg);
+  max-inline-size: var(--measure);
+}
+
+.contact-form__note,
+.field__hint {
+  font-size: var(--fs-label);
+  color: var(--color-ink-soft);
+}
+
+.contact-form__note {
+  margin: 0;
+}
+
+.field__hint {
+  margin: calc(var(--space-xs) * -1) 0 var(--space-sm);
+}
+
+.field__req {
+  font-weight: var(--fw-regular);
+}
+
+.field__error:empty {
+  display: none;
+}
+
+.field__input--textarea {
+  min-block-size: calc(var(--space-3xl) * 2);
+  resize: vertical;
+  line-height: var(--lh-body);
+}
+
+.contact-form .btn {
+  justify-self: start;
+}
+
+.contact__details h2,
+.contact-success h2 {
+  font-size: var(--fs-heading);
+}
+
+.contact__details p {
+  margin-block-start: var(--space-sm);
+}
+
+.contact__list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-lg) 0 0;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.contact__list a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+
+.contact__list .label {
+  display: block;
+}
+
+.contact-success {
+  margin-block-start: 0;
+}
+
+.contact-success[hidden] {
+  display: none;
+}
+
+.contact-success p {
+  margin-block-start: var(--space-sm);
+}
+
+.contact-success h2:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ==========================================================================
    Images, grid, cards, sections, icons
    ========================================================================== */
 .media {
