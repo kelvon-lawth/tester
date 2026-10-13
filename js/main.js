@@ -66,3 +66,85 @@
   if (band) { observer.observe(band); }
   if (footer) { observer.observe(footer); }
 })();
+
+/* Contact form (contact.html): native Constraint Validation, no submission.
+   Separate IIFE so it no-ops on pages without the form. */
+(function () {
+  "use strict";
+
+  var form = document.getElementById("contact-form");
+  if (!form) { return; }
+
+  var success = document.getElementById("contact-success");
+  var successTitle = document.getElementById("contact-success-title");
+  var fields = ["name", "phone", "email"].map(function (id) {
+    return form.elements[id];
+  }).filter(Boolean);
+
+  function messageFor(input) {
+    var v = input.validity;
+    if (v.valueMissing) {
+      if (input.id === "name") { return "Please tell me your name."; }
+      if (input.id === "phone") { return "Please add a phone number so I can call you back."; }
+      if (input.id === "email") { return "Please add your email address."; }
+    }
+    if (input.id === "email" && v.typeMismatch) {
+      return "That email doesn’t look quite right. Try something like name@example.com.";
+    }
+    if (input.id === "phone" && (v.patternMismatch || v.tooShort)) {
+      return "That phone number doesn’t look quite right. Use digits, spaces or a + sign.";
+    }
+    return "Please check this field.";
+  }
+
+  function errorEl(input) { return document.getElementById(input.id + "-error"); }
+
+  function showError(input) {
+    var el = errorEl(input);
+    input.setAttribute("aria-invalid", "true");
+    if (el) { el.textContent = messageFor(input); }
+  }
+
+  function clearError(input) {
+    var el = errorEl(input);
+    input.removeAttribute("aria-invalid");
+    if (el) { el.textContent = ""; }
+  }
+
+  function normalise(input) {
+    if (input.value.trim() === "") { input.value = ""; }
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault(); // prototype: nothing is ever sent
+    var firstInvalid = null;
+    fields.forEach(function (input) {
+      normalise(input);
+      if (input.checkValidity()) {
+        clearError(input);
+      } else {
+        showError(input);
+        if (!firstInvalid) { firstInvalid = input; }
+      }
+    });
+    if (firstInvalid) {
+      firstInvalid.focus();
+      return;
+    }
+    form.hidden = true;
+    if (success) { success.hidden = false; }
+    if (successTitle) { successTitle.focus(); }
+  });
+
+  fields.forEach(function (input) {
+    input.addEventListener("input", function () {
+      if (input.getAttribute("aria-invalid") === "true" && input.checkValidity()) {
+        clearError(input);
+      }
+    });
+    input.addEventListener("blur", function () {
+      if (input.getAttribute("aria-invalid") !== "true") { return; }
+      if (input.checkValidity()) { clearError(input); } else { showError(input); }
+    });
+  });
+})();
