@@ -172,6 +172,11 @@ if (!glowNames.length) failures.push("FAIL glow token missing: no --glow-* rgba 
 for (const n of glowNames) {
   if (n.indexOf("navy") >= 0) {
     checkText("glow " + n + " over navy", over(translucent[n], tokens["--color-navy"]), ["white", "tint", "coral"]);
+  } else if (n.startsWith("--glow-hero-")) {
+    // Hero fields (quick 261013-ffc): saturated enough to be bold, so blue TEXT is not expected to pass on the
+    // bare field. Ink and ink-soft are checked here; blue (link-cta) is checked in the HERO group on its glass pill.
+    checkText("glow " + n + " over white", over(translucent[n], tokens["--color-bg"]), ["ink", "ink-soft"]);
+    checkText("glow " + n + " over tint", over(translucent[n], tokens["--color-tint"]), ["ink", "ink-soft"]);
   } else {
     checkText("glow " + n + " over white", over(translucent[n], tokens["--color-bg"]), ["ink", "ink-soft", "blue"]);
     checkText("glow " + n + " over tint", over(translucent[n], tokens["--color-tint"]), ["ink", "ink-soft"]);
@@ -188,6 +193,26 @@ if (translucent["--surface-glass-solid"]) {
 if (translucent["--surface-glass-top"]) {
   for (const bg of ["--color-bg", "--color-tint"]) {
     checkText("glass top over " + bg, over(translucent["--surface-glass-top"], tokens[bg]), ["ink", "blue"]);
+  }
+}
+
+// HERO group (quick 261013-ffc): all --glow-hero-* fields stacked (worst-case overlap) over tint and bg.
+{
+  const heroNames = Object.keys(translucent).filter((n) => n.startsWith("--glow-hero-"));
+  if (heroNames.length < 2) {
+    failures.push("FAIL HERO glow-hero token missing: need at least two --glow-hero-* rgba tokens in :root (found " + heroNames.length + ")");
+  } else {
+    const glass = translucent["--surface-glass-solid"];
+    for (const baseName of ["--color-tint", "--color-bg"]) {
+      let comp = tokens[baseName];
+      for (const n of heroNames) comp = over(translucent[n], comp);
+      checkText("HERO stacked fields over " + baseName + " (" + comp + ")", comp, ["ink", "ink-soft"]);
+      // The only blue text in the hero is .link-cta, which sits on a --surface-glass-solid pill.
+      if (glass) {
+        const pill = over(glass, comp);
+        checkText("HERO link-cta glass pill over stacked " + baseName + " (" + pill + ")", pill, ["ink", "blue"]);
+      }
+    }
   }
 }
 

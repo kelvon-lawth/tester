@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Headless Chrome (CDP) motion/reveal/overflow test for index.html and contact.html.
-// Usage: node tools/motion-browser-test.js [reveal|nojs|reduced|overflow|header|contact ...]
+// Usage: node tools/motion-browser-test.js [vendor|choreo|choreo-jump|frames|fallback|nojs|reduced|overflow|header|contact|console ...]
 // Zero dependencies. Uses Node's global WebSocket. Dev-only (removed in Phase 5).
 "use strict";
 
@@ -15,7 +15,7 @@ const CHROME =
   process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PAGE = url.pathToFileURL(path.join(ROOT, "contact.html")).href;
 const HOME = url.pathToFileURL(path.join(ROOT, "index.html")).href;
-const ALL = ["reveal", "nojs", "reduced", "overflow", "header", "contact"];
+const ALL = ["vendor", "choreo", "choreo-jump", "frames", "fallback", "nojs", "reduced", "overflow", "header", "contact", "console"];
 const INDEX = HOME;
 
 const requested = process.argv.slice(2);
@@ -41,6 +41,7 @@ let ws;
 let nextId = 1;
 const pending = new Map();
 const listeners = new Map();
+const sessionEvents = new Map(); // sessionId -> (method, params) handler
 
 function send(method, params, sessionId) {
   const id = nextId++;
@@ -71,6 +72,8 @@ function onMessage(ev) {
     return;
   }
   if (data.method) {
+    const h = sessionEvents.get(data.sessionId);
+    if (h) h(data.method, data.params);
     const key = data.method + "|" + (data.sessionId || "");
     const arr = listeners.get(key);
     if (arr && arr.length) {
@@ -93,13 +96,29 @@ async function waitForPort(profile) {
   throw new Error("DevToolsActivePort not found within 15s");
 }
 
-// Run one scenario. opts: { noJs, reducedMotion, page }.
+// Run one scenario. opts: { noJs, reducedMotion, page, blockGsap, captureErrors, lsInit }.
+// blockGsap stops the vendor file from publishing window.gsap, which exercises the IntersectionObserver fallback.
+// captureErrors collects uncaught exceptions, console errors and error log entries (remote-image network
+// failures are ignored because Unsplash can be offline) and returns them as result.errors.
 async function scenario(width, height, opts, expression) {
   opts = opts || {};
   const { targetId } = await send("Target.createTarget", { url: "about:blank" });
   const { sessionId } = await send("Target.attachToTarget", { targetId, flatten: true });
+  const errs = [];
   try {
     await send("Page.enable", {}, sessionId);
+    if (opts.captureErrors) {
+      sessionEvents.set(sessionId, (m, p) => {
+        if (m === "Runtime.exceptionThrown") errs.push("exception: " + ((p.exceptionDetails.exception && p.exceptionDetails.exception.description) || p.exceptionDetails.text));
+        else if (m === "Runtime.consoleAPICalled" && p.type === "error") errs.push("console.error: " + p.args.map((a) => a.value || a.description || "").join(" "));
+        // Pre-existing file:// artifact (not caused by quick 261013-ffc): the <link rel="preload" as="font" crossorigin>
+        // hints are blocked by CORS when the page is opened from disk; the @font-face loads themselves succeed
+        // (fonts-loaded is asserted by smoke-test). It does not occur over http(s). Ignored here, and only here.
+        else if (m === "Log.entryAdded" && p.entry.level === "error" && p.entry.source !== "network" && !/Access to font at 'file:\/\/\/.*\.woff2'/.test(p.entry.text)) errs.push("log: " + p.entry.text);
+      });
+      await send("Runtime.enable", {}, sessionId);
+      await send("Log.enable", {}, sessionId);
+    }
     await send(
       "Emulation.setDeviceMetricsOverride",
       { width, height, deviceScaleFactor: 1, mobile: width < 640 },
@@ -107,6 +126,12 @@ async function scenario(width, height, opts, expression) {
     );
     if (opts.reducedMotion) {
       await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] }, sessionId);
+    }
+    if (opts.blockGsap) {
+      await send("Page.addScriptToEvaluateOnNewDocument", { source: "Object.defineProperty(window,'gsap',{configurable:false,get:function(){return undefined},set:function(){}})" }, sessionId);
+    }
+    if (opts.lsInit) {
+      await send("Page.addScriptToEvaluateOnNewDocument", { source: "window.__ls=0;try{new PerformanceObserver(function(l){for(const e of l.getEntries())if(!e.hadRecentInput)window.__ls+=e.value;}).observe({type:'layout-shift',buffered:true});}catch(e){}" }, sessionId);
     }
     if (opts.noJs) await send("Emulation.setScriptExecutionDisabled", { value: true }, sessionId);
     const loaded = once("Page.loadEventFired", sessionId);
@@ -133,8 +158,10 @@ async function scenario(width, height, opts, expression) {
     }
     const v = res.result.value;
     if (v && v.fatal) throw new Error(v.fatal);
+    if (opts.captureErrors && v && typeof v === "object") v.errors = errs.slice();
     return v;
   } finally {
+    sessionEvents.delete(sessionId);
     try { await send("Target.closeTarget", { targetId }); } catch (e) { /* ignore */ }
   }
 }
@@ -145,6 +172,11 @@ async function scenario(width, height, opts, expression) {
 // Keep TARGETS in sync with the reveal selector list in js/main.js.
 const HELPERS = `
 const TARGETS=['.section-head','.service-card','.about__media','.about__text','.testimonial','.logo-strip li','.step','.cta-band__inner','.hero__media','.divider-squiggle','.steps__connector','.contact__form-wrap','.contact__details','.page-contact .contact__intro'];
+// CONTENT (quick 261013-ffc): every visible content element of the bold page. After motion settles all of it must be
+// at rest (opacity 1, no offset, no clip).
+const CONTENT=TARGETS.concat(['.hero-title__lead','.hero__lede','#hero-cta','.trust-cue','.hero-chip','.section-head h2','.about__media .media','.cta-band']);
+const content=()=>{const seen=new Set();return CONTENT.flatMap(s=>[...document.querySelectorAll(s)]).filter(e=>!seen.has(e)&&seen.add(e));};
+const clipClear=el=>{const c=getComputedStyle(el).clipPath;if(c==='none')return true;const m=c.match(/^inset\\((.*)\\)$/);if(!m)return false;return (m[1].split('round')[0].match(/-?[\\d.]+/g)||[]).every(n=>Math.abs(Number(n))<0.01);};
 const all=()=>TARGETS.flatMap(s=>[...document.querySelectorAll(s)]);
 const shown=el=>getComputedStyle(el).display!=='none';
 const settled=el=>{const cs=getComputedStyle(el);if(cs.opacity!=='1'||cs.visibility==='hidden')return false;
@@ -160,11 +192,118 @@ const cls=(el)=>el.className&&el.className.baseVal!==undefined?el.className.base
 
 const results = {};
 
-results.reveal = async () => {
+results.vendor = async () => {
+  const r = await scenario(1280, 900, {}, `async()=>{
+    for(let i=0;i<40&&!document.documentElement.classList.contains('has-motion');i++)await sleep(100);
+    return{v:window.gsap&&window.gsap.version,st:typeof window.ScrollTrigger,sp:typeof window.SplitText,motion:document.documentElement.classList.contains('has-motion'),pending:document.documentElement.classList.contains('motion-pending')};}`);
+  if (r.v !== "3.15.0") throw new Error("gsap.version is " + r.v);
+  if (!/^(function|object)$/.test(r.st) || !/^(function|object)$/.test(r.sp)) throw new Error("ScrollTrigger/SplitText missing: " + r.st + "/" + r.sp);
+  if (!r.motion || r.pending) throw new Error("html.has-motion expected at 1280 (motion " + r.motion + ", pending " + r.pending + ")");
+  return "gsap 3.15.0 + ScrollTrigger + SplitText load over file://, has-motion set";
+};
+
+// Step-scrolls the page with settle pauses, as a user would.
+const STEP_SCROLL = `const stepScroll=async(onStep)=>{const H=document.documentElement.scrollHeight;
+  for(let y=0;y<H;y+=innerHeight*0.4){scrollTo({top:y,behavior:'instant'});await sleep(120);if(onStep)await onStep(y);}
+  scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'});};`;
+
+const SETTLED_CHECK = `const checkAllSettled=()=>{const bad=[];
+  for(const el of content()){if(!shown(el))continue;
+    if(!settled(el))bad.push('not settled: '+cls(el)+' '+getComputedStyle(el).opacity+' '+getComputedStyle(el).transform);
+    else if(!clipClear(el))bad.push('clipped: '+cls(el)+' '+getComputedStyle(el).clipPath);}
+  for(const p of drawPaths()){if(!shown(p.closest('svg')))continue;if(!drawn(p))bad.push('path not drawn: '+p.tagName+' in '+cls(p.closest('svg')));}
+  return bad;};`;
+
+results.choreo = async () => {
   const out = [];
   for (const [w, h] of [[1280, 900], [375, 740]]) {
+    const r = await scenario(w, h, { lsInit: true }, `async()=>{
+      ${STEP_SCROLL}${SETTLED_CHECK}
+      const html=document.documentElement, bad=[];
+      if(!html.classList.contains('has-motion'))return{bad:['html lacks has-motion']};
+      if(html.classList.contains('js-reveal'))bad.push('js-reveal present alongside has-motion');
+      const ls0=window.__ls||0;
+      const pre=content().filter(el=>shown(el)&&el.getBoundingClientRect().top>innerHeight&&!settled(el));
+      if(pre.length<3)bad.push('only '+pre.length+' below-the-fold elements start in a pre-state');
+      const conn=document.querySelector('.steps__connector');
+      let scrub=false, scrubInfo='n/a';
+      let tickA=null,tickB=null;
+      const track=document.querySelector('.logo-ticker__track');
+      const logos=document.querySelector('[aria-labelledby="logos-title"]');
+      await stepScroll(async()=>{
+        if(conn&&shown(conn)){const r=conn.getBoundingClientRect();
+          if(r.top>innerHeight*0.2&&r.top<innerHeight*0.8){const p=conn.querySelector('path');const cs=getComputedStyle(p);const len=parseFloat(cs.strokeDasharray);const off=parseFloat(cs.strokeDashoffset);
+            scrubInfo=off+'/'+len;if(len>0&&off>0.5&&off<len-0.5)scrub=true;}}
+        if(track&&logos){const r=logos.getBoundingClientRect();
+          if(r.top<innerHeight*0.9&&r.bottom>innerHeight*0.1){const t=getComputedStyle(track).transform;if(tickA===null)tickA=t;else if(t!==tickA)tickB=t;}}
+      });
+      if(conn&&shown(conn)&&!scrub)bad.push('steps connector never partially drawn mid-scroll ('+scrubInfo+'): scrub missing');
+      if(!track)bad.push('no .logo-ticker__track');
+      else if(tickB===null)bad.push('logo ticker transform did not change while scrolling the logos section ('+tickA+')');
+      await sleep(1500);
+      bad.push(...checkAllSettled());
+      const ls=(window.__ls||0)-ls0;
+      if(ls>=0.001)bad.push('layout shift '+ls.toFixed(4));
+      return{bad,n:content().length,ls};}`);
+    if (r.bad.length) throw new Error(w + "px: " + r.bad.slice(0, 6).join("; "));
+    out.push(w + "px " + r.n + " elements");
+  }
+  return "has-motion, pre-states at load, connector scrubs, ticker moves with scroll, all settled at the bottom (" + out.join(", ") + ")";
+};
+
+results["choreo-jump"] = async () => {
+  for (const [w, h] of [[1280, 900], [375, 740]]) {
     const r = await scenario(w, h, {}, `async()=>{
+      ${SETTLED_CHECK}
+      const html=document.documentElement;
+      if(!html.classList.contains('has-motion'))return{bad:['html lacks has-motion']};
+      scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'});
+      await sleep(2000);
+      return{bad:checkAllSettled()};}`);
+    if (r.bad.length) throw new Error(w + "px after a single jump to the bottom: " + r.bad.slice(0, 6).join("; "));
+  }
+  return "one programmatic jump to the bottom leaves every element settled (1280, 375)";
+};
+
+results.frames = async () => {
+  const r = await scenario(375, 740, {}, `async()=>{
+    const html=document.documentElement;
+    if(!html.classList.contains('has-motion'))return{bad:'html lacks has-motion'};
+    const a=document.querySelector('#services').getBoundingClientRect().top+scrollY-60;
+    const b=document.querySelector('#kind-words').getBoundingClientRect().bottom+scrollY;
+    const fr=[];let last=performance.now();let y=a;
+    scrollTo({top:a,behavior:'instant'});await sleep(300);
+    await new Promise(res=>{const loop=()=>{const n=performance.now();fr.push(n-last);last=n;y+=24;scrollTo({top:y,behavior:'instant'});if(y<b&&fr.length<260)requestAnimationFrame(loop);else res();};requestAnimationFrame(loop);});
+    const f=fr.slice(2).sort((x,y2)=>x-y2);
+    return{p95:f[Math.floor(f.length*0.95)],frames:f.length,max:f[f.length-1]};}`);
+  if (r.bad) throw new Error(r.bad);
+  // Deliberately lenient: headless Chrome without a GPU is noisy. This catches gross jank
+  // (layout thrash, filter repaints), not a 60fps guarantee. The measured value is reported.
+  if (!(r.p95 <= 50)) throw new Error("p95 frame time " + r.p95.toFixed(1) + "ms over " + r.frames + " frames (max " + r.max.toFixed(1) + ") > 50ms");
+  return "p95 frame time " + r.p95.toFixed(1) + "ms over " + r.frames + " frames while scrolling services to testimonials at 375";
+};
+
+results.console = async () => {
+  for (const [page, w, h] of [[INDEX, 1280, 900], [INDEX, 375, 740], [PAGE, 1280, 900]]) {
+    const r = await scenario(w, h, { page, captureErrors: true }, `async()=>{
+      const H=document.documentElement.scrollHeight;
+      for(let y=0;y<=H;y+=innerHeight*0.5){scrollTo({top:y,behavior:'instant'});await sleep(100);}
+      await sleep(800);return{ok:true};}`);
+    if (r.errors.length) throw new Error(path.basename(page) + " " + w + "px: " + r.errors.slice(0, 3).join(" | "));
+  }
+  return "no uncaught exceptions or console errors on index.html (1280, 375) or contact.html";
+};
+
+// IntersectionObserver fallback path: runs with the GSAP vendor files blocked (quick 261013-ffc replaced the old
+// 'reveal' group; with GSAP present the choreo group applies instead).
+results.fallback = async () => {
+  const out = [];
+  for (const [w, h] of [[1280, 900], [375, 740]]) {
+    const r = await scenario(w, h, { blockGsap: true }, `async()=>{
       const bad=[];
+      if(document.documentElement.classList.contains('motion-pending'))bad.push('motion-pending still set (should be removed)');
+      if(document.documentElement.classList.contains('has-motion'))bad.push('has-motion set without GSAP');
+      for(const el of content()){if(!shown(el))continue;if(!el.classList.contains('reveal')&&getComputedStyle(el).opacity<1)bad.push('hidden without reveal class: '+cls(el));}
       if(!document.documentElement.classList.contains('js-reveal'))return{bad:['html lacks js-reveal'],n:0};
       const pre=all().filter(el=>el.classList.contains('reveal')&&!el.classList.contains('is-revealed')&&shown(el)&&getComputedStyle(el).opacity<1);
       if(!pre.length)bad.push('no pre-reveal hidden target at load (enhancement inactive)');
@@ -199,7 +338,7 @@ results.reveal = async () => {
     if (r.bad.length) throw new Error(w + "px: " + r.bad.slice(0, 6).join("; "));
     out.push(w + "px " + r.n + " targets");
   }
-  return "reveal gate active, hidden before, revealed and settled after scroll, strokes drawn (" + out.join(", ") + ")";
+  return "GSAP blocked: IO reveal gate active, hidden before, revealed and settled after scroll, strokes drawn (" + out.join(", ") + ")";
 };
 
 results.nojs = async () => {
@@ -208,8 +347,12 @@ results.nojs = async () => {
       const r = await scenario(w, 800, { noJs: true, page }, `async()=>{
         const bad=[];
         if(document.documentElement.classList.contains('js-reveal'))bad.push('js-reveal present without JS');
-        for(const el of all()){if(!settled(el))bad.push('not settled: '+el.className);}
+        for(const el of content()){if(!shown(el))continue;if(!settled(el))bad.push('not settled: '+cls(el));else if(!clipClear(el))bad.push('clipped: '+cls(el));}
         for(const p of drawPaths()){if(!drawn(p))bad.push('undrawn: '+p.tagName);}
+        if(document.documentElement.classList.contains('has-motion'))bad.push('has-motion present without JS');
+        if(document.querySelector('.logo-strip--clone'))bad.push('logo clone present');
+        if(document.querySelector('.hero-word__alt'))bad.push('alt words present');
+        const hw=document.querySelector('.hero-word__text');if(hw&&hw.textContent!=='bakery')bad.push('hero word is '+hw.textContent);
         return{bad};}`);
       if (r.bad.length) throw new Error(path.basename(page) + " " + w + "px: " + r.bad.slice(0, 5).join("; "));
     }
@@ -223,8 +366,12 @@ results.reduced = async () => {
       const r = await scenario(w, 800, { reducedMotion: true, page }, `async()=>{
         await sleep(400);
         const bad=[];
-        for(const el of all()){if(!settled(el))bad.push('not settled: '+el.className);}
+        for(const el of content()){if(!shown(el))continue;if(!settled(el))bad.push('not settled: '+cls(el));else if(!clipClear(el))bad.push('clipped: '+cls(el));}
         for(const p of drawPaths()){if(!drawn(p))bad.push('undrawn: '+p.tagName);}
+        if(document.documentElement.classList.contains('has-motion'))bad.push('has-motion present under reduced motion');
+        if(document.querySelector('.logo-strip--clone'))bad.push('logo clone present');
+        if(document.querySelector('.hero-word__alt'))bad.push('alt words present');
+        const hw=document.querySelector('.hero-word__text');if(hw&&hw.textContent!=='bakery')bad.push('hero word is '+hw.textContent);
         for(const el of document.querySelectorAll('.hero__media .media, .about__media .media')){
           const cs=getComputedStyle(el);
           if(!(cs.animationName==='none'||cs.transform==='none'))bad.push('float still running: '+el.className);}
@@ -242,7 +389,7 @@ results.overflow = async () => {
       worst=Math.max(worst,document.documentElement.scrollWidth-window.innerWidth);}
     return{worst};}`;
   for (const page of [INDEX, PAGE]) {
-    for (const [w, h] of [[320, 700], [375, 740], [1280, 900]]) {
+    for (const [w, h] of [[320, 700], [375, 740], [768, 900], [1280, 900]]) {
       for (const noJs of [false, true]) {
         if (noJs && w !== 320) continue;
         const r = await scenario(w, h, { page, noJs }, noJs ? "async()=>({worst:document.documentElement.scrollWidth-window.innerWidth})" : STEP);
@@ -250,7 +397,7 @@ results.overflow = async () => {
       }
     }
   }
-  return "no horizontal overflow at 320, 375, 1280 while scrolling (both pages, plus no-JS at 320)";
+  return "no horizontal overflow at 320, 375, 768, 1280 while scrolling (both pages, plus no-JS at 320)";
 };
 
 results.header = async () => {
@@ -300,10 +447,10 @@ results.contact = async () => {
     { stdio: "ignore" }
   );
   const overall = setTimeout(() => {
-    console.log("FAIL timed out after 90s");
+    console.log("FAIL timed out after 300s");
     try { child.kill("SIGKILL"); } catch (e) { /* ignore */ }
     process.exit(1);
-  }, 90000);
+  }, 300000);
   let failed = false;
   try {
     const { port, wsPath } = await waitForPort(profile);

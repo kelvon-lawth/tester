@@ -43,7 +43,9 @@ function mediaWith(block, attrs, alt, noLoading, altLoose) {
   return errs;
 }
 
-const HERO_H1 = '<h1 class="hero-title">Marketing for your <span class="hero-word accent-underline"><span class="hero-word__text">bakery</span><svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></h1>';
+// Changed in quick 261013-ffc for HERO-05: one visually-hidden sentence is the headline screen readers hear,
+// the animated visual line is aria-hidden so cycling words are never announced.
+const HERO_H1 = '<h1 class="hero-title"><span class="visually-hidden">Marketing for your bakery, café, salon, gym, florist, shop or restaurant</span><span class="hero-title__visual" aria-hidden="true"><span class="hero-title__lead">Marketing for your</span> <span class="hero-word accent-underline" data-words="bakery,café,salon,gym,florist,shop,restaurant"><span class="hero-word__text">bakery</span><svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></span></h1>';
 const LETS = "Let’s talk";
 
 const groups = {};
@@ -92,6 +94,45 @@ groups.hero = () => {
   const media = /hero__media[\s\S]*$/.exec(h);
   if (!media) e.push("no hero__media");
   else e.push(...mediaWith(media[0], ['width="800"', 'height="1000"', 'decoding="async"', 'referrerpolicy="no-referrer"'], "A smiling shop owner at a counter", true, true));
+  // quick 261013-ffc: pause toggle, proof chips, scroll cue
+  const toggles = h.match(/<button class="hero-toggle" type="button" aria-pressed="false" hidden>/g) || [];
+  if (toggles.length !== 1) e.push("expected exactly one <button class=\"hero-toggle\" type=\"button\" aria-pressed=\"false\" hidden>, found " + toggles.length);
+  else {
+    const ti = h.indexOf('class="hero-toggle"');
+    const ctaStart = h.indexOf('id="hero-cta"');
+    const ctaEnd = h.indexOf("</div>", ctaStart);
+    if (ti > ctaStart && ti < ctaEnd) e.push("hero-toggle must sit outside #hero-cta");
+  }
+  if (!/class="hero-word accent-underline" data-words="bakery,café,salon,gym,florist,shop,restaurant"/.test(h)) e.push("hero-word data-words list wrong");
+  const mediaBlock = /class="hero__media[\s\S]*$/.exec(h);
+  if (count(mediaBlock ? mediaBlock[0] : "", /class="hero-chip\b/g) < 2) e.push("need at least two .hero-chip proof chips in hero__media");
+  if (!/<[a-z]+\b[^>]*class="hero-scroll-cue"[^>]*aria-hidden="true"|<[a-z]+\b[^>]*aria-hidden="true"[^>]*class="hero-scroll-cue"/.test(h)) e.push(".hero-scroll-cue with aria-hidden=true missing");
+  return e;
+};
+
+// Vendored GSAP (quick 261013-ffc). Contact keeps the IntersectionObserver fallback only.
+groups.vendor = () => {
+  const e = [];
+  for (const [f, banner] of [["gsap", "GSAP 3.15.0"], ["ScrollTrigger", "ScrollTrigger 3.15.0"], ["SplitText", "SplitText 3.15.0"]]) {
+    const t = read("assets/js/vendor/" + f + ".min.js");
+    if (!t) e.push("assets/js/vendor/" + f + ".min.js missing");
+    else if (!t.slice(0, 200).includes(banner)) e.push(f + ".min.js lacks banner " + banner);
+  }
+  const v = read("assets/js/vendor/GSAP-VERSION.md");
+  if (!v.includes("3.15.0") || !v.includes("standard-license")) e.push("GSAP-VERSION.md must mention 3.15.0 and standard-license");
+  const head = (/<head\b[\s\S]*?<\/head>/.exec(index) || [""])[0];
+  const order = ["assets/js/vendor/gsap.min.js", "assets/js/vendor/ScrollTrigger.min.js", "assets/js/vendor/SplitText.min.js", "js/main.js"].map((s) => head.indexOf('<script defer src="' + s + '"></script>'));
+  if (order.some((i) => i < 0) || !order.every((v2, i) => i === 0 || v2 > order[i - 1])) e.push("head must load gsap, ScrollTrigger, SplitText, main.js as defer scripts in that order");
+  if (!/<!--[^>]*GSAP 3\.15\.0[^>]*-->/.test(head)) e.push("index.html needs an HTML comment pinning GSAP 3.15.0");
+  if (/vendor\//.test(contact)) e.push("contact.html must not load the vendor files");
+  const inline = head.match(/<script>[\s\S]*?<\/script>/g) || [];
+  if (inline.length !== 1) e.push("head needs exactly one inline classic <script>, found " + inline.length);
+  else {
+    const body = inline[0];
+    if (head.indexOf(body) > head.indexOf('<link rel="stylesheet"')) e.push("inline motion-pending script must come BEFORE the stylesheet link");
+    for (const need of ["motion-pending", "prefers-reduced-motion", "2500"]) if (!body.includes(need)) e.push("inline script must contain " + need);
+    for (const bad of ["innerHTML", "fetch", "import"]) if (body.includes(bad)) e.push("inline script must not contain " + bad);
+  }
   return e;
 };
 
@@ -259,6 +300,11 @@ groups.replace = () => {
     if (src && !replaceMe.includes(src)) e.push("img src not listed in REPLACE-ME.md: " + src);
   }
   for (const [n, h] of [["index.html", index], ["contact.html", contact]]) if (h.includes("[Name]")) e.push(n + " contains [Name]");
+  // proof-chip copy is placeholder claims: read at runtime so the wording stays free
+  for (const c of index.match(/<[a-z]+\b[^>]*class="hero-chip\b[\s\S]*?<\/p>/g) || []) {
+    const t = amp(textOf(c));
+    if (t && !replaceMe.includes(t)) e.push("hero chip text not listed in REPLACE-ME.md: " + t);
+  }
   return e;
 };
 
