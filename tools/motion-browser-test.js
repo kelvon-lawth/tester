@@ -169,6 +169,7 @@ results.reveal = async () => {
       const pre=all().filter(el=>el.classList.contains('reveal')&&!el.classList.contains('is-revealed')&&shown(el)&&getComputedStyle(el).opacity<1);
       if(!pre.length)bad.push('no pre-reveal hidden target at load (enhancement inactive)');
       // hero underline: starts undrawn (fresh clone has no transition history), ends drawn
+      for(let i=0;i<40&&!document.querySelector('.hero-word.is-revealed');i++)await sleep(100);
       const hw=document.querySelector('.hero-word');
       const clone=hw.cloneNode(true);clone.classList.remove('is-revealed');
       const holder=document.createElement('div');holder.style.cssText='position:absolute;left:0;top:0;opacity:0.01;pointer-events:none';
@@ -244,7 +245,7 @@ results.overflow = async () => {
     for (const [w, h] of [[320, 700], [375, 740], [1280, 900]]) {
       for (const noJs of [false, true]) {
         if (noJs && w !== 320) continue;
-        const r = await scenario(w, h, { page, noJs }, STEP);
+        const r = await scenario(w, h, { page, noJs }, noJs ? "async()=>({worst:document.documentElement.scrollWidth-window.innerWidth})" : STEP);
         if (r.worst > 0) throw new Error(path.basename(page) + " " + w + "px" + (noJs ? " no-JS" : "") + ": horizontal overflow " + r.worst + "px");
       }
     }

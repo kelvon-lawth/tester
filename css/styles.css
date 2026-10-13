@@ -145,7 +145,7 @@
   --color-hero-word: var(--color-blue);
   --hero-underline-color: var(--color-coral);
   --hero-underline-height: 12px;
-  --hero-underline-offset: var(--space-xs);
+  --hero-underline-offset: var(--space-sm);
 
   /* Type */
   --font-display: "Fraunces", "Fraunces Fallback", "Fraunces Fallback Android", Georgia, serif;
@@ -153,10 +153,10 @@
   --fs-body: 1.125rem;
   --fs-label: 0.875rem;
   --fs-heading: 1.75rem;
-  --fs-display: clamp(2.5rem, 6.5vw + 0.5rem, 4.5rem);
+  --fs-display: clamp(2.75rem, 7vw + 0.5rem, 5rem);
   --lh-body: 1.5;
   --lh-heading: 1.2;
-  --lh-display: 1.1;
+  --lh-display: 1.05;
   --fw-regular: 400;
   --fw-semibold: 600;
 
@@ -170,11 +170,48 @@
   --radius-md: 16px;
   --radius-pill: 999px;
   --shadow-card: 0 2px 0 rgba(27, 42, 74, .06), 0 8px 24px rgba(27, 42, 74, .10);
+  --radius-lg: 24px;
+  --header-h: 64px;
+
+  /* Sleek restyle (quick 261013-ep2): layered shadows, edges, glows, glass, gradients.
+     Translucent tokens deliberately avoid the --color- prefix; tools/check-contrast.js
+     composites --glow-* and --surface-glass-* over the real backgrounds. */
+  --shadow-card-rest: 0 1px 2px rgba(27, 42, 74, .06), 0 12px 32px -10px rgba(27, 42, 74, .12);
+  --shadow-card-hover: 0 2px 4px rgba(27, 42, 74, .06), 0 28px 52px -14px rgba(59, 91, 253, .26);
+  --shadow-media: 0 2px 4px rgba(27, 42, 74, .08), 0 28px 60px -18px rgba(27, 42, 74, .38);
+  --shadow-header: 0 10px 28px -14px rgba(27, 42, 74, .28);
+  --shadow-btn: 0 1px 2px rgba(27, 42, 74, .22), 0 10px 20px -8px rgba(59, 91, 253, .6);
+  --shadow-btn-hover: 0 2px 4px rgba(27, 42, 74, .22), 0 16px 28px -10px rgba(59, 91, 253, .7);
+  --edge-card: rgba(27, 42, 74, .08);
+  --edge-clear: transparent;
+  --focus-glow: 0 0 0 4px rgba(59, 91, 253, .18);
+  --ring-badge: 0 0 0 6px rgba(59, 91, 253, .14);
+  --glow-blue: rgba(59, 91, 253, .07);
+  --glow-coral: rgba(255, 107, 107, .10);
+  --glow-navy: rgba(59, 91, 253, .14);
+  --surface-glass-solid: rgba(255, 255, 255, .95);
+  --surface-glass-top: rgba(255, 255, 255, .78);
+  --gradient-primary: linear-gradient(180deg, var(--color-blue), var(--color-blue-hover));
+  --gradient-primary-hover: linear-gradient(180deg, var(--color-blue-hover), var(--color-blue-hover));
+  --gradient-tile: linear-gradient(135deg, var(--color-tint), var(--color-bg));
+  --shine: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, .25) 50%, transparent 80%);
+  --glow-hero: radial-gradient(55% 75% at 88% 18%, var(--color-tint), transparent 72%), radial-gradient(40% 55% at 4% 92%, var(--glow-coral), transparent 70%), radial-gradient(35% 45% at 55% 0%, var(--glow-blue), transparent 70%);
+  --glow-section: radial-gradient(55% 70% at 8% 0%, var(--color-bg), transparent 70%), radial-gradient(40% 60% at 96% 100%, var(--glow-coral), transparent 70%);
+  --glow-band: radial-gradient(60% 90% at 50% 0%, var(--glow-navy), transparent 72%), radial-gradient(35% 60% at 8% 100%, var(--glow-navy), transparent 70%);
 
   /* Motion */
   --ease-out: cubic-bezier(.22, .8, .3, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
   --dur-fast: 150ms;
   --dur-base: 250ms;
+  --dur-slow: 600ms;
+  --dur-reveal: 700ms;
+  --stagger: 90ms;
+  --reveal-distance: 24px;
+  --lift: 4px;
+  --float-distance: 6px;
+  --float-dur: 7s;
+  --accent-shift: var(--space-md);
 }
 
 @media (min-width: 640px) {
@@ -182,7 +219,7 @@
 }
 
 @media (min-width: 1024px) {
-  :root { --gutter: var(--space-xl); }
+  :root { --gutter: var(--space-xl); --accent-shift: var(--space-lg); }
 }
 
 /* ==========================================================================
@@ -196,6 +233,7 @@
 
 html {
   color-scheme: light;
+  scroll-padding-block-start: calc(var(--header-h) + var(--space-md));
 }
 
 body {
@@ -285,7 +323,7 @@ h3 {
 
 .skip-link:focus {
   transform: none;
-  z-index: 10;
+  z-index: 20;
 }
 
 /* ==========================================================================
@@ -298,8 +336,27 @@ h3 {
 }
 
 .site-header {
-  background: var(--color-tint);
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 10;
+  background: var(--surface-glass-solid);
   border-block-end: 1px solid var(--color-line);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  transition: box-shadow var(--dur-base) var(--ease-out), background-color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header { background: var(--color-bg); }
+}
+
+.js .site-header:not(.is-scrolled) {
+  background: var(--surface-glass-top);
+  border-block-end-color: var(--edge-clear);
+}
+
+.site-header.is-scrolled {
+  box-shadow: var(--shadow-header);
 }
 
 .site-header__inner {
@@ -307,7 +364,7 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  min-block-size: var(--space-3xl);
+  min-block-size: var(--header-h);
 }
 
 .wordmark {
@@ -378,7 +435,24 @@ main:focus {
 }
 
 .section--tint {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
   background: var(--color-tint);
+}
+
+.section--tint::before,
+.cta-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--glow-section);
+  pointer-events: none;
+}
+
+.cta-band::before {
+  background: var(--glow-band);
 }
 
 .section.section--tight {
@@ -450,6 +524,7 @@ main:focus {
    ========================================================================== */
 .hero-title {
   color: var(--color-hero-static);
+  letter-spacing: -0.02em;
 }
 
 .hero-word {
@@ -487,7 +562,19 @@ main:focus {
    Home hero (split layout, D-01..D-05)
    ========================================================================== */
 .hero {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
   padding-block: var(--space-2xl) var(--space-3xl);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--glow-hero);
+  pointer-events: none;
 }
 
 .hero__text {
@@ -496,6 +583,7 @@ main:focus {
 
 .hero__lede {
   max-inline-size: var(--measure);
+  color: var(--color-ink-soft);
 }
 
 .hero__actions {
@@ -534,8 +622,33 @@ main:focus {
 }
 
 .hero__media {
+  position: relative;
   max-inline-size: 400px;
   margin-inline: auto;
+}
+
+/* Offset accent shape behind a photo (depth, handmade feel) */
+.hero__media::before,
+.about__media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--radius-lg);
+  background: var(--color-tint);
+  border: 2px solid var(--color-line);
+  transform: translate(var(--accent-shift), var(--accent-shift));
+  pointer-events: none;
+}
+
+.about__media::before {
+  transform: translate(calc(var(--accent-shift) * -1), var(--accent-shift));
+}
+
+.hero__media .media,
+.about__media .media {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-media);
 }
 
 .hero__media .media {
@@ -550,7 +663,7 @@ main:focus {
 
 @media (min-width: 1024px) {
   .hero {
-    padding-block: calc(var(--space-3xl) + var(--space-xl));
+    padding-block: calc(var(--space-3xl) + var(--space-xl)) calc(var(--space-3xl) + var(--space-2xl));
   }
   .hero__grid {
     align-items: center;
@@ -645,18 +758,68 @@ a.is-hover {
   letter-spacing: 0.02em;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
 
 .btn--primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   background-color: var(--color-blue);
+  background-image: var(--gradient-primary);
+  box-shadow: var(--shadow-btn);
   color: var(--color-bg);
 }
 
+/* Shine sweep (decorative, transform only) */
+.btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--shine);
+  transform: translateX(-120%);
+  transition: transform var(--dur-slow) var(--ease-out);
+  pointer-events: none;
+}
+
+/* Decorative CSS chevron; the button text itself stays exactly as written */
+.btn--primary::after {
+  content: "";
+  flex: none;
+  inline-size: 0.45em;
+  block-size: 0.45em;
+  margin-inline-start: var(--space-xs);
+  border-block-start: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
 .btn--primary:hover,
-.btn--primary.is-hover {
+.btn--primary.is-hover,
+.btn--primary:focus-visible {
   background-color: var(--color-blue-hover);
+  background-image: var(--gradient-primary-hover);
+  box-shadow: var(--shadow-btn-hover);
   color: var(--color-bg);
+}
+
+.btn--primary:hover::before,
+.btn--primary:focus-visible::before {
+  transform: translateX(120%);
+}
+
+.btn--primary:hover::after,
+.btn--primary:focus-visible::after {
+  transform: translateX(3px) rotate(45deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn--primary:hover,
+  .btn--primary:focus-visible {
+    transform: translateY(-1px);
+  }
 }
 
 .btn--primary:active,
@@ -722,10 +885,11 @@ a.is-hover {
   padding-inline: var(--space-md);
   background: var(--color-tint);
   border: 2px solid var(--color-field-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: var(--fs-body);
   color: var(--color-ink);
+  transition: box-shadow var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
 }
 
 .field__input:focus,
@@ -733,6 +897,7 @@ a.is-hover {
   border-color: var(--color-blue);
   outline: 3px solid var(--color-blue);
   outline-offset: 3px;
+  box-shadow: var(--focus-glow);
 }
 
 .field__input--error,
@@ -879,10 +1044,41 @@ a.is-hover {
 }
 
 .card {
+  position: relative;
   background: var(--color-tint);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--edge-card);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-rest);
+}
+
+/* Deeper hover shadow lives on a layer so hover animates opacity, not box-shadow */
+.service-card::after,
+.testimonial::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: var(--shadow-card-hover);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.service-card:hover::after,
+.service-card:focus-within::after,
+.testimonial:hover::after,
+.testimonial:focus-within::after {
+  opacity: 1;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .service-card:hover,
+  .service-card:focus-within,
+  .testimonial:hover,
+  .testimonial:focus-within {
+    transform: translateY(calc(var(--lift) * -1));
+  }
 }
 
 .section {
@@ -922,14 +1118,15 @@ a.is-hover {
 .service-card__icon {
   display: grid;
   place-items: center;
-  inline-size: var(--space-2xl);
-  block-size: var(--space-2xl);
-  border-radius: var(--radius-pill);
+  inline-size: calc(var(--space-2xl) + var(--space-sm));
+  block-size: calc(var(--space-2xl) + var(--space-sm));
+  border-radius: var(--radius-md);
   background: var(--color-tint);
+  background-image: var(--gradient-tile);
   color: var(--color-blue);
   margin-block-end: var(--space-md);
 }
-.service-card__icon .icon { color: inherit; }
+.service-card__icon .icon { color: inherit; inline-size: 28px; block-size: 28px; }
 .service-card h3, .step h3 { font-size: var(--fs-body); }
 .service-card p { margin-block-start: var(--space-sm); }
 @media (min-width: 640px) {
@@ -944,7 +1141,7 @@ a.is-hover {
   aspect-ratio: 1 / 1;
   object-fit: cover;
 }
-.about__media { max-inline-size: 320px; }
+.about__media { position: relative; max-inline-size: 320px; }
 .about__text p { max-inline-size: var(--measure); }
 .flow > .about__cta {
   display: flex;
@@ -1029,7 +1226,9 @@ a.is-hover {
   max-inline-size: 180px;
   block-size: auto;
   color: var(--color-ink-soft);
+  transition: color var(--dur-base) var(--ease-out);
 }
+.logo-strip li:hover .logo { color: var(--color-ink); }
 .logo__serif { font-family: var(--font-display); font-weight: var(--fw-semibold); }
 .logo__sans { font-family: var(--font-body); font-weight: var(--fw-semibold); }
 .logo__wide { font-family: var(--font-body); font-weight: var(--fw-regular); letter-spacing: 0.12em; }
@@ -1059,6 +1258,7 @@ a.is-hover {
   position: relative;
   z-index: 1;
   margin-block-end: var(--space-md);
+  box-shadow: var(--ring-badge);
 }
 .step p { margin-block-start: var(--space-sm); max-inline-size: var(--measure); }
 .steps__connector { display: none; }
@@ -1087,7 +1287,7 @@ a.is-hover {
 /* ==========================================================================
    Closing CTA band (D-06, D-08)
    ========================================================================== */
-.cta-band { background: var(--color-navy); color: var(--color-bg); text-align: center; }
+.cta-band { position: relative; isolation: isolate; overflow-x: clip; background: var(--color-navy); color: var(--color-bg); text-align: center; padding-block: calc(var(--space-3xl) + var(--space-md)); }
 .cta-band__inner { max-inline-size: 36ch; margin-inline: auto; }
 .cta-band h2 { color: var(--color-bg); }
 .cta-band__inner > p:first-of-type { color: var(--color-tint); margin-block-start: var(--space-md); }
@@ -1128,6 +1328,110 @@ a.is-hover {
   transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out), visibility var(--dur-base);
 }
 .js .sticky-cta.is-visible { transform: none; opacity: 1; visibility: visible; }
+
+/* ==========================================================================
+   Motion (quick 261013-ep2): scroll reveals, stroke draws, float, hover.
+   Pre-reveal states exist ONLY under html.js-reveal, a class main.js adds after
+   checking IntersectionObserver and prefers-reduced-motion. Without JS or with
+   reduced motion nothing here ever hides or moves anything.
+   Only transform, opacity and stroke-dashoffset are animated.
+   ========================================================================== */
+.reveal {
+  transition: opacity var(--dur-reveal) var(--ease-out), transform var(--dur-reveal) var(--ease-out);
+}
+
+html.js-reveal .reveal:not(.is-revealed) {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance), 0);
+}
+
+/* Per-item stagger (main.js sets --reveal-delay); dropped once settled so hover is instant */
+html.js-reveal .reveal.is-revealed:not(.is-settled) {
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html.js-reveal .reveal.is-settled {
+  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+
+/* Squiggle divider draws on left to right */
+.divider-squiggle.reveal {
+  transform-origin: 0 50%;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+html.js-reveal .divider-squiggle.reveal:not(.is-revealed) {
+  opacity: 1;
+  transform: scaleX(0);
+}
+
+/* SVG stroke draws (length measured by main.js into --draw-len) */
+html.js-reveal .draw {
+  stroke-dasharray: var(--draw-len);
+  stroke-dashoffset: var(--draw-len);
+  transition: stroke-dashoffset var(--dur-slow) var(--ease-out) var(--draw-delay, 200ms);
+}
+
+html.js-reveal .is-revealed .draw,
+html.js-reveal .reveal.is-revealed .draw {
+  stroke-dashoffset: 0;
+}
+
+html.js-reveal .hero-word:not(.is-revealed) .accent-underline__svg path {
+  stroke-dashoffset: var(--draw-len);
+}
+
+html.js-reveal .draw.is-drawn {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+}
+
+/* Step badges pop in */
+.step__badge {
+  transition: transform var(--dur-slow) var(--ease-spring), opacity var(--dur-base) var(--ease-out);
+}
+
+html.js-reveal .step:not(.is-revealed) .step__badge {
+  opacity: 0;
+  transform: scale(.6);
+}
+
+html.js-reveal .step.is-revealed .step__badge {
+  transition-delay: 180ms;
+}
+
+/* Gentle idle float on the photos (img only, so it never fights the wrapper reveal) */
+@keyframes photo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(calc(var(--float-distance) * -1)); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero__media .media,
+  .js .about__media .media {
+    animation: photo-float var(--float-dur) ease-in-out infinite;
+  }
+  .js .about__media .media {
+    animation-delay: -3.5s;
+  }
+}
+
+/* Belt and braces: reduced motion always ends in the final state */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal .draw,
+  .draw,
+  .step__badge {
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  .btn--primary::before { display: none; }
+  .btn--primary:hover::after,
+  .btn--primary:focus-visible::after { transform: rotate(45deg); }
+}
 
 /* ==========================================================================
    Style guide (dev only, removed in Phase 5)
