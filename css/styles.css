@@ -1002,6 +1002,30 @@ a.is-hover {
 .btn--on-navy:hover { border-color: var(--color-bg); }
 
 /* ==========================================================================
+   Sticky phone CTA (D-09, SHL-04). Visible by default (no-JS), hidden at 640px+.
+   ========================================================================== */
+.sticky-cta {
+  position: fixed;
+  inset-inline: var(--space-md);
+  inset-block-end: calc(var(--space-md) + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  box-shadow: var(--shadow-card);
+}
+@media (max-width: 639px) {
+  html { scroll-padding-block-end: var(--sticky-clearance); }
+}
+@media (min-width: 640px) {
+  .sticky-cta { display: none; }
+}
+.js .sticky-cta {
+  transform: translateY(calc(100% + var(--space-xl)));
+  opacity: 0;
+  visibility: hidden;
+  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out), visibility var(--dur-base);
+}
+.js .sticky-cta.is-visible { transform: none; opacity: 1; visibility: visible; }
+
+/* ==========================================================================
    Style guide (dev only, removed in Phase 5)
    ========================================================================== */
 .sg-swatch {
