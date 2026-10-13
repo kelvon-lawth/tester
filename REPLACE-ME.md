@@ -79,6 +79,9 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | About CTA lead-in | Fancy a coffee and a chat? | `index.html` | `.about__lead` | [ ] |
 | How it works heading | Three easy steps, no jargon | `index.html` | `#how-title` | [ ] |
 | How it works steps | Chat, Plan, Grow and their descriptions | `index.html` | `.step` (3 items) | [ ] |
+| Closing band heading | Let’s get your business busy | `index.html` | `#cta-title` | [ ] |
+| Closing band support line | Tell me a bit about what you do, and let’s see how I can help. | `index.html` | `.cta-band__inner > p` | [ ] |
+| Closing band email line | Prefer email? hello@samwhitlock.example | `index.html` | `.cta-band__email` | [ ] |
 
 ## Shell
 
