@@ -914,9 +914,31 @@ a.is-hover {
 /* ==========================================================================
    Contact page
    ========================================================================== */
+.page-contact > .section {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+
+/* Soft glow band behind the centred intro */
+.page-contact > .section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--glow-hero);
+  pointer-events: none;
+}
+
+.page-contact h1,
+.page-contact .contact__intro {
+  text-align: center;
+}
+
 .contact__intro {
   max-inline-size: var(--measure);
   margin-block-start: var(--space-md);
+  margin-inline: auto;
 }
 
 .contact__grid {
@@ -931,22 +953,41 @@ a.is-hover {
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     align-items: start;
   }
+  .page-contact .contact__details {
+    position: sticky;
+    inset-block-start: calc(var(--header-h) + var(--space-lg));
+  }
+}
+
+/* Form card: same treatment as the Home cards */
+.contact__form-wrap {
+  min-inline-size: 0;
+  padding: var(--space-lg);
+  background: var(--color-bg);
+  border: 1px solid var(--edge-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card-rest);
+}
+
+@media (min-width: 640px) {
+  .contact__form-wrap { padding: var(--space-xl); }
+}
+
+.contact__form-wrap > .contact-success {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
 }
 
 .contact-form {
   display: grid;
   gap: var(--space-lg);
-  max-inline-size: var(--measure);
 }
 
-.contact-form__note,
 .field__hint {
   font-size: var(--fs-label);
   color: var(--color-ink-soft);
-}
-
-.contact-form__note {
-  margin: 0;
 }
 
 .field__hint {
@@ -967,8 +1008,17 @@ a.is-hover {
   line-height: var(--lh-body);
 }
 
+/* Send message: a deliberate --space-xl below the last field (24px grid gap + 8px) */
 .contact-form .btn {
-  justify-self: start;
+  justify-self: stretch;
+  margin-block-start: calc(var(--space-xl) - var(--space-lg));
+  min-block-size: 48px;
+  padding-block: var(--space-md);
+  padding-inline: var(--space-xl);
+}
+
+@media (min-width: 640px) {
+  .contact-form .btn { justify-self: start; }
 }
 
 .contact__details h2,

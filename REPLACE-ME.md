@@ -83,7 +83,7 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | Closing band support line | Tell me a bit about what you do, and let’s see how I can help. | `index.html` | `.cta-band__inner > p` | [ ] |
 | Closing band email line | Prefer email? hello@samwhitlock.example | `index.html` | `.cta-band__email` | [ ] |
 | Contact intro | Whether you run a bakery, a gym or the shop on the corner, I’d love to hear what you’re working on. Drop me a note below or give me a ring, and I’ll get back to you within a day or two. | `contact.html` | `.contact__intro` | [ ] |
-| Contact form labels and hints | Your name, Phone number, Email address, Message (optional); "Tell me a bit about your business and what you’d like help with."; "Fields marked required are needed so I can get back to you." | `contact.html` | `#contact-form` labels, `#message-hint`, `#contact-form-note` | [ ] |
+| Contact form labels and hints | Your name, Phone number, Email address, Message (optional); "Tell me a bit about your business and what you’d like help with." | `contact.html` | `#contact-form` labels, `#message-hint` | [ ] |
 | Contact form error messages | "Please tell me your name.", "Please add a phone number so I can call you back.", "Please add your email address.", plus email and phone format messages | `js/main.js` | contact-form IIFE, `messageFor()` | [ ] |
 | Contact success message | Thanks, that’s all looking good. This is a prototype, so nothing was actually sent. (Rewrite when a real submission is wired up) | `contact.html` | `#contact-success` | [ ] |
 | Contact direct details heading and line | Rather talk directly? I’m happy to chat by phone or email, whichever suits you. | `contact.html` | `#contact-details-title` and the paragraph after it | [ ] |

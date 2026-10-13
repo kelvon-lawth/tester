@@ -444,3 +444,17 @@ Approved with 4 non-blocking flags. The following are **binding** for planning a
 5. **Footer/navy link hover:** visible hover feedback on navy (e.g. thicker underline via `text-decoration-thickness`, or `--color-on-navy-hover`).
 6. **Spacing exceptions (explicitly allowed):** `--sticky-clearance` = 80px (composed 64+16) and the inherited 96px composed desktop section padding.
 7. **Typography exception:** SVG logo wordmark text is sized in viewBox units as an image-like asset, rendering at ≥ 12px. It is not a fifth type token.
+
+## Amendment: quick task 261013-ep2 (2026-10-13)
+
+User feedback at the Phase 2 checkpoint: Home "looks very plain, change it to look sleek, add animations to the graphics", plus "fix the position of the text and the form on the second page". Deliberate divergences from the contract above (original sections left untouched):
+
+- New tokens (spec said no new tokens): layered shadows (`--shadow-card-rest/hover`, `--shadow-media`, `--shadow-header`, `--shadow-btn*`), `--edge-card`, `--focus-glow`, `--ring-badge`, translucent `--glow-*` and `--surface-glass-*`, gradients (`--gradient-primary*`, `--gradient-tile`, `--shine`, `--glow-hero/section/band`), `--radius-lg`, `--header-h`, easing and duration tokens. Translucent tokens are contrast-checked by `tools/check-contrast.js` (GLOW and GLASS checks).
+- Bigger `--fs-display` (max 5rem, was 4.5rem), tighter tracking on `.hero-title`, underline offset 8px; `tools/font-metrics-test.js` display cap raised from 72px to 80px accordingly. Palette, fonts and section order unchanged.
+- Header is sticky and glassy (spec: solid tint header): near-opaque white, lighter at scroll top, gains a shadow once scrolled.
+- Photos get a larger radius, layered shadow and an offset tint accent shape (spec: no frame, no shadow).
+- Cards get a subtle edge and layered shadow, and lift with a deeper shadow on hover and focus-within (spec: static, no hover).
+- Logos brighten on hover (spec: static).
+- Primary buttons carry a decorative CSS chevron, shine sweep and hover nudge (spec: no arrow glyph; that line was about `.link-cta`). Button text stays exactly "Let's talk".
+- Scroll reveals, stroke draw-on (service icons, hero underline, steps connector), squiggle divider scaleX draw, step badge pop, logo stagger and idle photo float (spec: only button and sticky-CTA transitions). All gated by `html.js-reveal`, which JS adds only when IntersectionObserver exists and reduced motion is off; no-JS and reduced motion show every element in its final state.
+- Contact: centred intro over a soft glow, form in a card at about 7fr and details card at about 5fr (sticky on desktop) with aligned tops, full-width inputs, the "Fields marked required" note removed, Send message 32px below the textarea (full width on phones).
