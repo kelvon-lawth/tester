@@ -222,6 +222,8 @@ results.choreo = async () => {
       const html=document.documentElement, bad=[];
       if(!html.classList.contains('has-motion'))return{bad:['html lacks has-motion']};
       if(html.classList.contains('js-reveal'))bad.push('js-reveal present alongside has-motion');
+      // the choreography is built once fonts are ready; wait for its last structural step (the logo ticker)
+      for(let i=0;i<40&&!document.querySelector('.logo-ticker__track');i++)await sleep(100);
       const ls0=window.__ls||0;
       const pre=content().filter(el=>shown(el)&&el.getBoundingClientRect().top>innerHeight&&!settled(el));
       if(pre.length<3)bad.push('only '+pre.length+' below-the-fold elements start in a pre-state');
@@ -257,6 +259,8 @@ results["choreo-jump"] = async () => {
       ${SETTLED_CHECK}
       const html=document.documentElement;
       if(!html.classList.contains('has-motion'))return{bad:['html lacks has-motion']};
+      // the hero entrance (about 2.5s) must have finished: this group is about skipped scroll triggers, not the hero intro
+      for(let i=0;i<60&&(!document.querySelector('.hero-toggle')||document.querySelector('.hero-toggle').hidden);i++)await sleep(100);
       scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'});
       await sleep(2000);
       return{bad:checkAllSettled()};}`);
@@ -305,8 +309,9 @@ results.fallback = async () => {
       if(document.documentElement.classList.contains('has-motion'))bad.push('has-motion set without GSAP');
       for(const el of content()){if(!shown(el))continue;if(!el.classList.contains('reveal')&&getComputedStyle(el).opacity<1)bad.push('hidden without reveal class: '+cls(el));}
       if(!document.documentElement.classList.contains('js-reveal'))return{bad:['html lacks js-reveal'],n:0};
+      await sleep(200); // let the opacity transition leave its first frame
       const pre=all().filter(el=>el.classList.contains('reveal')&&!el.classList.contains('is-revealed')&&shown(el)&&getComputedStyle(el).opacity<1);
-      if(!pre.length)bad.push('no pre-reveal hidden target at load (enhancement inactive)');
+      if(!pre.length)bad.push('no pre-reveal hidden target at load (enhancement inactive): '+all().length+' targets, '+all().filter(e=>e.classList.contains('is-revealed')).length+' revealed, y='+scrollY+', opacities '+all().slice(0,5).map(e=>getComputedStyle(e).opacity).join('/'));
       // hero underline: starts undrawn (fresh clone has no transition history), ends drawn
       for(let i=0;i<40&&!document.querySelector('.hero-word.is-revealed');i++)await sleep(100);
       const hw=document.querySelector('.hero-word');

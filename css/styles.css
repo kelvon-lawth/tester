@@ -152,7 +152,7 @@
   --font-body: "Figtree", "Figtree Fallback", "Figtree Fallback Android", system-ui, sans-serif;
   --fs-body: 1.125rem;
   --fs-label: 0.875rem;
-  --fs-heading: 1.75rem;
+  --fs-heading: clamp(1.9rem, 1.1rem + 2.4vw, 2.9rem); /* quick 261013-ffc: was 1.75rem; Contact keeps 1.75rem via .page-contact */
   --fs-display: clamp(3.25rem, 1.2rem + 6.4vw, 7.25rem); /* quick 261013-ffc: bold hero, cap 116px */
   --lh-body: 1.5;
   --lh-heading: 1.2;
@@ -211,6 +211,9 @@
   --gradient-coral: linear-gradient(155deg, var(--color-coral) 0%, #FFB09A 100%);
   --mask-fade-y: linear-gradient(180deg, #000 0%, transparent 88%);
   --radius-arch: 50% 50% var(--radius-lg) var(--radius-lg) / 36% 36% var(--radius-lg) var(--radius-lg);
+  --mask-fade-x: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  --sweep-band: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .10) 50%, transparent 70%);
+  --badge-size: calc(var(--space-3xl) + var(--space-md));
   --hero-min-h: auto;
   --drift-a: 26s;
   --drift-b: 34s;
@@ -444,6 +447,11 @@ h3 {
 
 main:focus {
   outline: none;
+}
+
+/* Contact keeps its original heading size (the Home headings were scaled up in quick 261013-ffc). */
+.page-contact {
+  --fs-heading: 1.75rem;
 }
 
 .flow > * + * {
@@ -768,6 +776,20 @@ html.motion-pending .hero-word__alt {
   display: none;
 }
 
+/* The toggle's room is reserved from the first paint (motion-pending/has-motion) and the button is placed in
+   that room, so revealing it when the cycle starts shifts nothing. */
+html.motion-pending .hero__text,
+html.has-motion .hero__text {
+  padding-block-end: calc(44px + var(--space-lg));
+}
+
+html.has-motion .hero-toggle {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  margin: 0;
+}
+
 .hero-toggle:hover {
   background: var(--color-bg);
 }
@@ -949,7 +971,7 @@ html.motion-pending .hero-word__alt {
 }
 
 @keyframes field-drift-b {
-  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  from { transform: translate3d(0, 0, 0) scale(1); }
   to { transform: translate3d(-8vmax, -7vmax, 0) scale(0.94); }
 }
 
@@ -1643,7 +1665,7 @@ a.is-hover {
     display: block;
     position: absolute;
     inset-inline: calc(100% / 6);
-    inset-block-start: calc(var(--space-2xl) / 2 - 6px);
+    inset-block-start: calc(var(--badge-size) / 2 - 6px);
     inline-size: auto;
     block-size: 12px;
     z-index: 0;
@@ -1800,6 +1822,261 @@ html.js-reveal .step.is-revealed .step__badge {
   .btn--primary::before { display: none; }
   .btn--primary:hover::after,
   .btn--primary:focus-visible::after { transform: rotate(45deg); }
+}
+
+/* ==========================================================================
+   Bold scale-up and scroll choreography (quick 261013-ffc)
+   Sizes are scoped to Home (main:not(.page-contact)); Contact is untouched. Pre-animation states live in
+   js/main.js (GSAP) and exist only under html.has-motion; the rules keyed on has-motion below are structural.
+   ========================================================================== */
+main:not(.page-contact) > .section {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  padding-block: calc(var(--space-3xl) + var(--space-md));
+}
+
+main:not(.page-contact) > .section.section--tight {
+  padding-block: var(--space-2xl);
+}
+
+main:not(.page-contact) > .section.section--joined {
+  padding-block-start: var(--space-2xl);
+}
+
+@media (min-width: 1024px) {
+  main:not(.page-contact) > .section {
+    padding-block: calc(var(--space-3xl) * 2);
+  }
+  main:not(.page-contact) > .section.section--tight {
+    padding-block: var(--space-3xl);
+  }
+  main:not(.page-contact) > .section.section--joined {
+    padding-block-start: var(--space-2xl);
+  }
+}
+
+main:not(.page-contact) .section-head {
+  margin-block-end: var(--space-3xl);
+}
+
+main:not(.page-contact) .section-head h2 {
+  max-inline-size: 22em;
+}
+
+/* Services: bigger cards, bigger icon tiles */
+main:not(.page-contact) .services-grid {
+  gap: var(--space-xl);
+}
+
+main:not(.page-contact) .service-card {
+  padding: var(--space-xl);
+}
+
+@media (min-width: 640px) {
+  main:not(.page-contact) .service-card {
+    padding: calc(var(--space-xl) + var(--space-sm));
+  }
+}
+
+main:not(.page-contact) .service-card__icon {
+  inline-size: calc(var(--space-2xl) + var(--space-lg));
+  block-size: calc(var(--space-2xl) + var(--space-lg));
+  border-radius: var(--radius-lg);
+  margin-block-end: var(--space-lg);
+}
+
+main:not(.page-contact) .service-card__icon .icon {
+  inline-size: 36px;
+  block-size: 36px;
+}
+
+main:not(.page-contact) .service-card h3 {
+  font-size: var(--fs-body);
+}
+
+/* About: larger photo in a clipping frame (the frame carries radius and shadow so the photo can
+   un-mask and settle inside it) */
+.about__media {
+  max-inline-size: 440px;
+}
+
+.about__photo {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-media);
+  background: var(--color-tint);
+}
+
+.about__media .about__photo .media {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 1024px) {
+  .about__media { max-inline-size: none; }
+}
+
+/* Testimonials */
+main:not(.page-contact) .testimonials-grid {
+  gap: var(--space-xl);
+}
+
+main:not(.page-contact) .testimonial {
+  padding: var(--space-xl);
+}
+
+@media (min-width: 640px) {
+  main:not(.page-contact) .testimonial {
+    padding: calc(var(--space-xl) + var(--space-sm));
+  }
+}
+
+.testimonial blockquote p {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  line-height: 1.35;
+}
+
+main:not(.page-contact) .avatar {
+  inline-size: calc(var(--space-2xl) + var(--space-sm));
+  block-size: calc(var(--space-2xl) + var(--space-sm));
+}
+
+/* Steps: bigger badges */
+main:not(.page-contact) .step__badge {
+  inline-size: var(--badge-size);
+  block-size: var(--badge-size);
+  font-family: var(--font-display);
+  font-size: var(--fs-heading);
+}
+
+/* Closing band: a big headline on a navy surface that grows in */
+main:not(.page-contact) .cta-band {
+  padding-block: calc(var(--space-3xl) + var(--space-xl));
+}
+
+@media (min-width: 1024px) {
+  main:not(.page-contact) .cta-band {
+    padding-block: calc(var(--space-3xl) * 2);
+  }
+}
+
+.cta-band__inner {
+  max-inline-size: 56rem;
+}
+
+.cta-band h2 {
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: -0.02em;
+}
+
+.cta-band__inner > p:first-of-type {
+  max-inline-size: 36ch;
+  margin-inline: auto;
+}
+
+.cta-band .container {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-band__sweep {
+  display: none;
+}
+
+/* Decor: aria-hidden shapes and type behind content; they drift with scroll (parallax) only under has-motion */
+.deco {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.deco--ring {
+  inline-size: 22rem;
+  block-size: 22rem;
+  border-radius: 50%;
+}
+
+.deco--ring-a {
+  inset-block-start: 4%;
+  inset-inline-end: -9rem;
+  border: 3px dashed var(--color-coral);
+}
+
+.deco--ring-b {
+  inset-block-end: 3%;
+  inset-inline-start: -10rem;
+  inline-size: 28rem;
+  block-size: 28rem;
+  border: 3px solid var(--color-line);
+}
+
+.deco--word {
+  inset-block-start: 6%;
+  inset-inline-start: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--color-line);
+  white-space: nowrap;
+}
+
+.deco--word > span {
+  display: inline-block;
+  transform: scale(2.4);
+  transform-origin: left top;
+}
+
+/* Logos as a scroll-linked ticker (JS wraps the list; without has-motion the ep2 grid is untouched) */
+html.has-motion .logo-ticker {
+  overflow-x: clip;
+  -webkit-mask-image: var(--mask-fade-x);
+  mask-image: var(--mask-fade-x);
+}
+
+html.has-motion .logo-ticker__track {
+  display: flex;
+  inline-size: max-content;
+  will-change: transform;
+}
+
+html.has-motion .logo-ticker .logo-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: none;
+  gap: 0;
+}
+
+html.has-motion .logo-ticker .logo-strip li {
+  flex: none;
+  inline-size: 236px;
+  padding-inline: var(--space-lg);
+}
+
+/* GSAP owns these transforms under has-motion */
+html.has-motion .step__badge {
+  transition: none;
+}
+
+html.has-motion .is-animating {
+  transition: none !important;
+}
+
+html.has-motion .cta-band__sweep {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--sweep-band);
+}
+
+html.has-motion .text-coral-on-navy {
+  display: inline-block;
 }
 
 /* ==========================================================================

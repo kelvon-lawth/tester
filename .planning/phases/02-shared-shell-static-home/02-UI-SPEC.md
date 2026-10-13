@@ -480,3 +480,9 @@ User feedback after the ep2 pass: "push it further... get creative with the pres
 - Fallback order: GSAP motion, then the ep2 IntersectionObserver reveals (the IO script returns early when `has-motion` is set), then static content.
 - Only transform, opacity, clip-path (one-shot only, never scrubbed) and stroke-dashoffset are animated. No `filter`, no background-position animation, no pinning, no scroll hijack, no wheel or touch listeners.
 - Ambient hero motion (fields, chips, cue) is CSS, runs only under `html.has-motion` with motion allowed, and pauses with the hero toggle. Moving content over 5s therefore always has a pause control (WCAG 2.2.2).
+
+**Final values (Task 3 tuning).**
+- `--fs-heading` becomes `clamp(1.9rem, 1.1rem + 2.4vw, 2.9rem)` on Home; Contact keeps 1.75rem via `.page-contact { --fs-heading: 1.75rem }`. Home section padding 80px (phones) and 128px (desktop), service cards and testimonials padded 32 to 40px, icon tiles 72px, step badges 80px, About photo span-6, closing band headline uses `--fs-display`.
+- Section choreography: one-shot entrances use `clamp(top N%)` starts and `clearProps`; scrubbed tweens are transform only (About photo settle, band scale, logo ticker xPercent 0 to -40, steps connector dashoffset); parallax only on aria-hidden `.deco` shapes. Safety nets: load, 4s after load, every `scrollEnd` and page bottom.
+- The pause toggle's space is reserved from the first paint (padding on `.hero__text` under motion-pending/has-motion) so revealing it shifts nothing.
+- Steps use two separate `gsap.matchMedia` registrations (desktop, phones) instead of one conditions object, so crossing 1024px does not rebuild the hero.

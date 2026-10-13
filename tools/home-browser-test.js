@@ -316,10 +316,12 @@ results.sticky = async () => {
   return "sticky CTA shows past the hero, hides near the band and footer, phone only";
 };
 
+// quick 261013-ffc: layout is measured in the STATIC (reduced motion) state. With GSAP active the cards and testimonials
+// carry entrance offsets and rotations (and the logos become a ticker), so row alignment would be measured mid-animation.
 results.layout = async () => {
-  const l320 = await scenario(320, 700, false, LAYOUT);
-  const l768 = await scenario(768, 900, false, LAYOUT);
-  const l1280 = await scenario(1280, 900, false, LAYOUT);
+  const l320 = await scenario(320, 700, STATIC, LAYOUT);
+  const l768 = await scenario(768, 900, STATIC, LAYOUT);
+  const l1280 = await scenario(1280, 900, STATIC, LAYOUT);
   for (const [w, l] of [[320, l320], [768, l768], [1280, l1280]]) {
     if (l.overflow > 0) throw new Error("horizontal overflow at " + w);
   }

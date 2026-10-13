@@ -193,6 +193,8 @@
   }
 
   // Length of a stroked path in screen pixels (non-scaling strokes dash in screen space).
+  // getPointAtLength is slow on long paths, so a long periodic path (the steps connector) is measured on a
+  // short prefix and scaled: the screen/user length ratio is the same for every period.
   function lengthOf(el) {
     var total;
     try { total = el.getTotalLength(); } catch (e) { return 0; }
@@ -201,17 +203,18 @@
     if (cs.vectorEffect !== "non-scaling-stroke") { return total; }
     var m = el.getScreenCTM && el.getScreenCTM();
     if (!m) { return 0; }
-    var steps = Math.max(8, Math.min(2000, Math.ceil(total)));
+    var span = total > 300 ? 90 : total;
+    var steps = Math.max(8, Math.min(36, Math.ceil(span)));
     var prev = el.getPointAtLength(0);
     var len = 0;
     for (var i = 1; i <= steps; i++) {
-      var p = el.getPointAtLength(total * i / steps);
+      var p = el.getPointAtLength(span * i / steps);
       var dx = (p.x - prev.x) * m.a + (p.y - prev.y) * m.c;
       var dy = (p.x - prev.x) * m.b + (p.y - prev.y) * m.d;
       len += Math.sqrt(dx * dx + dy * dy);
       prev = p;
     }
-    return len;
+    return len * total / span;
   }
 
   function fontsReady() {
@@ -224,7 +227,185 @@
     return Promise.race([loaded, timeout]);
   }
 
-  // Hero, cycle and (later) section choreography live in the motion branch only.
+  // ------------------------------------------------------------------------------------------------
+  // Scroll choreography. Rules shared by every section:
+  // - One-shot entrances use start "clamp(top N%)" with once:true, so a trigger near the page end (or skipped
+  //   by a jump) is still reachable, and finish with clearProps so CSS hover lifts work afterwards.
+  // - Scrubbed tweens change transform only (never clip-path), scrub: 0.6, end "clamp(...)": at progress 1 the
+  //   content is at identity.
+  // - Parallax is only for aria-hidden .deco shapes. Native scrolling is never touched.
+  // ------------------------------------------------------------------------------------------------
+  var oneShots = [];
+
+  function qa(sel, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); }
+
+  function oneShot(trigger, start, vars) {
+    var tl = gsap.timeline({
+      scrollTrigger: { trigger: trigger, start: start || "clamp(top 85%)", once: true },
+      defaults: { ease: "expo.out" }
+    });
+    if (vars && vars.onDone) { tl.eventCallback("onComplete", vars.onDone); }
+    if (tl.scrollTrigger) { oneShots.push(tl.scrollTrigger); }
+    return tl;
+  }
+
+  // Safety net: an entrance must never stay hidden because a trigger was skipped or never reachable.
+  // "soft" plays entrances that should already have fired and finishes ones that are fully above the viewport;
+  // "final" also finishes anything still unfinished that is on or above the viewport.
+  function sweep(mode) {
+    oneShots.forEach(function (st) {
+      var a = st.animation;
+      if (!a || !st.trigger || a.progress() >= 1) { return; }
+      var r = st.trigger.getBoundingClientRect();
+      if (r.bottom < 0) { a.progress(1); }
+      else if (mode === "final" && r.top < window.innerHeight && !a.isActive()) { a.progress(1); }
+      else if (a.progress() === 0 && !a.isActive() && r.top < window.innerHeight * 0.9) { a.play(); }
+    });
+  }
+
+  function drawLength(el) {
+    var len = 0;
+    try { len = el.getTotalLength(); } catch (e) { len = 0; }
+    return Math.ceil(len) + 2;
+  }
+
+  function choreography(cleanups) {
+    // Section headings: words rise through a mask, then the split is reverted to plain text.
+    qa(".section-head h2, .about__text h2").forEach(function (h) {
+      var split = SplitText.create(h, { type: "words", mask: "words", wordsClass: "hw" });
+      var tl = oneShot(h, "clamp(top 88%)", { onDone: function () { split.revert(); } });
+      tl.from(split.words, { yPercent: 120, duration: 1, stagger: 0.06 });
+    });
+
+    // Squiggle divider draws left to right
+    qa(".divider-squiggle").forEach(function (d) {
+      var tl = oneShot(d, "clamp(top 92%)", { onDone: function () { gsap.set(d, { clearProps: "transform,opacity" }); } });
+      tl.fromTo(d, { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 1.2, ease: "power3.out" });
+    });
+
+    // Services: cards cascade, tiles pop, icon strokes draw
+    var grid = document.querySelector(".services-grid");
+    if (grid) {
+      var items = qa(".services-grid > li");
+      var tiles = qa(".service-card__icon", grid);
+      var strokes = items.map(function (li) { return qa(".service-card__icon svg path, .service-card__icon svg circle", li); });
+      var stl = oneShot(grid, "clamp(top 85%)", {
+        onDone: function () {
+          gsap.set(items, { clearProps: "transform,opacity" });
+          gsap.set(tiles, { clearProps: "transform" });
+          strokes.forEach(function (list) { gsap.set(list, { clearProps: "strokeDasharray,strokeDashoffset" }); });
+          items.forEach(function (li) { li.classList.remove("is-animating"); });
+        }
+      });
+      items.forEach(function (li) { li.classList.add("is-animating"); });
+      stl.from(items, { y: 64, rotate: 2, opacity: 0, duration: 1.1, stagger: 0.12 }, 0);
+      stl.from(tiles, { scale: 0.6, duration: 0.7, ease: "back.out(2)", stagger: 0.12 }, 0.2);
+      strokes.forEach(function (list, i) {
+        list.forEach(function (p, j) {
+          var len = drawLength(p);
+          stl.fromTo(p, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.9, ease: "power2.out" }, 0.35 + i * 0.12 + j * 0.08);
+        });
+      });
+    }
+
+    // About: photo un-masks and settles, text slides in
+    var aPhoto = document.querySelector(".about__photo");
+    var aImg = document.querySelector(".about__photo .media");
+    var aText = document.querySelector(".about__text");
+    if (aPhoto && aImg) {
+      var atl = oneShot(aPhoto, "clamp(top 82%)");
+      atl.fromTo(aPhoto, { clipPath: "inset(12% 12% 12% 12% round 24px)" }, { clipPath: "inset(0% 0% 0% 0% round 24px)", duration: 1.1, onComplete: function () { gsap.set(aPhoto, { clearProps: "clipPath" }); } });
+      gsap.fromTo(aImg, { scale: 1.15 }, { scale: 1, ease: "none", scrollTrigger: { trigger: aPhoto, start: "top bottom", end: "clamp(top 55%)", scrub: 0.6 } });
+    }
+    if (aText) {
+      var kids = qa(".about__text > :not(h2)");
+      var ttl = oneShot(aText, "clamp(top 82%)", { onDone: function () { gsap.set(kids, { clearProps: "transform,opacity" }); } });
+      ttl.from(kids, { x: 48, opacity: 0, duration: 1, stagger: 0.12 });
+    }
+
+    // Testimonials: alternate sides, one trigger per card so stacked phones animate as each card arrives
+    var wide = window.innerWidth >= 1024;
+    qa(".testimonial").forEach(function (fig, i) {
+      var tl = oneShot(fig, "clamp(top 88%)", { onDone: function () { gsap.set(fig, { clearProps: "transform,opacity" }); fig.classList.remove("is-animating"); } });
+      fig.classList.add("is-animating");
+      tl.from(fig, { x: i % 2 === 0 ? -64 : 64, rotate: i % 2 === 0 ? -3 : 3, opacity: 0, duration: 1, delay: wide ? i * 0.12 : 0 });
+    });
+
+    // Logo ticker: scroll-linked only (never auto-moves, so no WCAG 2.2.2 concern)
+    var strip = document.querySelector(".logo-strip");
+    var logosSection = strip && strip.closest("section");
+    if (strip && logosSection) {
+      var wrap = document.createElement("div");
+      wrap.className = "logo-ticker";
+      var track = document.createElement("div");
+      track.className = "logo-ticker__track";
+      strip.parentNode.insertBefore(wrap, strip);
+      wrap.appendChild(track);
+      track.appendChild(strip);
+      var clone = strip.cloneNode(true);
+      clone.classList.add("logo-strip--clone");
+      clone.setAttribute("aria-hidden", "true");
+      qa("svg", clone).forEach(function (svg) { svg.removeAttribute("role"); svg.removeAttribute("aria-label"); });
+      qa("[id]", clone).forEach(function (el) { el.removeAttribute("id"); });
+      track.appendChild(clone);
+      gsap.fromTo(track, { xPercent: 0 }, { xPercent: -40, ease: "none", scrollTrigger: { trigger: logosSection, start: "top bottom", end: "bottom top", scrub: 0.6 } });
+      cleanups.push(function () {
+        if (clone.parentNode) { clone.parentNode.removeChild(clone); }
+        if (wrap.parentNode) { wrap.parentNode.insertBefore(strip, wrap); wrap.parentNode.removeChild(wrap); }
+      });
+    }
+
+    // Closing band: grows from an inset, a soft light sweeps across, the big headline rises
+    var band = document.querySelector(".cta-band");
+    if (band) {
+      var sweepEl = band.querySelector(".cta-band__sweep");
+      var h2 = band.querySelector("h2");
+      var busy = band.querySelector(".text-coral-on-navy");
+      var bsplit = h2 ? SplitText.create(h2, { type: "words", mask: "words", wordsClass: "hw" }) : null;
+      var btl = oneShot(band, "clamp(top 88%)", { onDone: function () { if (bsplit) { bsplit.revert(); } if (sweepEl) { gsap.set(sweepEl, { autoAlpha: 0 }); } } });
+      btl.fromTo(band, { clipPath: "inset(6% 4% 6% 4% round 40px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", duration: 1.2, onComplete: function () { gsap.set(band, { clearProps: "clipPath" }); } }, 0);
+      if (sweepEl) { btl.fromTo(sweepEl, { xPercent: -100 }, { xPercent: 200, duration: 1.6, ease: "power2.inOut" }, 0.2); }
+      if (bsplit) { btl.from(bsplit.words, { yPercent: 120, duration: 1, stagger: 0.07 }, 0.25); }
+      if (busy) { btl.from(busy, { scale: 0.8, duration: 0.9, ease: "back.out(2)" }, 0.9); }
+      gsap.fromTo(band, { scale: 0.94 }, { scale: 1, ease: "none", scrollTrigger: { trigger: band, start: "top bottom", end: "clamp(top 50%)", scrub: 0.6 } });
+    }
+
+    // Decor parallax (aria-hidden shapes only)
+    qa(".deco").forEach(function (d) {
+      gsap.fromTo(d, { y: -50 }, { y: 50, ease: "none", scrollTrigger: { trigger: d.parentNode, start: "top bottom", end: "bottom top", scrub: true } });
+    });
+
+    // Safety nets: load, 4s after load, every scrollEnd, and whenever the page bottom is reached
+    function onLoaded() {
+      ScrollTrigger.refresh();
+      sweep("soft");
+      window.setTimeout(function () { sweep("final"); }, 4000);
+    }
+    if (document.readyState === "complete") { onLoaded(); } else { window.addEventListener("load", onLoaded, { once: true }); }
+    var onEnd = function () { sweep("soft"); };
+    ScrollTrigger.addEventListener("scrollEnd", onEnd);
+    var ticking = false;
+    var onScroll = function () {
+      if (ticking) { return; }
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        ticking = false;
+        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+          sweep("soft");
+          window.setTimeout(function () { sweep("final"); }, 1500);
+        }
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    cleanups.push(function () {
+      ScrollTrigger.removeEventListener("scrollEnd", onEnd);
+      window.removeEventListener("scroll", onScroll);
+    });
+  }
+
+  var ready = fontsReady();
+
+  // Hero, cycle and section choreography live in the motion branches only.
   mm.add({ motion: "(prefers-reduced-motion: no-preference)", reduce: "(prefers-reduced-motion: reduce)" }, function (context) {
     if (!context.conditions.motion) { pendingOff(); return; }
 
@@ -332,7 +513,7 @@
       });
 
       // ---- Build the kinetic word cycle once fonts have settled (needs real glyph widths).
-      fontsReady().then(function () {
+      ready.then(function () {
         if (!alive) { return; }
         context.add(function () {
           var list = word.getAttribute("data-words").split(",");
@@ -357,7 +538,7 @@
           word.setAttribute("data-current", "0");
 
           // Underline draw joins the entrance (the path is measured after the scale is applied).
-          var len = Math.ceil(lengthOf(path) * 1.02) + 2;
+          var len = Math.ceil(lengthOf(path) * 1.05) + 3;
           intro.set(svg, { opacity: 1 }, 0.95);
           intro.fromTo(path, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1.1, ease: "power2.out" }, 0.95);
 
@@ -383,6 +564,7 @@
             apply();
           });
           intro.play();
+          choreography(cleanups);
         });
       }).catch(fail);
 
@@ -393,6 +575,45 @@
     } catch (err) {
       fail(err);
     }
+  });
+
+  // Steps. Desktop: the connector draws in proportion to scroll and the badges pop. Phones: no connector, steps rise.
+  function stepOneShot(step, whole) {
+    var badge = step.querySelector(".step__badge");
+    var rest = qa("h3, p", step);
+    var tl = oneShot(step, "clamp(top 85%)", { onDone: function () { gsap.set([step, badge].concat(rest).filter(Boolean), { clearProps: "transform,opacity" }); } });
+    if (whole) { tl.from(step, { y: 44, opacity: 0, duration: 1 }, 0); }
+    if (badge) { tl.from(badge, { scale: 0.3, duration: 0.8, ease: "back.out(2)" }, 0.1); }
+    if (!whole) { tl.from(rest, { y: 28, opacity: 0, duration: 0.9, stagger: 0.08 }, 0.2); }
+  }
+
+  mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", function (context) {
+    var live = true;
+    ready.then(function () {
+      if (!live || failed) { return; }
+      context.add(function () {
+        var wrapEl = document.querySelector(".steps-wrap");
+        var conn = document.querySelector(".steps__connector");
+        var path = conn && conn.querySelector("path");
+        if (wrapEl && path) {
+          var lenOf = function () { return Math.ceil(lengthOf(path) * 1.08) + 4; };
+          gsap.set(path, { strokeDasharray: lenOf() });
+          ScrollTrigger.addEventListener("refreshInit", function () { gsap.set(path, { strokeDasharray: lenOf() }); });
+          gsap.fromTo(path, { strokeDashoffset: function () { return lenOf(); } }, { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: wrapEl, start: "top 75%", end: "clamp(bottom 55%)", scrub: 0.6, invalidateOnRefresh: true } });
+        }
+        qa(".step").forEach(function (step) { stepOneShot(step, false); });
+      });
+    }).catch(fail);
+    return function () { live = false; };
+  });
+
+  mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", function (context) {
+    var live = true;
+    ready.then(function () {
+      if (!live || failed) { return; }
+      context.add(function () { qa(".step").forEach(function (step) { stepOneShot(step, true); }); });
+    }).catch(fail);
+    return function () { live = false; };
   });
 })();
 

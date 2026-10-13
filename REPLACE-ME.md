@@ -75,6 +75,7 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | Hero support line | I’m Sam, a marketer right here in Elmhollow. I help neighbourhood businesses get found and get busy. | `index.html` | `.hero__lede` | [ ] |
 | Hero text link | See how I help | `index.html` | `.link-cta` | [ ] |
 | Hero headline for screen readers | Marketing for your bakery, café, salon, gym, florist, shop or restaurant (keep in step with the cycling word list in `data-words`) | `index.html` | `.hero-title .visually-hidden` and `.hero-word[data-words]` | [ ] |
+| Giant decorative town word behind About | Elmhollow (follows the Town row) | `index.html` | `.deco--word` in `#about` (aria-hidden) | [ ] |
 | Hero animation pause button label | Pause animation | `index.html` | `.hero-toggle__label` | [ ] |
 | Services heading | Four ways I help local businesses get found, get remembered and get busy. | `index.html` | `#services-title` | [ ] |
 | Service titles and descriptions | Social media, Local SEO & Google, Ads & campaigns, Branding & design (and their descriptions) | `index.html` | `.service-card` (4 cards) | [ ] |
