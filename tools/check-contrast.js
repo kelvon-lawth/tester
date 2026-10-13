@@ -138,6 +138,59 @@ for (const pair of FORBIDDEN) {
   else lines.push("FORBIDDEN " + pair + " " + shown + ":1");
 }
 
+// ---------------------------------------------------------------------------
+// Translucent tokens (glows, glass surfaces): composite over the real
+// backgrounds and re-check text contrast. Tokens must not use the --color- prefix.
+// ---------------------------------------------------------------------------
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function toHex(rgb) {
+  return "#" + rgb.map((c) => Math.round(c).toString(16).padStart(2, "0")).join("").toUpperCase();
+}
+function over(rgba, bgHex) {
+  const bg = hexToRgb(bgHex);
+  const a = rgba[3];
+  return toHex([0, 1, 2].map((i) => a * rgba[i] + (1 - a) * bg[i]));
+}
+const translucent = {};
+const trRe = /(--(?:glow|surface-glass)[a-z-]*)\s*:\s*rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([0-9.]+)\s*\)\s*;/g;
+while ((m = trRe.exec(rootBlock))) translucent[m[1]] = [Number(m[2]), Number(m[3]), Number(m[4]), Number(m[5])];
+
+function checkText(label, bgHex, fgNames) {
+  for (const fg of fgNames) {
+    const r = ratio(tokens[NAMES[fg]], bgHex);
+    const shown = r.toFixed(2);
+    if (r < 4.5) failures.push("FAIL " + label + " " + fg + " on composite " + bgHex + " " + shown + ":1 is below 4.5:1");
+    else lines.push("PASS " + label + " " + fg + " " + shown + ":1");
+  }
+}
+
+const glowNames = Object.keys(translucent).filter((n) => n.startsWith("--glow-"));
+if (!glowNames.length) failures.push("FAIL glow token missing: no --glow-* rgba token in :root");
+for (const n of glowNames) {
+  if (n.indexOf("navy") >= 0) {
+    checkText("glow " + n + " over navy", over(translucent[n], tokens["--color-navy"]), ["white", "tint", "coral"]);
+  } else {
+    checkText("glow " + n + " over white", over(translucent[n], tokens["--color-bg"]), ["ink", "ink-soft", "blue"]);
+    checkText("glow " + n + " over tint", over(translucent[n], tokens["--color-tint"]), ["ink", "ink-soft"]);
+  }
+}
+for (const n of ["--surface-glass-solid", "--surface-glass-top"]) {
+  if (!translucent[n]) { failures.push("FAIL glass token missing: " + n); continue; }
+}
+if (translucent["--surface-glass-solid"]) {
+  for (const bg of ["--color-navy", "--color-bg", "--color-tint"]) {
+    checkText("glass solid over " + bg, over(translucent["--surface-glass-solid"], tokens[bg]), ["ink", "blue"]);
+  }
+}
+if (translucent["--surface-glass-top"]) {
+  for (const bg of ["--color-bg", "--color-tint"]) {
+    checkText("glass top over " + bg, over(translucent["--surface-glass-top"], tokens[bg]), ["ink", "blue"]);
+  }
+}
+
 console.log(lines.join("\n"));
 if (failures.length) {
   console.log(failures.join("\n"));

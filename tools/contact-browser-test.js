@@ -159,9 +159,21 @@ const SUCCESS = `async()=>{
   return{formHidden:q('#contact-form').hidden,formDisplay:getComputedStyle(q('#contact-form')).display,successHidden:hidden('#contact-success'),text:q('#contact-success').textContent,active:document.activeElement.id,same:location.href===href};}`;
 
 const LAYOUT = `async()=>{
-  const r=s=>document.querySelector(s).getBoundingClientRect();
-  const f=r('.contact__form-wrap'),d=r('.contact__details');
-  return{fLeft:f.left,fTop:f.top,fBottom:f.bottom,dLeft:d.left,dTop:d.top,overflow:document.documentElement.scrollWidth-window.innerWidth};}`;
+  const q=s=>document.querySelector(s);
+  const r=s=>q(s).getBoundingClientRect();
+  const f=r('.contact__form-wrap'),d=r('.contact__details'),c=r('.container');
+  const wrap=q('.contact__form-wrap'),wcs=getComputedStyle(wrap);
+  const colContent=wrap.clientWidth-parseFloat(wcs.paddingLeft)-parseFloat(wcs.paddingRight);
+  const center=e=>{const b=e.getBoundingClientRect();return b.left+b.width/2;};
+  const h1=q('h1'),intro=q('.contact__intro');
+  const msg=r('#message'),btn=r('#contact-form button[type=submit]'),form=r('#contact-form');
+  const gap=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--space-xl'));
+  return{fLeft:f.left,fTop:f.top,fBottom:f.bottom,dLeft:d.left,dTop:d.top,dWidth:d.width,cWidth:c.width,
+    nameW:r('#name').width,msgW:msg.width,colContent,
+    h1C:center(h1),introC:center(intro),contC:c.left+c.width/2,
+    hasNote:!!q('#contact-form-note'),formDescribed:q('#contact-form').hasAttribute('aria-describedby'),
+    btnGap:btn.top-msg.bottom,spaceXl:gap,btnW:btn.width,formW:form.width,btnBottom:btn.bottom,
+    overflow:document.documentElement.scrollWidth-window.innerWidth};}`;
 
 const results = {};
 
@@ -194,13 +206,29 @@ results.success = async () => {
 };
 
 results.layout = async () => {
+  const near = (x, y, tol) => Math.abs(x - y) <= tol;
   const w = await scenario(1280, 900, false, LAYOUT);
   if (!(w.dLeft > w.fLeft + 100)) throw new Error("1280px: details not in a second column");
-  if (Math.abs(w.dTop - w.fTop) > 40) throw new Error("1280px: columns not on the same row");
+  if (!near(w.dTop, w.fTop, 2)) throw new Error("1280px: column tops differ by " + Math.abs(w.dTop - w.fTop).toFixed(1) + "px");
+  if (w.nameW < w.colContent - 1) throw new Error("1280px: #name (" + w.nameW + ") narrower than column content (" + w.colContent + ")");
+  if (w.msgW < w.colContent - 1) throw new Error("1280px: #message narrower than column content");
+  if (!near(w.h1C, w.contC, 2)) throw new Error("1280px: h1 not centred");
+  if (!near(w.introC, w.contC, 2)) throw new Error("1280px: intro not centred");
+  if (!(w.dWidth >= w.cWidth * 0.3)) throw new Error("1280px: details column under 30% of container");
+  if (w.hasNote) throw new Error("#contact-form-note still exists");
+  if (w.formDescribed) throw new Error("form still has aria-describedby");
+  if (!near(w.btnGap, w.spaceXl, 2)) throw new Error("1280px: button gap " + w.btnGap + " vs --space-xl " + w.spaceXl);
+  if (!(w.btnW < w.formW * 0.6)) throw new Error("1280px: button not auto width (" + w.btnW + " of " + w.formW + ")");
   const p = await scenario(375, 740, false, LAYOUT);
   if (!(p.dTop >= p.fBottom)) throw new Error("375px: details not stacked below the form");
   if (p.overflow > 0) throw new Error("375px: horizontal overflow of " + p.overflow);
-  return "two columns at 1280, stacked with no overflow at 375";
+  if (!near(p.btnGap, p.spaceXl, 2)) throw new Error("375px: button gap " + p.btnGap + " vs --space-xl " + p.spaceXl);
+  if (p.btnW < p.formW - 1) throw new Error("375px: button not full width (" + p.btnW + " of " + p.formW + ")");
+  if (!(p.dTop >= p.btnBottom + p.spaceXl - 2)) throw new Error("375px: details card only " + (p.dTop - p.btnBottom) + "px below the button");
+  const n = await scenario(320, 700, false, LAYOUT);
+  if (n.overflow > 0) throw new Error("320px: horizontal overflow of " + n.overflow);
+  if (!(n.dTop >= n.fBottom)) throw new Error("320px: details not stacked below the form");
+  return "7/5 aligned cards, full-width inputs, centred intro, 32px button gap at 1280; stacked, full-width button, no overflow at 375 and 320";
 };
 
 // Collect console errors / exceptions while loading a page.
