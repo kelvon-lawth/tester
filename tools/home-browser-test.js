@@ -238,6 +238,8 @@ const LAYOUT = `async()=>{
   out.cards=all('.service-card').length;out.cardCols=lefts.size;
   const tops=s=>all(s).map(e=>e.getBoundingClientRect().top);
   out.testimonialTops=tops('.testimonial');out.stepTops=tops('.step');
+  // quick 261022-bsb: pricing cards
+  out.pricingTops=tops('.pricing-card');out.pricingLefts=new Set(all('.pricing-card').map(e=>Math.round(e.getBoundingClientRect().left))).size;
   const c=document.querySelector('.steps__connector');out.connector=c?getComputedStyle(c).display:null;
   out.logos=all('.logo-strip svg').map(svg=>{
     const texts=[...svg.querySelectorAll('text')];
@@ -329,6 +331,9 @@ results.layout = async () => {
   const eq = (a, n) => a.length === n && Math.max(...a) - Math.min(...a) <= 2;
   if (!eq(l1280.testimonialTops, 3)) throw new Error("1280px: 3 testimonials should share a top");
   if (!eq(l1280.stepTops, 3)) throw new Error("1280px: 3 steps should share a top");
+  // quick 261022-bsb: pricing cards sit side by side at 1280 and stack at 320
+  if (!eq(l1280.pricingTops, 2) || l1280.pricingLefts !== 2) throw new Error("1280px: 2 pricing cards should sit side by side");
+  if (l320.pricingTops.length !== 2 || !growing(l320.pricingTops) || l320.pricingLefts !== 1) throw new Error("320px: pricing cards should stack");
   if (l1280.connector === null || l1280.connector === "none") throw new Error("1280px: steps connector should show");
   for (const [w, l] of [[768, l768], [320, l320]]) {
     if (l.connector !== "none") throw new Error(w + "px: steps connector should be hidden");
@@ -340,7 +345,7 @@ results.layout = async () => {
     if (!(g.eff >= 12)) throw new Error("320px: logo text renders at " + g.eff.toFixed(1) + "px, under 12px");
     if (!g.texts || !g.fit) throw new Error("320px: logo name does not fit inside its viewBox");
   }
-  return "no overflow, card/testimonial/step columns, connector, logo legibility";
+  return "no overflow, card/testimonial/step/pricing columns, connector, logo legibility";
 };
 
 // ---------------------------------------------------------------------------

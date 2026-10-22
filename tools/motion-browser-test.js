@@ -171,7 +171,7 @@ async function scenario(width, height, opts, expression) {
 // ---------------------------------------------------------------------------
 // Keep TARGETS in sync with the reveal selector list in js/main.js.
 const HELPERS = `
-const TARGETS=['.section-head','.service-card','.about__media','.about__text','.testimonial','.logo-strip li','.step','.cta-band__inner','.hero__media','.divider-squiggle','.steps__connector','.contact__form-wrap','.contact__details','.page-contact .contact__intro'];
+const TARGETS=['.section-head','.service-card','.about__media','.about__text','.testimonial','.logo-strip li','.step','.pricing-card','.cta-band__inner','.hero__media','.divider-squiggle','.steps__connector','.contact__form-wrap','.contact__details','.page-contact .contact__intro'];
 // CONTENT (quick 261013-ffc): every visible content element of the bold page. After motion settles all of it must be
 // at rest (opacity 1, no offset, no clip).
 const CONTENT=TARGETS.concat(['.hero-title__lead','.hero__lede','#hero-cta','.trust-cue','.hero-chip','.section-head h2','.about__media .media','.cta-band']);

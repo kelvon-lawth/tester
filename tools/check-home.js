@@ -244,6 +244,38 @@ groups.steps = () => {
   return e;
 };
 
+// quick 261022-bsb: pricing section
+groups.pricing = () => {
+  const e = [];
+  const s = sectionById(index, "pricing");
+  if (!s) return ["no #pricing section"];
+  if (!s.includes('aria-labelledby="pricing-title"')) e.push("pricing aria-labelledby missing");
+  if (/section--tint/.test(s.slice(0, s.indexOf(">")))) e.push("pricing must not be section--tint");
+  if (!/<h2\b[^>]*id="pricing-title"[^>]*>Simple monthly plans, no surprises<\/h2>/.test(s)) e.push("pricing h2 wrong");
+  if (!textOf(s).includes("No contracts. Cancel any month.")) e.push("pricing intro missing");
+  const ul = /<ul class="pricing-grid">[\s\S]*?<\/ul>\s*<\/div>\s*<\/section>/.exec(s) || /<ul class="pricing-grid">[\s\S]*$/.exec(s);
+  if (!ul) return e.concat("no ul.pricing-grid");
+  const cards = s.match(/<article\b[^>]*class="[^"]*\bpricing-card\b[^"]*"[\s\S]*?<\/article>/g) || [];
+  if (cards.length !== 2) return e.concat("expected 2 .pricing-card articles, found " + cards.length);
+  const names = ["Local Basics", "Growth"];
+  const prices = ["£195", "£395"];
+  cards.forEach((c, i) => {
+    const h3 = c.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/);
+    if (!h3 || textOf(h3[1]) !== names[i]) e.push("plan " + (i + 1) + " h3 should be " + names[i]);
+    if (!new RegExp(prices[i] + "\\s*(<[^>]+>\\s*)*a month").test(c)) e.push("plan " + (i + 1) + " price should read " + prices[i] + " a month");
+    const feat = /<ul class="pricing-card__features">([\s\S]*?)<\/ul>/.exec(c);
+    if (!feat || count(feat[1], /<li\b/g) < 4) e.push("plan " + (i + 1) + " needs ul.pricing-card__features with at least 4 li");
+    if (!c.includes('class="btn btn--primary" href="contact.html">' + LETS + "</a>")) e.push("plan " + (i + 1) + " Let’s talk button missing");
+  });
+  const feats = s.match(/<[a-z]+\b[^>]*class="[^"]*\bpricing-card--featured\b/g) || [];
+  if (feats.length !== 1) e.push("expected exactly one pricing-card--featured, found " + feats.length);
+  if (!/pricing-card--featured/.test(cards[1] || "")) e.push("Growth must be the featured card");
+  if (/pricing-card--featured/.test(cards[0] || "")) e.push("Local Basics must not be featured");
+  if (!/class="pricing-card__badge"[^>]*>Most popular<\/p>/.test(cards[1] || "")) e.push("Growth needs pricing-card__badge Most popular");
+  for (const v of s.match(/<svg\b[^>]*>/g) || []) if (!/aria-hidden="true"/.test(v) || !/focusable="false"/.test(v)) e.push("pricing svg needs aria-hidden and focusable=false");
+  return e;
+};
+
 groups.band = () => {
   const e = [];
   const s = sectionByLabel(index, "cta-title");
@@ -275,6 +307,8 @@ groups.order = () => {
     ["logos", m.search(/<section[^>]*aria-labelledby="logos-title"/)],
     ["divider", m.search(/class="[^"]*\bdivider-squiggle\b/)],
     ["#how-it-works", m.search(/<section[^>]*id="how-it-works"/)],
+    // quick 261022-bsb: pricing sits between steps and the closing band
+    ["#pricing", m.search(/<section[^>]*id="pricing"/)],
     [".cta-band", m.search(/<section[^>]*class="[^"]*\bcta-band\b/)],
   ];
   for (const [n, p] of pos) if (p < 0) e.push("missing in main: " + n);
@@ -283,17 +317,18 @@ groups.order = () => {
   if (tints.length !== 2 || !/id="services"/.test(tints[0] || "") || !/id="kind-words"/.test(tints[1] || "")) e.push("exactly 2 section--tint required: #services and #kind-words");
   if (count(index, /class="[^"]*\bcta-band\b/g) !== 1) e.push("cta-band must appear exactly once");
   const lets = index.match(/<a\b[^>]*>Let’s talk<\/a>/g) || [];
-  if (lets.length !== 4) e.push("expected 4 Let’s talk links, found " + lets.length);
+  // quick 261022-bsb: +2 pricing buttons
+  if (lets.length !== 6) e.push("expected 6 Let’s talk links, found " + lets.length);
   if (!lets.every((a) => a.includes('href="contact.html"'))) e.push("every Let’s talk link must go to contact.html");
   return e;
 };
 
 groups.replace = () => {
   const e = [];
-  for (const h of ["Identity", "Contact details", "Numbers and claims", "Photos", "Testimonials", "Logos", "Copy blocks", "Shell"]) {
+  for (const h of ["Identity", "Contact details", "Numbers and claims", "Photos", "Testimonials", "Logos", "Copy blocks", "Pricing", "Shell"]) {
     if (!new RegExp("^## " + h + "$", "m").test(replaceMe)) e.push("REPLACE-ME.md missing heading ## " + h);
   }
-  const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "(555) 555-0142", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer"].concat(LOGOS);
+  const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "(555) 555-0142", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer", "Local Basics", "Growth", "£195", "£395", "Most popular", "No contracts. Cancel any month."].concat(LOGOS); // quick 261022-bsb: pricing terms
   for (const t of terms) if (!replaceMe.includes(t)) e.push("REPLACE-ME.md missing: " + t);
   for (const m of index.match(/<img\b[^>]*>/g) || []) {
     const src = ((m.match(/src="(https:\/\/[^"]+)"/) || [])[1] || "").replace(/&amp;/g, "&");
