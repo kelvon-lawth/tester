@@ -72,7 +72,7 @@ groups.success = () => {
 groups.details = () => {
   const e = [];
   if (!main.includes("mailto:hello@samwhitlock.example")) e.push("main lacks mailto link");
-  if (!main.includes("tel:+15555550142")) e.push("main lacks tel link");
+  if (!main.includes("tel:+441632960123")) e.push("main lacks tel link");
   if (!/class="[^"]*\bcontact__grid\b/.test(main)) e.push("main lacks .contact__grid");
   return e;
 };

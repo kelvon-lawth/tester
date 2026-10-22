@@ -496,8 +496,9 @@ main:focus {
   padding-block: var(--space-2xl) var(--space-lg);
 }
 
+/* Room for the phone sticky CTA, which only Home has */
 @media (max-width: 639px) {
-  .site-footer { padding-block-end: calc(var(--space-lg) + var(--sticky-clearance)); }
+  main:not(.page-contact) ~ .site-footer { padding-block-end: calc(var(--space-lg) + var(--sticky-clearance)); }
 }
 
 .site-footer__grid {

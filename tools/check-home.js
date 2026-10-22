@@ -57,7 +57,7 @@ groups.shell = () => {
       '<a class="wordmark" href="index.html">Sam Whitlock</a>',
       '<nav class="site-nav" aria-label="Main">',
       "mailto:hello@samwhitlock.example",
-      "tel:+15555550142",
+      "tel:+441632960123",
       "Area served",
       "Elmhollow, Fenwick Cross and Thornby",
       "Prototype — sample content",
@@ -328,7 +328,7 @@ groups.replace = () => {
   for (const h of ["Identity", "Contact details", "Numbers and claims", "Photos", "Testimonials", "Logos", "Copy blocks", "Pricing", "Shell"]) {
     if (!new RegExp("^## " + h + "$", "m").test(replaceMe)) e.push("REPLACE-ME.md missing heading ## " + h);
   }
-  const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "(555) 555-0142", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer", "Local Basics", "Growth", "£195", "£395", "Most popular", "No contracts. Cancel any month."].concat(LOGOS); // quick 261022-bsb: pricing terms
+  const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "01632 960 123", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer", "Local Basics", "Growth", "£195", "£395", "Most popular", "No contracts. Cancel any month."].concat(LOGOS); // quick 261022-bsb: pricing terms
   for (const t of terms) if (!replaceMe.includes(t)) e.push("REPLACE-ME.md missing: " + t);
   for (const m of index.match(/<img\b[^>]*>/g) || []) {
     const src = ((m.match(/src="(https:\/\/[^"]+)"/) || [])[1] || "").replace(/&amp;/g, "&");

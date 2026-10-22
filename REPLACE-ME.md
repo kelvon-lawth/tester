@@ -16,7 +16,7 @@ Everything listed here is fictional or sample content and must be swapped before
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
 | Email | hello@samwhitlock.example (and its `mailto:` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` | [ ] |
-| Phone | (555) 555-0142 (and `tel:+15555550142` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` | [ ] |
+| Phone | 01632 960 123 (and `tel:+441632960123` href; UK Ofcom drama-range number, never in service) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` | [ ] |
 | Area served | Elmhollow, Fenwick Cross and Thornby | `index.html`, `contact.html` | SHELL:FOOTER block, "Area served" | [ ] |
 
 ## Numbers and claims
@@ -71,6 +71,7 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | Home page title | Sam Whitlock \| Local marketing help in Elmhollow | `index.html` | `<title>` | [ ] |
 | Contact page title | Contact \| Sam Whitlock, local marketer in Elmhollow | `contact.html` | `<title>` | [ ] |
 | Home meta description | Friendly, local marketing help for Elmhollow bakeries, gyms, salons and shops. Sample content for a prototype. | `index.html` | `<meta name="description">` | [ ] |
+| Contact meta description | Get in touch with Sam Whitlock, a friendly local marketer in Elmhollow. Email, ring or send a note. Sample content for a prototype. | `contact.html` | `<meta name="description">` | [ ] |
 | Footer tagline | Helping local businesses in Elmhollow and nearby villages get found and get busy. | `index.html`, `contact.html` | SHELL:FOOTER block | [ ] |
 | Hero support line | I’m Sam, a marketer right here in Elmhollow. I help neighbourhood businesses get found and get busy. | `index.html` | `.hero__lede` | [ ] |
 | Hero text link | See how I help | `index.html` | `.link-cta` | [ ] |
