@@ -241,7 +241,23 @@
   //   content is at identity.
   // - Parallax is only for aria-hidden .deco shapes. Native scrolling is never touched.
   // ------------------------------------------------------------------------------------------------
-  var oneShots = [];
+  // One-shot registries, one per matchMedia run. Each run registers its triggers inside track() and drops its
+  // registry on revert, so sweep() never touches reverted timelines from an earlier run.
+  var registries = [];
+  var activeReg = null;
+
+  function track(fn) {
+    var reg = [];
+    registries.push(reg);
+    var prev = activeReg;
+    activeReg = reg;
+    try { fn(); } finally { activeReg = prev; }
+    return function () {
+      var i = registries.indexOf(reg);
+      if (i >= 0) { registries.splice(i, 1); }
+      reg.length = 0;
+    };
+  }
 
   function qa(sel, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); }
 
@@ -251,7 +267,7 @@
       defaults: { ease: "expo.out" }
     });
     if (vars && vars.onDone) { tl.eventCallback("onComplete", vars.onDone); }
-    if (tl.scrollTrigger) { oneShots.push(tl.scrollTrigger); }
+    if (tl.scrollTrigger && activeReg) { activeReg.push(tl.scrollTrigger); }
     return tl;
   }
 
@@ -259,13 +275,15 @@
   // "soft" plays entrances that should already have fired and finishes ones that are fully above the viewport;
   // "final" also finishes anything still unfinished that is on or above the viewport.
   function sweep(mode) {
-    oneShots.forEach(function (st) {
-      var a = st.animation;
-      if (!a || !st.trigger || a.progress() >= 1) { return; }
-      var r = st.trigger.getBoundingClientRect();
-      if (r.bottom < 0) { a.progress(1); }
-      else if (mode === "final" && r.top < window.innerHeight && !a.isActive()) { a.progress(1); }
-      else if (a.progress() === 0 && !a.isActive() && r.top < window.innerHeight * 0.9) { a.play(); }
+    registries.forEach(function (reg) {
+      reg.forEach(function (st) {
+        var a = st.animation;
+        if (!a || !st.trigger || a.progress() >= 1) { return; }
+        var r = st.trigger.getBoundingClientRect();
+        if (r.bottom < 0) { a.progress(1); }
+        else if (mode === "final" && r.top < window.innerHeight && !a.isActive()) { a.progress(1); }
+        else if (a.progress() === 0 && !a.isActive() && r.top < window.innerHeight * 0.9) { a.play(); }
+      });
     });
   }
 
@@ -397,11 +415,14 @@
       gsap.fromTo(d, { y: -50 }, { y: 50, ease: "none", scrollTrigger: { trigger: d.parentNode, start: "top bottom", end: "bottom top", scrub: true } });
     });
 
-    // Safety nets: load, 4s after load, every scrollEnd, and whenever the page bottom is reached
+    // Safety nets: load, 4s after load, every scrollEnd, and whenever the page bottom is reached.
+    // Timers are tracked so a revert (reduced motion switched on at runtime) cancels them.
+    var timers = [];
+    function later(fn, ms) { timers.push(window.setTimeout(fn, ms)); }
     function onLoaded() {
       ScrollTrigger.refresh();
       sweep("soft");
-      window.setTimeout(function () { sweep("final"); }, 4000);
+      later(function () { sweep("final"); }, 4000);
     }
     if (document.readyState === "complete") { onLoaded(); } else { window.addEventListener("load", onLoaded, { once: true }); }
     var onEnd = function () { sweep("soft"); };
@@ -414,7 +435,7 @@
         ticking = false;
         if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
           sweep("soft");
-          window.setTimeout(function () { sweep("final"); }, 1500);
+          later(function () { sweep("final"); }, 1500);
         }
       });
     };
@@ -422,6 +443,9 @@
     cleanups.push(function () {
       ScrollTrigger.removeEventListener("scrollEnd", onEnd);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("load", onLoaded);
+      timers.forEach(function (t) { window.clearTimeout(t); });
+      timers.length = 0;
     });
   }
 
@@ -586,7 +610,7 @@
             apply();
           });
           intro.play();
-          choreography(cleanups);
+          cleanups.push(track(function () { choreography(cleanups); }));
         });
       }).catch(fail);
 
@@ -611,6 +635,7 @@
 
   mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", function (context) {
     var live = true;
+    var dispose = null;
     ready.then(function () {
       if (!live || failed) { return; }
       context.add(function () {
@@ -623,19 +648,28 @@
           ScrollTrigger.addEventListener("refreshInit", function () { gsap.set(path, { strokeDasharray: lenOf() }); });
           gsap.fromTo(path, { strokeDashoffset: function () { return lenOf(); } }, { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: wrapEl, start: "top 75%", end: "clamp(bottom 55%)", scrub: 0.6, invalidateOnRefresh: true } });
         }
-        qa(".step").forEach(function (step) { stepOneShot(step, false); });
+        dispose = track(function () { qa(".step").forEach(function (step) { stepOneShot(step, false); }); });
       });
     }).catch(fail);
-    return function () { live = false; };
+    return function () {
+      live = false;
+      if (dispose) { dispose(); }
+    };
   });
 
   mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", function (context) {
     var live = true;
+    var dispose = null;
     ready.then(function () {
       if (!live || failed) { return; }
-      context.add(function () { qa(".step").forEach(function (step) { stepOneShot(step, true); }); });
+      context.add(function () {
+        dispose = track(function () { qa(".step").forEach(function (step) { stepOneShot(step, true); }); });
+      });
     }).catch(fail);
-    return function () { live = false; };
+    return function () {
+      live = false;
+      if (dispose) { dispose(); }
+    };
   });
 })();
 
