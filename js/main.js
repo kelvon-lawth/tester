@@ -161,7 +161,7 @@
    - html.has-motion is the ONLY gate for the pre-animation CSS and JS states. It is added in the
      no-preference branch of gsap.matchMedia and removed again on revert or on any failure.
    - No GSAP, reduced motion or a failure leaves the static page (or the IntersectionObserver reveals below).
-   Animated properties: transform, opacity, clip-path (one-shot only) and stroke-dashoffset. */
+   Animated properties: transform, opacity and stroke-dashoffset only (no clip-path, per the CLAUDE.md constraint). */
 (function () {
   "use strict";
 
@@ -338,7 +338,8 @@
     var aText = document.querySelector(".about__text");
     if (aPhoto && aImg) {
       var atl = oneShot(aPhoto, "clamp(top 82%)");
-      atl.fromTo(aPhoto, { clipPath: "inset(12% 12% 12% 12% round 24px)" }, { clipPath: "inset(0% 0% 0% 0% round 24px)", duration: 1.1, onComplete: function () { gsap.set(aPhoto, { clearProps: "clipPath" }); } });
+      // Frame grows from 76% (the old 12% inset) to full size: transform only, so it stays composited.
+      atl.fromTo(aPhoto, { scale: 0.76 }, { scale: 1, duration: 1.1, onComplete: function () { gsap.set(aPhoto, { clearProps: "transform" }); } });
       gsap.fromTo(aImg, { scale: 1.15 }, { scale: 1, ease: "none", scrollTrigger: { trigger: aPhoto, start: "top bottom", end: "clamp(top 55%)", scrub: 0.6 } });
     }
     if (aText) {
@@ -395,7 +396,7 @@
       });
     }
 
-    // Closing band: grows from an inset, a soft light sweeps across, the big headline rises
+    // Closing band: fades in while the scrubbed scale grows it, a soft light sweeps across, the big headline rises
     var band = document.querySelector(".cta-band");
     if (band) {
       var sweepEl = band.querySelector(".cta-band__sweep");
@@ -403,7 +404,8 @@
       var busy = band.querySelector(".text-coral-on-navy");
       var bsplit = h2 ? SplitText.create(h2, { type: "words", mask: "words", wordsClass: "hw" }) : null;
       var btl = oneShot(band, "clamp(top 88%)", { onDone: function () { if (bsplit) { bsplit.revert(); } if (sweepEl) { gsap.set(sweepEl, { autoAlpha: 0 }); } } });
-      btl.fromTo(band, { clipPath: "inset(6% 4% 6% 4% round 40px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", duration: 1.2, onComplete: function () { gsap.set(band, { clearProps: "clipPath" }); } }, 0);
+      // Opacity only here: the band's scale belongs to the scrubbed tween below.
+      btl.fromTo(band, { opacity: 0 }, { opacity: 1, duration: 0.9, ease: "power2.out", onComplete: function () { gsap.set(band, { clearProps: "opacity" }); } }, 0);
       if (sweepEl) { btl.fromTo(sweepEl, { xPercent: -100 }, { xPercent: 200, duration: 1.6, ease: "power2.inOut" }, 0.2); }
       if (bsplit) { btl.from(bsplit.words, { yPercent: 120, duration: 1, stagger: 0.07 }, 0.25); }
       if (busy) { btl.from(busy, { scale: 0.8, duration: 0.9, ease: "back.out(2)" }, 0.9); }
@@ -487,7 +489,10 @@
       intro.from(leadSplit.words, { yPercent: 125, duration: 1.1, stagger: 0.08 }, 0);
       intro.from(word, { y: 46, opacity: 0, duration: 1.1 }, 0.35);
       intro.from([lede, actions, trust], { y: 30, opacity: 0, duration: 1, stagger: 0.1 }, 0.6);
-      intro.fromTo(photo, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, ease: "expo.inOut" }, 0.15);
+      // Photo reveal (transform/opacity only): the arch frame fades in while the photo rises inside its
+      // overflow-hidden mask and settles from a slight zoom.
+      intro.from(photo, { opacity: 0, duration: 0.8, ease: "power2.out" }, 0.15);
+      intro.from(photoImg, { yPercent: 100, duration: 1.3, ease: "expo.inOut" }, 0.15);
       intro.from(photoImg, { scale: 1.22, duration: 1.7 }, 0.15);
       intro.from(frames, { opacity: 0, scale: 0.86, duration: 1.2, stagger: 0.14, ease: "power3.out" }, 0.55);
       intro.from(chips, { scale: 0.4, opacity: 0, duration: 0.85, stagger: 0.16, ease: "back.out(1.7)" }, 1.1);
@@ -602,7 +607,7 @@
 
           intro.eventCallback("onComplete", function () {
             leadSplit.revert();
-            gsap.set([word, lede, actions, trust, photo, photoImg, svg, path, cue].concat(Array.prototype.slice.call(frames), Array.prototype.slice.call(chips)).filter(Boolean), { clearProps: "transform,opacity,clipPath,scale,strokeDasharray,strokeDashoffset" });
+            gsap.set([word, lede, actions, trust, photo, photoImg, svg, path, cue].concat(Array.prototype.slice.call(frames), Array.prototype.slice.call(chips)).filter(Boolean), { clearProps: "transform,opacity,scale,strokeDasharray,strokeDashoffset" });
             gsap.set(svg, { transformOrigin: "0% 50%", scaleX: ratios[0] });
             Array.prototype.forEach.call(chips, function (c) { c.classList.add("is-bobbing"); });
             started = true;
