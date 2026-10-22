@@ -1239,7 +1239,6 @@ a.is-hover {
   box-shadow: var(--focus-glow);
 }
 
-.field__input--error,
 .field__input[aria-invalid="true"] {
   border-color: var(--color-error);
 }
@@ -1325,12 +1324,9 @@ a.is-hover {
 }
 
 .field__hint {
+  margin: calc(var(--space-xs) * -1) 0 var(--space-sm);
   font-size: var(--fs-label);
   color: var(--color-ink-soft);
-}
-
-.field__hint {
-  margin: calc(var(--space-xs) * -1) 0 var(--space-sm);
 }
 
 .field__req {
@@ -1444,7 +1440,6 @@ a.is-hover {
   .span-6 { grid-column: span 6; }
   .span-7 { grid-column: span 7; }
   .span-8 { grid-column: span 8; }
-  .span-12 { grid-column: span 12; }
 }
 
 .card {
@@ -1557,7 +1552,7 @@ a.is-hover {
   aspect-ratio: 1 / 1;
   object-fit: cover;
 }
-.about__media { position: relative; max-inline-size: 320px; }
+.about__media { position: relative; max-inline-size: 440px; }
 .about__text p { max-inline-size: var(--measure); }
 .flow > .about__cta {
   display: flex;
@@ -1774,7 +1769,7 @@ a.is-hover {
    Closing CTA band (D-06, D-08)
    ========================================================================== */
 .cta-band { position: relative; isolation: isolate; overflow-x: clip; background: var(--color-navy); color: var(--color-bg); text-align: center; padding-block: calc(var(--space-3xl) + var(--space-md)); }
-.cta-band__inner { max-inline-size: 36ch; margin-inline: auto; }
+.cta-band__inner { max-inline-size: 56rem; margin-inline: auto; }
 .cta-band h2 { color: var(--color-bg); }
 .cta-band__inner > p:first-of-type { color: var(--color-tint); margin-block-start: var(--space-md); }
 .cta-band .btn { margin-block-start: var(--space-xl); }
@@ -1988,11 +1983,7 @@ main:not(.page-contact) .service-card h3 {
 }
 
 /* About: larger photo in a clipping frame (the frame carries radius and shadow so the photo can
-   un-mask and settle inside it) */
-.about__media {
-  max-inline-size: 440px;
-}
-
+   settle inside it). Its 440px max width lives on .about__media above. */
 .about__photo {
   overflow: hidden;
   border-radius: var(--radius-lg);
@@ -2003,10 +1994,6 @@ main:not(.page-contact) .service-card h3 {
 .about__media .about__photo .media {
   border-radius: 0;
   box-shadow: none;
-}
-
-@media (min-width: 1024px) {
-  .about__media { max-inline-size: none; }
 }
 
 /* Testimonials */
@@ -2052,10 +2039,6 @@ main:not(.page-contact) .cta-band {
   main:not(.page-contact) .cta-band {
     padding-block: calc(var(--space-3xl) * 2);
   }
-}
-
-.cta-band__inner {
-  max-inline-size: 56rem;
 }
 
 .cta-band h2 {
