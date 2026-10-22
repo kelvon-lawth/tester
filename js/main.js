@@ -636,6 +636,8 @@
   mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", function (context) {
     var live = true;
     var dispose = null;
+    var onRefreshInit = null;
+    var connPath = null;
     ready.then(function () {
       if (!live || failed) { return; }
       context.add(function () {
@@ -644,8 +646,10 @@
         var path = conn && conn.querySelector("path");
         if (wrapEl && path) {
           var lenOf = function () { return Math.ceil(lengthOf(path) * 1.08) + 4; };
+          connPath = path;
           gsap.set(path, { strokeDasharray: lenOf() });
-          ScrollTrigger.addEventListener("refreshInit", function () { gsap.set(path, { strokeDasharray: lenOf() }); });
+          onRefreshInit = function () { gsap.set(path, { strokeDasharray: lenOf() }); };
+          ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
           gsap.fromTo(path, { strokeDashoffset: function () { return lenOf(); } }, { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: wrapEl, start: "top 75%", end: "clamp(bottom 55%)", scrub: 0.6, invalidateOnRefresh: true } });
         }
         dispose = track(function () { qa(".step").forEach(function (step) { stepOneShot(step, false); }); });
@@ -654,6 +658,10 @@
     return function () {
       live = false;
       if (dispose) { dispose(); }
+      if (onRefreshInit) {
+        ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
+        if (connPath) { gsap.set(connPath, { clearProps: "strokeDasharray" }); }
+      }
     };
   });
 
