@@ -2,15 +2,15 @@
 
 Everything listed here is fictional or sample content and must be swapped before launch.
 
-Before launch, also grep every file for `Sam`, `Elmhollow`, `samwhitlock` and `01632` (and `441632960123`) to catch any occurrence a row below misses.
+Before launch, also grep every file for `Sam`, `Elmhollow`, `samwhitlock` and `01632` (and `441632960123`) to catch any occurrence a row below misses. Also check the `.area-map` figure in `contact.html`, which names the town and villages inside its SVG.
 
 ## Identity
 
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
 | Freelancer name | Sam Whitlock (and the first name "Sam" on its own) | `index.html`, `contact.html` | `.wordmark` in header and footer, `<title>`, copyright line; `contact.html` meta description; first name "Sam" in `.hero__lede` ("I’m Sam"), `#about-title` ("Hi, I’m Sam"), the Priya Nair and Marcus Bell testimonial quotes, and the About photo alt ("a stand-in portrait for Sam") | [ ] |
-| Town | Elmhollow | `index.html`, `contact.html` | `<title>`, meta description, footer tagline, hero copy | [ ] |
-| Nearby villages | Fenwick Cross, Thornby | `index.html`, `contact.html` | "Area served" in the SHELL:FOOTER block | [ ] |
+| Town | Elmhollow | `index.html`, `contact.html` | `<title>`, meta description, footer tagline, hero copy; `contact.html` `.area-map` (SVG `<title>` and the Elmhollow `<text>` label) | [ ] |
+| Nearby villages | Fenwick Cross, Thornby | `index.html`, `contact.html` | "Area served" in the SHELL:FOOTER block; `contact.html` `.area-map` (SVG `<title>` and the Fenwick Cross and Thornby `<text>` labels) | [ ] |
 | Header and footer wordmark | Text "Sam Whitlock" | `index.html`, `contact.html` | `.wordmark` | [ ] |
 
 ## Contact details
@@ -20,6 +20,7 @@ Before launch, also grep every file for `Sam`, `Elmhollow`, `samwhitlock` and `0
 | Email | hello@samwhitlock.example (and its `mailto:` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `index.html` `.cta-band__email` (text and `mailto:` href); `contact.html` `.contact__details` and the `.contact__noscript` note | [ ] |
 | Phone | 01632 960 123 (and `tel:+441632960123` href; UK Ofcom drama-range number, never in service) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` and the `.contact__noscript` note | [ ] |
 | Area served | Elmhollow, Fenwick Cross and Thornby | `index.html`, `contact.html` | SHELL:FOOTER block, "Area served"; `contact.html` `.contact__list` "Based in" | [ ] |
+| Area-served map | Stylised inline-SVG map: Elmhollow (centre), Fenwick Cross, Thornby, dashed service-radius rings; caption ‘Elmhollow and the villages around it, about a 20-minute drive’ | `contact.html` | `figure.area-map` in `.contact__details`: `<title id="area-map-title">`, the three `.area-map__label` `<text>` labels and `.area-map__caption`. Redraw road/pin positions for the real town | [ ] |
 
 ## Numbers and claims
 

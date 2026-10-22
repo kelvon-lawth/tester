@@ -113,10 +113,10 @@ Plans:
 **Goal**: Visitors can fill in and "send" an enquiry through an accessible, validated, front-end-only form and find direct contact details
 **Mode:** mvp
 **Depends on**: Phase 2 (parallelizable with Phase 3)
-**Requirements**: CON-01, CON-02, CON-03, CON-04, CON-05, CON-06, CON-07
+**Requirements**: CON-01, CON-02, CON-03, CON-04, CON-05, CON-06, CON-07 (CON-02, CON-03 descoped by D-01)
 **Success Criteria** (what must be TRUE):
 
-  1. Visitor can complete a labeled form (name, email, business name, message), pick a business type matching the hero's list plus "Other", and tick any of the four services
+  1. Visitor can complete a labeled form (name, phone and email required, message optional); the business-type picker and services checkboxes were descoped by D-01
   2. Submitting with missing or invalid fields (e.g. bad email) shows inline accessible error messages and moves focus to the first error
   3. A valid submit shows a friendly success message stating this is a prototype and nothing was sent
   4. Visitor sees placeholder `mailto:` and `tel:` contact details and a stylized area-served map graphic alongside the form

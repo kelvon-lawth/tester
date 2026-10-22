@@ -44,13 +44,13 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 ### Contact Page
 
-- [ ] **CON-01**: Visitor can fill in a form with name, email, business name and message, all with visible labels
-- [ ] **CON-02**: Visitor can choose their business type from a picker matching the hero's business types (plus "Other")
-- [ ] **CON-03**: Visitor can tick which of the four services they are interested in
-- [ ] **CON-04**: Visitor sees inline, accessible error messages for missing or invalid fields (e.g. bad email) and focus moves to the first error on submit
-- [ ] **CON-05**: Visitor sees a friendly success message after a valid submit that states this is a prototype and nothing was sent
-- [ ] **CON-06**: Visitor sees direct placeholder contact details (email via `mailto:`, phone via `tel:`) alongside the form
-- [ ] **CON-07**: Visitor sees a stylized map / area-served placeholder graphic on the contact page
+- [x] **CON-01**: Visitor can fill in a form with name, phone and email (required) and an optional message, all with visible labels (amended by D-01, 2026-10-13; was name, email, business name, message)
+- ~~**CON-02**: Visitor can choose their business type from a picker matching the hero's business types (plus "Other")~~ Descoped (D-01, 2026-10-13): form trimmed to name, phone, email, message
+- ~~**CON-03**: Visitor can tick which of the four services they are interested in~~ Descoped (D-01, 2026-10-13): form trimmed to name, phone, email, message
+- [x] **CON-04**: Visitor sees inline, accessible error messages for missing or invalid fields (e.g. bad email) and focus moves to the first error on submit
+- [x] **CON-05**: Visitor sees a friendly success message after a valid submit that states this is a prototype and nothing was sent
+- [x] **CON-06**: Visitor sees direct placeholder contact details (email via `mailto:`, phone via `tel:`) alongside the form
+- [x] **CON-07**: Visitor sees a stylized map / area-served placeholder graphic on the contact page
 
 ### Quality
 
@@ -114,13 +114,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HERO-04 | Phase 3 | Complete |
 | HERO-05 | Phase 3 | Complete |
 | HERO-06 | Phase 3 | Complete |
-| CON-01 | Phase 4 | Pending |
-| CON-02 | Phase 4 | Pending |
-| CON-03 | Phase 4 | Pending |
-| CON-04 | Phase 4 | Pending |
-| CON-05 | Phase 4 | Pending |
-| CON-06 | Phase 4 | Pending |
-| CON-07 | Phase 4 | Pending |
+| CON-01 | Phase 4 | Complete |
+| CON-02 | Phase 4 | Descoped (D-01) |
+| CON-03 | Phase 4 | Descoped (D-01) |
+| CON-04 | Phase 4 | Complete |
+| CON-05 | Phase 4 | Complete |
+| CON-06 | Phase 4 | Complete |
+| CON-07 | Phase 4 | Complete |
 | QA-01 | Phase 5 | Pending |
 | QA-02 | Phase 5 | Pending |
 | QA-03 | Phase 5 | Pending |
@@ -129,7 +129,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1 requirements: 33 total
 - Mapped to phases: 33
 - Unmapped: 0 ✓
+- Descoped: 2 (CON-02, CON-03 by D-01)
 
 ---
 *Requirements defined: 2026-10-12*
-*Last updated: 2026-10-12 after initial definition*
+*Last updated: 2026-10-22, Phase 4*
