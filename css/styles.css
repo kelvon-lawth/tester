@@ -590,11 +590,6 @@ main:focus {
   white-space: nowrap;
 }
 
-/* motion-pending never hides content on its own; this only guards the alt words' insertion frame. */
-html.motion-pending .hero-word__alt {
-  opacity: 0;
-}
-
 /* SplitText masks (chars and words): padded so descenders and accents are never clipped, and the
    negative margin cancels the padding so line height does not change. */
 .hw-mask,
