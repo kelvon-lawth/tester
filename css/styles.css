@@ -1337,8 +1337,10 @@ a.is-hover {
   font-weight: var(--fw-regular);
 }
 
+/* Empty error regions stay rendered (zero height) so their aria-live is already in the accessibility
+   tree when the first message arrives; display: none would stop some screen readers announcing it. */
 .field__error:empty {
-  display: none;
+  margin: 0;
 }
 
 .field__input--textarea {
