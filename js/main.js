@@ -147,6 +147,12 @@
       if (input.checkValidity()) { clearError(input); } else { showError(input); }
     });
   });
+
+  // The submit ships disabled so the form can never fall back to a native submission without
+  // this script; enable it only now that the preventDefault handler is attached.
+  Array.prototype.forEach.call(form.querySelectorAll('button[type="submit"]'), function (btn) {
+    btn.disabled = false;
+  });
 })();
 
 /* Motion (quick 261013-ffc): GSAP 3.15.0 + SplitText + ScrollTrigger, vendored under assets/js/vendor.

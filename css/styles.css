@@ -1365,6 +1365,19 @@ a.is-hover {
   .contact-form .btn { justify-self: start; }
 }
 
+/* No JavaScript: the form cannot validate or "send", so hide its (disabled) submit and
+   point visitors at the direct details instead (the <noscript> note). */
+@media (scripting: none) {
+  .contact-form button[type="submit"] { display: none; }
+}
+
+.contact__noscript {
+  margin: 0 0 var(--space-lg);
+  padding: var(--space-md);
+  border: 1px solid var(--edge-card);
+  border-radius: var(--radius-md);
+}
+
 .contact__details h2,
 .contact-success h2 {
   font-size: var(--fs-heading);
