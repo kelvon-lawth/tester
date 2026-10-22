@@ -93,6 +93,22 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | Contact success message | Thanks, that’s all looking good. This is a prototype, so nothing was actually sent. (Rewrite when a real submission is wired up) | `contact.html` | `#contact-success` | [ ] |
 | Contact direct details heading and line | Rather talk directly? I’m happy to chat by phone or email, whichever suits you. | `contact.html` | `#contact-details-title` and the paragraph after it | [ ] |
 
+## Pricing
+
+All plan names, prices and features are placeholders. Set real prices before launch.
+
+| Item | Current placeholder | File | How to find it | Done |
+|------|---------------------|------|----------------|------|
+| Pricing heading | Simple monthly plans, no surprises | `index.html` | `#pricing-title` | [ ] |
+| Pricing intro line | No contracts. Cancel any month. Every plan starts with a free coffee and a chat. | `index.html` | `#pricing .section-head p` | [ ] |
+| Plan 1 name and price | Local Basics, £195 a month (placeholder, set real price) | `index.html` | `#plan-basics-title`, first `.pricing-card__amount` | [ ] |
+| Plan 1 audience line | For shops and cafés that want to be found and stay visible. | `index.html` | first `.pricing-card__for` | [ ] |
+| Plan 1 features | Google Business Profile set up and kept fresh; 8 social media posts a month; Local SEO health check every quarter; A monthly check-in over coffee | `index.html` | first `.pricing-card__features` | [ ] |
+| Plan 2 name and price | Growth, £395 a month (placeholder, set real price) | `index.html` | `#plan-growth-title`, second `.pricing-card__amount` | [ ] |
+| Plan 2 audience line | For busy businesses ready to bring in more new faces. | `index.html` | second `.pricing-card__for` | [ ] |
+| Plan 2 features | Everything in Local Basics; 16 social media posts a month, plus stories; Local ads and campaigns run for you (ad spend separate); A branding and design refresh for your logo, sign or menu; Plain-English results report every month | `index.html` | second `.pricing-card__features` | [ ] |
+| Featured plan badge | Most popular (on Growth) | `index.html` | `.pricing-card__badge` | [ ] |
+
 ## Shell
 
 | Item | Current placeholder | File | How to find it | Done |
