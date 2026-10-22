@@ -35,12 +35,12 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 ### Kinetic Hero
 
-- [ ] **HERO-01**: Visitor sees the headline "Marketing for your [word]" where the word cycles through local business types (bakery, gym, salon, shop, café, …) with a bold, smooth animated transition
-- [ ] **HERO-02**: Surrounding text and the CTA do not shift position as words of different lengths cycle, at phone, tablet and desktop widths
-- [ ] **HERO-03**: Visitor can pause and resume the animation via a visible control; the cycle also pauses on hover/focus and when the tab is hidden or the hero is off-screen
-- [ ] **HERO-04**: Visitor with "reduce motion" enabled, or without JavaScript, sees a complete static headline with no cycling
-- [ ] **HERO-05**: Screen-reader user hears a single complete headline, not each word change
-- [ ] **HERO-06**: Animation runs smoothly (no visible jank) on a typical laptop and phone
+- [x] **HERO-01**: Visitor sees the headline "Marketing for your [word]" where the word cycles through local business types (bakery, gym, salon, shop, café, …) with a bold, smooth animated transition
+- [x] **HERO-02**: Surrounding text and the CTA do not shift position as words of different lengths cycle, at phone, tablet and desktop widths
+- [x] **HERO-03**: Visitor can pause and resume the animation via a visible control; the cycle also pauses on hover/focus and when the tab is hidden or the hero is off-screen
+- [x] **HERO-04**: Visitor with "reduce motion" enabled, or without JavaScript, sees a complete static headline with no cycling
+- [x] **HERO-05**: Screen-reader user hears a single complete headline, not each word change
+- [x] **HERO-06**: Animation runs smoothly (no visible jank) on a typical laptop and phone
 
 ### Contact Page
 
@@ -108,12 +108,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOME-06 | Phase 2 | Complete |
 | HOME-07 | Phase 2 | Complete |
 | HOME-08 | Phase 2 | Complete |
-| HERO-01 | Phase 3 | Pending |
-| HERO-02 | Phase 3 | Pending |
-| HERO-03 | Phase 3 | Pending |
-| HERO-04 | Phase 3 | Pending |
-| HERO-05 | Phase 3 | Pending |
-| HERO-06 | Phase 3 | Pending |
+| HERO-01 | Phase 3 | Complete |
+| HERO-02 | Phase 3 | Complete |
+| HERO-03 | Phase 3 | Complete |
+| HERO-04 | Phase 3 | Complete |
+| HERO-05 | Phase 3 | Complete |
+| HERO-06 | Phase 3 | Complete |
 | CON-01 | Phase 4 | Pending |
 | CON-02 | Phase 4 | Pending |
 | CON-03 | Phase 4 | Pending |

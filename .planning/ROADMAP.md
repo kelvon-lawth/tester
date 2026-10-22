@@ -13,7 +13,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 
 - [x] **Phase 1: Foundation & Design System** - File skeleton, design tokens, self-hosted fonts, bright social-network palette and handcrafted accent kit (completed 2026-10-12)
 - [x] **Phase 2: Shared Shell & Static Home** - Header/nav/footer and a complete, readable Home page with placeholder content system (completed 2026-10-22)
-- [ ] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe
+- [x] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe (completed 2026-10-22)
 - [ ] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic
 - [ ] **Phase 5: Polish & QA** - Responsive, keyboard, performance and screen-reader verification across both pages
 
@@ -149,6 +149,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation & Design System | 3/3 | Complete    | 2026-10-12 |
 | 2. Shared Shell & Static Home | 6/6 | Complete    | 2026-10-22 |
-| 3. Kinetic Hero | 0/TBD | Not started | - |
+| 3. Kinetic Hero | 1/1 | Complete    | 2026-10-22 |
 | 4. Contact Page | 0/TBD | Not started | - |
 | 5. Polish & QA | 0/TBD | Not started | - |
