@@ -12,7 +12,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation & Design System** - File skeleton, design tokens, self-hosted fonts, bright social-network palette and handcrafted accent kit (completed 2026-10-12)
-- [ ] **Phase 2: Shared Shell & Static Home** - Header/nav/footer and a complete, readable Home page with placeholder content system
+- [x] **Phase 2: Shared Shell & Static Home** - Header/nav/footer and a complete, readable Home page with placeholder content system (completed 2026-10-22)
 - [ ] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe
 - [ ] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic
 - [ ] **Phase 5: Polish & QA** - Responsive, keyboard, performance and screen-reader verification across both pages
@@ -62,7 +62,7 @@ Plans:
   3. Visitor can reach the contact page from "Let's talk" CTAs in the hero, mid-page and closing band, and a phone visitor sees a sticky "Let's talk" button while scrolling
   4. All placeholder content is clearly fictional and every swappable item is listed in `REPLACE-ME.md`
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 **Wave 1**
@@ -87,7 +87,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 02-06-PLAN.md — REPLACE-ME.md audit, full guard sweep, human review checkpoint
+- [x] 02-06-PLAN.md — REPLACE-ME.md audit, full guard sweep, human review checkpoint
 **UI hint**: yes
 
 ### Phase 3: Kinetic Hero
@@ -148,7 +148,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Design System | 3/3 | Complete    | 2026-10-12 |
-| 2. Shared Shell & Static Home | 5/6 | In Progress|  |
+| 2. Shared Shell & Static Home | 6/6 | Complete   | 2026-10-22 |
 | 3. Kinetic Hero | 0/TBD | Not started | - |
 | 4. Contact Page | 0/TBD | Not started | - |
 | 5. Polish & QA | 0/TBD | Not started | - |
