@@ -331,6 +331,22 @@
       tl.from(fig, { x: i % 2 === 0 ? -64 : 64, rotate: i % 2 === 0 ? -3 : 3, opacity: 0, duration: 1, delay: wide ? i * 0.12 : 0 });
     });
 
+    // Pricing (quick 261022-bsb): per-card trigger so stacked phone cards animate as each arrives (transform and opacity only)
+    qa(".pricing-card").forEach(function (card, i) {
+      var items = qa(".pricing-card__features li", card);
+      var badge = card.querySelector(".pricing-card__badge");
+      var ptl = oneShot(card, "clamp(top 88%)", {
+        onDone: function () {
+          gsap.set([card, badge].concat(items).filter(Boolean), { clearProps: "transform,opacity" });
+          card.classList.remove("is-animating");
+        }
+      });
+      card.classList.add("is-animating");
+      ptl.from(card, { y: 56, opacity: 0, duration: 1, delay: wide ? i * 0.12 : 0 });
+      ptl.from(items, { y: 16, opacity: 0, duration: 0.6, stagger: 0.06 }, 0.3);
+      if (badge) { ptl.from(badge, { scale: 0.6, opacity: 0, duration: 0.7, ease: "back.out(2)" }, 0.4); }
+    });
+
     // Logo ticker: scroll-linked only (never auto-moves, so no WCAG 2.2.2 concern)
     var strip = document.querySelector(".logo-strip");
     var logosSection = strip && strip.closest("section");
@@ -630,12 +646,12 @@
 
   var REVEAL_TARGETS = [
     ".section-head", ".service-card", ".about__media", ".about__text", ".testimonial",
-    ".logo-strip li", ".step", ".cta-band__inner", ".hero__media", ".divider-squiggle",
+    ".logo-strip li", ".step", ".pricing-card", ".cta-band__inner", ".hero__media", ".divider-squiggle",
     ".steps__connector", ".contact__form-wrap", ".contact__details", ".page-contact .contact__intro"
   ];
   var STAGGER_MS = 90;
   var REVEAL_MS = 700;
-  var STAGGERED = /(^|\s)(service-card|testimonial|step)(\s|$)/;
+  var STAGGERED = /(^|\s)(service-card|pricing-card|testimonial|step)(\s|$)/;
 
   var root = document.documentElement;
   var reduce = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
@@ -646,7 +662,7 @@
 
   function delayFor(el) {
     var base = el;
-    if (el.classList.contains("service-card") && el.parentElement && el.parentElement.tagName === "LI") {
+    if ((el.classList.contains("service-card") || el.classList.contains("pricing-card")) && el.parentElement && el.parentElement.tagName === "LI") {
       base = el.parentElement;
     } else if (!(STAGGERED.test(el.className) || (el.tagName === "LI" && el.parentElement && el.parentElement.classList.contains("logo-strip")))) {
       return 0;
