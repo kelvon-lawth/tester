@@ -140,7 +140,12 @@ Plans:
   3. Home first view loads within roughly a 500KB budget with no layout shift
   4. Double-click `file://` opening and subfolder static hosting both work, and header/footer match across pages
 
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — QA browser guard (overflow, tap, keyboard, shell, weight+CLS, hosting), vendor Unsplash photos, minimal fixes
 **UI hint**: yes
 
 ## Progress
