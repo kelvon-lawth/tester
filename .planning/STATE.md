@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-12)
 Phase: 2 (Shared Shell & Static Home) — EXECUTING
 Plan: 5 of 6
 Status: Ready to execute
-Last activity: 2026-10-13 - Completed quick task 261013-ffc: Bold hero redesign, kinetic headline, scroll choreography
+Last activity: 2026-10-22 - Completed quick task 261022-bsb: Pricing section with two plans
 
 Progress: [█████████░] 89%
 
@@ -82,6 +82,7 @@ None yet.
 | 261013-eil | Contact page form with name, phone, email and message (D-01: replaces CON-01 field list, drops CON-02/CON-03; CON-07 map stays in Phase 4) | 2026-10-13 | a726b30 |  | [261013-eil-contact-page-form-with-name-phone-email-](./quick/261013-eil-contact-page-form-with-name-phone-email-/) |
 | 261013-ep2 | Polished sleek restyle of Home page plus animations; contact layout, note removed, button spacing | 2026-10-13 | 5d808c9 | Needs Review | [261013-ep2-polished-sleek-restyle-of-home-page-plus](./quick/261013-ep2-polished-sleek-restyle-of-home-page-plus/) |
 | 261013-ffc | Bold hero redesign with kinetic headline (HERO-01..06) and scroll choreography | 2026-10-13 | 3040c86 | Needs Review | [261013-ffc-bold-hero-redesign-with-kinetic-headline](./quick/261013-ffc-bold-hero-redesign-with-kinetic-headline/) |
+| 261022-bsb | Pricing section on Home with two plans (Local Basics, Growth) | 2026-10-22 | 50c7e5c |  | [261022-bsb-add-pricing-section-with-two-options-to-](./quick/261022-bsb-add-pricing-section-with-two-options-to-/) |
 
 ## Session Continuity
 
