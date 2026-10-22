@@ -2090,7 +2090,7 @@ main:not(.page-contact) .cta-band {
 
 .deco--word {
   inset-block-start: 6%;
-  inset-inline-start: 0;
+  inset-inline-start: var(--gutter);
   font-family: var(--font-display);
   font-size: var(--fs-display);
   font-weight: var(--fw-semibold);
