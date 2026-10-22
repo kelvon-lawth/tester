@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Static contract test for contact.html and its form script (quick task 261013-eil).
-// Usage: node tools/check-contact.js [markup|success|details|js|replace ...]   (no args = every group)
+// Usage: node tools/check-contact.js [markup|success|details|js|map|replace ...]   (no args = every group)
 // Prints PASS/FAIL per group, then CONTACT OK on success. Exit 0 = pass, 1 = fail.
 // Dev-only (removed in Phase 5). Zero dependencies.
 "use strict";
@@ -88,9 +88,40 @@ groups.js = () => {
   return e;
 };
 
+groups.map = () => {
+  const e = [];
+  const css = read("css/styles.css");
+  const am = contact.match(/<aside\b[^>]*class="[^"]*\bcontact__details\b[\s\S]*?<\/aside>/);
+  const sm = am && am[0].match(/<svg\b[^>]*class="[^"]*\barea-map__svg\b[\s\S]*?<\/svg>/);
+  if (!sm) return ["area-map svg not found in .contact__details"];
+  const svg = sm[0];
+  if (!/<figure\b[^>]*class="[^"]*\barea-map\b[^"]*"[^>]*>[\s\S]*<svg\b[^>]*area-map__svg/.test(am[0])) e.push("svg not inside figure.area-map");
+  const open = svg.match(/<svg\b[^>]*>/)[0];
+  if (!open.includes('role="img"')) e.push('svg lacks role="img"');
+  if (!/\bviewBox="/.test(open)) e.push("svg lacks viewBox");
+  if (/\s(width|height)=/.test(open)) e.push("svg must not have width/height attributes");
+  const lb = open.match(/aria-labelledby="([^"\s]+)/);
+  const tm = lb && svg.match(new RegExp('<title\\b[^>]*id="' + lb[1] + '"[^>]*>([\\s\\S]*?)</title>'));
+  if (!tm) e.push("aria-labelledby does not match a <title id>");
+  else for (const n of ["Elmhollow", "Fenwick Cross", "Thornby"]) if (!tm[1].includes(n)) e.push("title lacks " + n);
+  const texts = (svg.match(/<text\b[\s\S]*?<\/text>/g) || []).map(textOf);
+  for (const n of ["Elmhollow", "Fenwick Cross", "Thornby"]) if (!texts.some((t) => t.includes(n))) e.push("no <text> label for " + n);
+  const els = svg.match(/<(path|circle|ellipse|line|polyline|polygon|rect)\b[^>]*>/g) || [];
+  const hasCls = (t, c) => new RegExp('class="[^"]*\\b' + c + '\\b').test(t);
+  if (els.filter((t) => hasCls(t, "area-map__road") || hasCls(t, "area-map__river")).length < 2) e.push("need at least 2 road/river elements");
+  const rings = els.filter((t) => hasCls(t, "area-map__ring"));
+  if (rings.length < 1) e.push("need at least 1 area-map__ring");
+  if (rings.some((t) => hasCls(t, "area-map__road"))) e.push("ring must not be a road (.draw would kill the dash)");
+  for (const bad of ["<image", "<img", "<foreignObject", 'href="http', "url(http", "style=", 'fill="#', 'stroke="#', 'fill="rgb', 'stroke="rgb']) if (svg.includes(bad)) e.push("svg contains forbidden " + bad);
+  if (!css.includes(".area-map__svg")) e.push("styles.css lacks .area-map__svg");
+  for (const m of css.matchAll(/([^{}]*area-map[^{}]*)\{([^}]*)\}/g)) if (m[2].includes("--color-blue")) e.push("area-map rule uses --color-blue: " + m[1].trim());
+  if (!/\.area-map__road/.test((mainJs.match(/var icons = [^;]*;/) || [""])[0])) e.push("js/main.js draw selector lacks .area-map__road");
+  return e;
+};
+
 groups.replace = () => {
   const e = [];
-  for (const s of ["contact__intro", "contact-success", "contact__details"]) {
+  for (const s of ["contact__intro", "contact-success", "contact__details", "area-map"]) {
     if (!replaceMe.includes(s)) e.push("REPLACE-ME.md lacks " + s);
   }
   return e;

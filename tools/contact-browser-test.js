@@ -15,7 +15,7 @@ const CHROME =
   process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PAGE = url.pathToFileURL(path.join(ROOT, "contact.html")).href;
 const HOME = url.pathToFileURL(path.join(ROOT, "index.html")).href;
-const ALL = ["validate", "success", "layout", "console"];
+const ALL = ["validate", "success", "layout", "map", "console"];
 
 const requested = process.argv.slice(2);
 for (const g of requested) {
@@ -229,6 +229,37 @@ results.layout = async () => {
   if (n.overflow > 0) throw new Error("320px: horizontal overflow of " + n.overflow);
   if (!(n.dTop >= n.fBottom)) throw new Error("320px: details not stacked below the form");
   return "7/5 aligned cards, full-width inputs, centred intro, 32px button gap at 1280; stacked, full-width button, no overflow at 375 and 320";
+};
+
+const MAP = `async()=>{
+  const svg=document.querySelector('.area-map__svg');
+  if(!svg)return{missing:true};
+  const aside=document.querySelector('.contact__details');
+  const cs=getComputedStyle(svg), as=getComputedStyle(aside), ar=aside.getBoundingClientRect();
+  const r=svg.getBoundingClientRect();
+  const fw=document.querySelector('.contact__form-wrap').getBoundingClientRect();
+  const labels=[...svg.querySelectorAll('text')].map(t=>{const b=t.getBoundingClientRect();return{text:t.textContent,left:b.left,right:b.right,top:b.top,bottom:b.bottom,height:b.height};});
+  return{rect:{left:r.left,right:r.right,width:r.width,height:r.height},display:cs.display,visibility:cs.visibility,opacity:cs.opacity,
+    cLeft:ar.left+parseFloat(as.paddingLeft),cRight:ar.right-parseFloat(as.paddingRight),formRight:fw.right,labels,
+    overflow:document.documentElement.scrollWidth-window.innerWidth};}`;
+
+results.map = async () => {
+  for (const [w, h, noJs] of [[320, 700, false], [375, 740, false], [1280, 900, false], [320, 700, true]]) {
+    const tag = w + "px" + (noJs ? " no-JS" : "") + ": ";
+    const m = await scenario(w, h, noJs, MAP);
+    if (m.missing) throw new Error(tag + "no .area-map__svg");
+    if (m.display === "none" || m.visibility === "hidden" || m.opacity === "0") throw new Error(tag + "svg not visible");
+    if (!(m.rect.width > 0 && m.rect.height > 0)) throw new Error(tag + "svg has no size");
+    if (m.rect.left < m.cLeft - 1 || m.rect.right > m.cRight + 1) throw new Error(tag + "svg outside aside content box");
+    for (const l of m.labels) {
+      if (l.left < m.rect.left - 1 || l.right > m.rect.right + 1 || l.top < m.rect.top - 1 || l.bottom > m.rect.bottom + 1) throw new Error(tag + "label outside svg: " + l.text);
+      if (l.height < 11) throw new Error(tag + "label too small (" + l.height.toFixed(1) + "px): " + l.text);
+    }
+    for (const n of ["Elmhollow", "Fenwick Cross", "Thornby"]) if (!m.labels.some((l) => l.text.includes(n))) throw new Error(tag + "missing label " + n);
+    if (m.overflow !== 0) throw new Error(tag + "horizontal overflow " + m.overflow);
+    if (w === 1280 && !(m.rect.left > m.formRight)) throw new Error(tag + "map not in the details column");
+  }
+  return "area map visible, labels inside and readable, no overflow at 320/375/1280 and no-JS 320";
 };
 
 // Collect console errors / exceptions while loading a page.

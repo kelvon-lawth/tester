@@ -174,7 +174,7 @@ const HELPERS = `
 const TARGETS=['.section-head','.service-card','.about__media','.about__text','.testimonial','.logo-strip li','.step','.pricing-card','.cta-band__inner','.hero__media','.divider-squiggle','.steps__connector','.contact__form-wrap','.contact__details','.page-contact .contact__intro'];
 // CONTENT (quick 261013-ffc): every visible content element of the bold page. After motion settles all of it must be
 // at rest (opacity 1, no offset, no clip).
-const CONTENT=TARGETS.concat(['.hero-title__lead','.hero__lede','#hero-cta','.trust-cue','.hero-chip','.section-head h2','.about__media .media','.cta-band']);
+const CONTENT=TARGETS.concat(['.hero-title__lead','.hero__lede','#hero-cta','.trust-cue','.hero-chip','.section-head h2','.about__media .media','.cta-band','.area-map__ring']);
 const content=()=>{const seen=new Set();return CONTENT.flatMap(s=>[...document.querySelectorAll(s)]).filter(e=>!seen.has(e)&&seen.add(e));};
 const clipClear=el=>{const c=getComputedStyle(el).clipPath;if(c==='none')return true;const m=c.match(/^inset\\((.*)\\)$/);if(!m)return false;return (m[1].split('round')[0].match(/-?[\\d.]+/g)||[]).every(n=>Math.abs(Number(n))<0.01);};
 const all=()=>TARGETS.flatMap(s=>[...document.querySelectorAll(s)]);
@@ -184,7 +184,7 @@ const settled=el=>{const cs=getComputedStyle(el);if(cs.opacity!=='1'||cs.visibil
   const n=t.match(/-?[\\d.e-]+/g).map(Number);
   if(t.startsWith('matrix3d')){return Math.abs(n[12])<0.5&&Math.abs(n[13])<0.5&&Math.abs(n[0]-1)<0.01&&Math.abs(n[5]-1)<0.01;}
   return Math.abs(n[4])<0.5&&Math.abs(n[5])<0.5&&Math.abs(n[0]-1)<0.01&&Math.abs(n[3]-1)<0.01;};
-const drawPaths=()=>[...document.querySelectorAll('.service-card__icon svg *, .accent-underline__svg path, .steps__connector path')].filter(e=>/^(path|circle)$/i.test(e.tagName));
+const drawPaths=()=>[...document.querySelectorAll('.service-card__icon svg *, .accent-underline__svg path, .steps__connector path, .area-map__road')].filter(e=>/^(path|circle)$/i.test(e.tagName));
 const drawn=el=>{const cs=getComputedStyle(el);return cs.strokeDasharray==='none'||parseFloat(cs.strokeDashoffset)===0;};
 const settleWait=async(el)=>{for(let i=0;i<40;i++){if(settled(el))return true;await sleep(100);}return settled(el);};
 const cls=(el)=>el.className&&el.className.baseVal!==undefined?el.className.baseVal:el.className;
@@ -428,9 +428,12 @@ results.contact = async () => {
       await raf();await raf();
       if(!(await settleWait(el)))bad.push('not settled: '+s);
       if(!el.classList.contains('is-revealed'))bad.push('not revealed: '+s);}
+    const roads=[...document.querySelectorAll('.area-map__road')];
+    for(let i=0;i<20&&!roads.every(drawn);i++)await sleep(100);
+    if(!roads.length||!roads.every(drawn))bad.push('map road not drawn');
     return{bad};}`);
   if (r.bad.length) throw new Error(r.bad.join("; "));
-  return "contact form card and details card reveal and settle";
+  return "contact form card, details card and area map reveal and settle";
 };
 
 // ---------------------------------------------------------------------------
