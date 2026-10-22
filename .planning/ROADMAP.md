@@ -14,7 +14,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 - [x] **Phase 1: Foundation & Design System** - File skeleton, design tokens, self-hosted fonts, bright social-network palette and handcrafted accent kit (completed 2026-10-12)
 - [x] **Phase 2: Shared Shell & Static Home** - Header/nav/footer and a complete, readable Home page with placeholder content system (completed 2026-10-22)
 - [x] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe (completed 2026-10-22)
-- [ ] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic
+- [x] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic (completed 2026-10-22)
 - [ ] **Phase 5: Polish & QA** - Responsive, keyboard, performance and screen-reader verification across both pages
 
 ## Phase Details
@@ -124,7 +124,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — CON-07 inline-SVG area map (guards first), D-01 descope of CON-02/03, full guard re-verify
+- [x] 04-01-PLAN.md — CON-07 inline-SVG area map (guards first), D-01 descope of CON-02/03, full guard re-verify
 **UI hint**: yes
 
 ### Phase 5: Polish & QA
@@ -153,5 +153,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 | 1. Foundation & Design System | 3/3 | Complete    | 2026-10-12 |
 | 2. Shared Shell & Static Home | 6/6 | Complete    | 2026-10-22 |
 | 3. Kinetic Hero | 1/1 | Complete    | 2026-10-22 |
-| 4. Contact Page | 0/TBD | Not started | - |
+| 4. Contact Page | 1/1 | Complete   | 2026-10-22 |
 | 5. Polish & QA | 0/TBD | Not started | - |
