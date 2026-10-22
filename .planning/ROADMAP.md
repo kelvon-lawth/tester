@@ -121,7 +121,10 @@ Plans:
   3. A valid submit shows a friendly success message stating this is a prototype and nothing was sent
   4. Visitor sees placeholder `mailto:` and `tel:` contact details and a stylized area-served map graphic alongside the form
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 04-01-PLAN.md — CON-07 inline-SVG area map (guards first), D-01 descope of CON-02/03, full guard re-verify
 **UI hint**: yes
 
 ### Phase 5: Polish & QA
