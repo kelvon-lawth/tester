@@ -2,11 +2,13 @@
 
 Everything listed here is fictional or sample content and must be swapped before launch.
 
+Before launch, also grep every file for `Sam`, `Elmhollow`, `samwhitlock` and `01632` (and `441632960123`) to catch any occurrence a row below misses.
+
 ## Identity
 
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
-| Freelancer name | Sam Whitlock | `index.html`, `contact.html` | `.wordmark` in header and footer, `<title>`, copyright line | [ ] |
+| Freelancer name | Sam Whitlock (and the first name "Sam" on its own) | `index.html`, `contact.html` | `.wordmark` in header and footer, `<title>`, copyright line; `contact.html` meta description; first name "Sam" in `.hero__lede` ("I’m Sam"), `#about-title` ("Hi, I’m Sam"), the Priya Nair and Marcus Bell testimonial quotes, and the About photo alt ("a stand-in portrait for Sam") | [ ] |
 | Town | Elmhollow | `index.html`, `contact.html` | `<title>`, meta description, footer tagline, hero copy | [ ] |
 | Nearby villages | Fenwick Cross, Thornby | `index.html`, `contact.html` | "Area served" in the SHELL:FOOTER block | [ ] |
 | Header and footer wordmark | Text "Sam Whitlock" | `index.html`, `contact.html` | `.wordmark` | [ ] |
@@ -15,9 +17,9 @@ Everything listed here is fictional or sample content and must be swapped before
 
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
-| Email | hello@samwhitlock.example (and its `mailto:` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` | [ ] |
-| Phone | 01632 960 123 (and `tel:+441632960123` href; UK Ofcom drama-range number, never in service) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` | [ ] |
-| Area served | Elmhollow, Fenwick Cross and Thornby | `index.html`, `contact.html` | SHELL:FOOTER block, "Area served" | [ ] |
+| Email | hello@samwhitlock.example (and its `mailto:` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `index.html` `.cta-band__email` (text and `mailto:` href); `contact.html` `.contact__details` and the `.contact__noscript` note | [ ] |
+| Phone | 01632 960 123 (and `tel:+441632960123` href; UK Ofcom drama-range number, never in service) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` and the `.contact__noscript` note | [ ] |
+| Area served | Elmhollow, Fenwick Cross and Thornby | `index.html`, `contact.html` | SHELL:FOOTER block, "Area served"; `contact.html` `.contact__list` "Based in" | [ ] |
 
 ## Numbers and claims
 
@@ -36,7 +38,7 @@ Hotlinked stock photos (D-13). Replace each with a real photo and host it in `as
 |-------------------------------|----------|--------------|-----------------|---------|------|
 | styleguide.html (sg-photo, dev only) | https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=70&auto=format | Unsplash contributor, photo id 1509440159596 (name not confirmed) | https://unsplash.com/photos/1509440159596 | Unsplash licence | [ ] |
 | `index.html` `.hero__media img` | https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=640&h=800&q=55 | Unsplash contributor, photo id 1556740738-b6a63e27c4df (name not confirmed, look up at https://unsplash.com/photos/1556740738-b6a63e27c4df) | https://unsplash.com/photos/1556740738-b6a63e27c4df | Unsplash licence. Replace with a real photo of you or your work and update the alt text (currently: smiling shop owner taking a card payment at a counter) | [ ] |
-| `index.html` `#about .about__media img` | https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=640&h=640&fit=crop&q=60&auto=format | Photographer unknown, Unsplash photo id 1573496359142-b8d87734a5a2 (name not confirmed) | https://unsplash.com/photos/1573496359142-b8d87734a5a2 | Unsplash licence. Replace with a real portrait or working shot of you and update the alt text (currently: smiling woman in a grey blazer against a warm orange wall) | [ ] |
+| `index.html` `#about .about__media img` | https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=640&h=640&fit=crop&q=60&auto=format | Photographer unknown, Unsplash photo id 1573496359142-b8d87734a5a2 (name not confirmed) | https://unsplash.com/photos/1573496359142-b8d87734a5a2 | Unsplash licence. Replace with a real portrait or working shot of you and update the alt text (currently: "A smiling woman in a grey blazer leaning against a warm orange wall, a stand-in portrait for Sam") | [ ] |
 | `index.html` `#kind-words .avatar` (Priya Nair) | https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop&q=70&auto=format | Photographer unknown, Unsplash photo id 1494790108377-be9c29b29330 | https://unsplash.com/photos/1494790108377-be9c29b29330 | Unsplash licence. Replace with a real headshot of the real client and update the alt text (smiling woman, dark wavy hair, red top). | [ ] |
 | `index.html` `#kind-words .avatar` (Marcus Bell) | https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&q=70&auto=format | Photographer unknown, Unsplash photo id 1507003211169-0a1dd7228f2d | https://unsplash.com/photos/1507003211169-0a1dd7228f2d | Unsplash licence. Replace with a real headshot of the real client and update the alt text (smiling man, white t-shirt). | [ ] |
 | `index.html` `#kind-words .avatar` (Lena Fischer) | https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&q=70&auto=format | Photographer unknown, Unsplash photo id 1438761681033-6461ffad8d80 | https://unsplash.com/photos/1438761681033-6461ffad8d80 | Unsplash licence. Replace with a real headshot of the real client and update the alt text (woman with short auburn hair by a lake). | [ ] |
