@@ -48,7 +48,7 @@
 
               <div class="field">
                 <label class="field__label" for="phone">Phone number <span class="field__req">(required)</span></label>
-                <input class="field__input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[0-9+\(\)\-. ]{7,}" aria-describedby="phone-error">
+                <input class="field__input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[\s+\(\)\-.]*(?:[0-9][\s+\(\)\-.]*){7,}" aria-describedby="phone-error">
                 <p class="field__error" id="phone-error" aria-live="polite"></p>
               </div>
 

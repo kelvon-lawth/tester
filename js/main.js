@@ -91,7 +91,7 @@
     if (input.id === "email" && v.typeMismatch) {
       return "That email doesn’t look quite right. Try something like name@example.com.";
     }
-    if (input.id === "phone" && (v.patternMismatch || v.tooShort)) {
+    if (input.id === "phone" && v.patternMismatch) { // pattern requires at least 7 digits
       return "That phone number doesn’t look quite right. Use digits, spaces or a + sign.";
     }
     return "Please check this field.";
