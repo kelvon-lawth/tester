@@ -1416,6 +1416,21 @@ a.is-hover {
   outline: none;
 }
 
+/* --- Area-served map (CON-07) --- */
+.area-map { margin: var(--space-lg) 0 0; }
+.area-map__svg { display: block; inline-size: 100%; max-inline-size: 100%; block-size: auto; overflow: visible; }
+.area-map__land { fill: var(--color-tint); stroke: var(--color-line); stroke-width: 1.5; }
+.area-map__river { fill: none; stroke: var(--color-line); stroke-width: 6; stroke-linecap: round; }
+.area-map__road { fill: none; stroke: var(--color-navy); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
+.area-map__ring { fill: none; stroke: var(--color-coral); stroke-width: 2; stroke-dasharray: 5 7; stroke-linecap: round; transform-box: fill-box; transform-origin: center; }
+.area-map__ring--outer { stroke-width: 1.5; }
+.area-map__pin { fill: var(--color-navy); stroke: var(--color-bg); stroke-width: 2; }
+.area-map__pin--home { fill: var(--color-coral); stroke: var(--color-navy); }
+.area-map__pin-dot { fill: var(--color-navy); }
+.area-map__label { fill: var(--color-navy); font-size: var(--fs-label); font-weight: var(--fw-semibold); paint-order: stroke; stroke: var(--color-bg); stroke-width: 4; stroke-linejoin: round; }
+.area-map__label--home { font-size: var(--fs-body); }
+.area-map__caption { margin-block-start: var(--space-sm); font-size: var(--fs-label); color: var(--color-ink-soft); }
+
 /* ==========================================================================
    Images, grid, cards, sections, icons
    ========================================================================== */
@@ -1868,11 +1883,19 @@ html.js-reveal .draw.is-drawn {
   stroke-dashoffset: 0;
 }
 
+/* Area-map service rings fade and scale in with the details card (transform and opacity only) */
+@media (prefers-reduced-motion: no-preference) {
+  .area-map__ring {
+    transition: opacity var(--dur-slow) var(--ease-out) 250ms, transform var(--dur-slow) var(--ease-out) 250ms;
+  }
+}
+
 /* Step badges pop in */
 .step__badge {
   transition: transform var(--dur-slow) var(--ease-spring), opacity var(--dur-base) var(--ease-out);
 }
 
+html.js-reveal .contact__details:not(.is-revealed) .area-map__ring { opacity: 0; transform: scale(.85); }
 html.js-reveal .step:not(.is-revealed) .step__badge {
   opacity: 0;
   transform: scale(.6);
@@ -1900,7 +1923,8 @@ html.js-reveal .step.is-revealed .step__badge {
   .reveal,
   .reveal .draw,
   .draw,
-  .step__badge {
+  .step__badge,
+  .area-map__ring {
     opacity: 1 !important;
     transform: none !important;
     stroke-dasharray: none !important;

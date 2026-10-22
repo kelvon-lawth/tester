@@ -769,7 +769,7 @@
   }
 })();
 
-/* SVG stroke draw-on (quick 261013-ep2). Measures each stroke and stores its length in
+/* SVG stroke draw-on (quick 261013-ep2; also the Contact area-map roads, CON-07). Measures each stroke and stores its length in
    --draw-len; CSS (html.js-reveal .draw) animates stroke-dashoffset when the owner is
    revealed. Runs only when the reveal IIFE enabled html.js-reveal. */
 (function () {
@@ -810,7 +810,7 @@
     });
   }
 
-  var icons = ".service-card__icon svg path, .service-card__icon svg circle, .steps__connector path";
+  var icons = ".service-card__icon svg path, .service-card__icon svg circle, .steps__connector path, .area-map__road";
   Array.prototype.forEach.call(document.querySelectorAll(icons), prepare);
 
   // The hero underline sits above the fold: draw it once fonts have settled the word's width.
