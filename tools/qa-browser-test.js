@@ -206,7 +206,7 @@ const collect=(includeSkip)=>[...document.querySelectorAll(SEL)].filter(el=>{
   if(el.disabled)return false;
   if(isSkip(el))return !!includeSkip;
   if(hiddenAnc(el))return false;
-  if(!el.checkVisibility({checkVisibilityCSS:true,visibilityProperty:true}))return false;
+  if(!el.checkVisibility({visibilityProperty:true}))return false;
   const r=el.getBoundingClientRect();
   if(r.width<=0||r.height<=0)return false;
   if(r.width<=1||r.height<=1)return false;
@@ -246,6 +246,9 @@ results.overflow = async () => {
 // ---------------------------------------------------------------------------
 const TAP = `async()=>{
   ${COLLECT}
+  const H=document.documentElement.scrollHeight;
+  for(let y=0;y<=H;y+=300){window.scrollTo(0,y);await sleep(80);}
+  await sleep(1200);
   const fails=[];let n=0;
   for(const el of collect(false)){
     n++;
@@ -276,6 +279,7 @@ results.tap = async () => {
 // ---------------------------------------------------------------------------
 const KB_SETUP = `async()=>{
   ${COLLECT}
+  await sleep(1500);
   const list=collect(true);
   list.forEach((el,i)=>el.setAttribute('data-qa-i',String(i)));
   window.scrollTo(0,0);
@@ -321,13 +325,14 @@ results.keyboard = async () => {
         const missed = expected.filter((_, i) => !reached.has(i));
         if (missed.length) throw new Error(tag + ": Tab never reached " + missed.join(", "));
         if (problems.length) throw new Error(tag + ": " + problems.join("; "));
+        if (process.env.QA_DEBUG) console.log("EXP", tag, expected.join(" | "), "REACHED", [...reached].join(","));
         notes.push(tag + " " + expected.length);
       });
     }
   }
   // Operate: hero pause toggle with Space, contact submit with Enter.
   await withPage(1280, 800, { url: fileUrl("index.html") }, async (s, ev) => {
-    const before = await ev(`async()=>{const b=document.querySelector('.hero-toggle');if(!b||b.hidden||!b.checkVisibility())return null;b.focus();return b.getAttribute('aria-pressed');}`);
+    const before = await ev(`async()=>{const b=document.querySelector('.hero-toggle');for(let i=0;i<60&&b&&(b.hidden||!b.checkVisibility());i++)await sleep(100);if(!b||b.hidden||!b.checkVisibility())return null;b.focus();return b.getAttribute('aria-pressed');}`);
     if (before === null) throw new Error("hero toggle missing or hidden on Home at 1280");
     await pressKey(s, " ", "Space", 32, " ");
     await sleep(200);
@@ -437,7 +442,7 @@ async function hostingCheck(startUrl, label, isHttp) {
   const navUrl = startUrl.replace(/[^/]*$/, "");
   await withPage(1280, 800, { url: navUrl + "index.html" }, async (s, ev, log) => {
     const loaded = once("Page.loadEventFired", s);
-    await ev(`async()=>{document.querySelector('header a[href="contact.html"]').click();}`);
+    await ev(`async()=>{const a=document.querySelector('header a[href="contact.html"]');setTimeout(()=>a.click(),0);}`);
     await loaded;
     const v = await ev(`async()=>({p:location.pathname,ff:getComputedStyle(document.body).fontFamily,font:document.fonts.check('16px Figtree')})`);
     if (!/\/sub%20dir\/site\/contact\.html$/.test(v.p)) throw new Error(label + " nav landed on " + v.p);
