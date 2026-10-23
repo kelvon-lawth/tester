@@ -83,7 +83,11 @@ for (const file of htmlFiles) {
       checkExists(file, ".", value);
       continue;
     }
-    if (tag === "img" && /^https?:\/\//i.test(value)) continue; // D-13 hotlinked photos
+    if (tag === "img" && /^https?:\/\//i.test(value)) {
+      if (file === "styleguide.html") continue; // dev-only page keeps its hotlinked photo
+      fail(file, "remote <img> on a shipped page: " + value);
+      continue;
+    }
     if (/^data:/i.test(value)) continue;
     if (isBadAbsolute(value)) {
       fail(file, "absolute or remote path in <" + tag + ">: " + value);

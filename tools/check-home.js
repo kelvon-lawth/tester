@@ -47,6 +47,13 @@ function mediaWith(block, attrs, alt, noLoading, altLoose) {
 // the animated visual line is aria-hidden so cycling words are never announced.
 const HERO_H1 = '<h1 class="hero-title"><span class="visually-hidden">Marketing for your bakery, café, salon, gym, florist, shop or restaurant</span><span class="hero-title__visual" aria-hidden="true"><span class="hero-title__lead">Marketing for your</span> <span class="hero-word accent-underline" data-words="bakery,café,salon,gym,florist,shop,restaurant"><span class="hero-word__text">bakery</span><svg class="accent-underline__svg" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 7 C 22 3, 40 10, 62 6 S 104 4, 126 8 S 170 4, 198 6"/></svg></span></span></h1>';
 const LETS = "Let’s talk";
+const ORIGINAL_PHOTO_URLS = [
+  "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=640&h=800&q=55",
+  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=640&h=640&fit=crop&q=60&auto=format",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop&q=70&auto=format",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&q=70&auto=format",
+  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&q=70&auto=format",
+];
 
 const groups = {};
 
@@ -93,7 +100,7 @@ groups.hero = () => {
   if (!/class="trust-cue"[^>]*>Trusted by <strong>40\+<\/strong> local businesses in Elmhollow/.test(h)) e.push("trust cue missing");
   const media = /hero__media[\s\S]*$/.exec(h);
   if (!media) e.push("no hero__media");
-  else e.push(...mediaWith(media[0], ['width="800"', 'height="1000"', 'decoding="async"', 'referrerpolicy="no-referrer"'], "A smiling shop owner at a counter", true, true));
+  else e.push(...mediaWith(media[0], ['width="800"', 'height="1000"', 'decoding="async"', 'src="assets/img/hero-shop-owner.webp"'], "A smiling shop owner at a counter", true, true));
   // quick 261013-ffc: pause toggle, proof chips, scroll cue
   const toggles = h.match(/<button class="hero-toggle" type="button" aria-pressed="false" hidden>/g) || [];
   if (toggles.length !== 1) e.push("expected exactly one <button class=\"hero-toggle\" type=\"button\" aria-pressed=\"false\" hidden>, found " + toggles.length);
@@ -167,7 +174,7 @@ groups.about = () => {
   if (!s) return ["no #about section"];
   if (!s.includes('aria-labelledby="about-title"')) e.push("about aria-labelledby missing");
   if (!/<h2\b[^>]*id="about-title"[^>]*>Hi, I’m Sam\. I live here too\.<\/h2>/.test(s)) e.push("about h2 wrong");
-  e.push(...mediaWith(s, ['width="800"', 'height="800"', 'loading="lazy"'], "A smiling woman", false, true));
+  e.push(...mediaWith(s, ['width="800"', 'height="800"', 'loading="lazy"', 'src="assets/img/about-portrait.webp"'], "A smiling woman", false, true));
   const c = /class="about__cta"[\s\S]*?<\/div>/.exec(s);
   if (!c || !c[0].includes("Fancy a coffee and a chat?") || !c[0].includes('class="btn btn--primary" href="contact.html">' + LETS + "</a>")) e.push("about__cta missing copy or button");
   return e;
@@ -190,7 +197,7 @@ groups.testimonials = () => {
     if (!people[i]) return;
     if (!f.includes("<blockquote>")) e.push("testimonial " + (i + 1) + " missing blockquote");
     if (!f.includes('<figcaption class="testimonial__who"')) e.push("testimonial " + (i + 1) + " missing figcaption.testimonial__who");
-    const errs = mediaWith(f, ['class="avatar', 'width="96"', 'height="96"', 'loading="lazy"'], people[i][0], false, true);
+    const errs = mediaWith(f, ['class="avatar', 'width="96"', 'height="96"', 'loading="lazy"', 'src="assets/img/avatar-' + people[i][0].toLowerCase().replace(/ /g, "-") + '.webp"'], people[i][0], false, true);
     e.push(...errs.map((x) => "testimonial " + (i + 1) + ": " + x));
     if (!amp(textOf(f)).includes(people[i][1])) e.push("testimonial " + (i + 1) + " role line missing: " + people[i][1]);
   });
@@ -331,9 +338,12 @@ groups.replace = () => {
   const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "01632 960 123", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer", "Local Basics", "Growth", "£195", "£395", "Most popular", "No contracts. Cancel any month."].concat(LOGOS); // quick 261022-bsb: pricing terms
   for (const t of terms) if (!replaceMe.includes(t)) e.push("REPLACE-ME.md missing: " + t);
   for (const m of index.match(/<img\b[^>]*>/g) || []) {
-    const src = ((m.match(/src="(https:\/\/[^"]+)"/) || [])[1] || "").replace(/&amp;/g, "&");
-    if (src && !replaceMe.includes(src)) e.push("img src not listed in REPLACE-ME.md: " + src);
+    const src = (m.match(/\bsrc="([^"]+)"/) || [])[1] || "";
+    if (/^https?:/i.test(src)) e.push("remote img src on Home (must be vendored in assets/img/): " + src);
+    else if (!replaceMe.includes(src)) e.push("img src not listed in REPLACE-ME.md: " + src);
+    else if (!fs.existsSync(path.join(ROOT, src))) e.push("img file missing on disk: " + src);
   }
+  for (const u of ORIGINAL_PHOTO_URLS) if (!replaceMe.includes(u)) e.push("original Unsplash URL not listed in REPLACE-ME.md: " + u);
   for (const [n, h] of [["index.html", index], ["contact.html", contact]]) if (h.includes("[Name]")) e.push(n + " contains [Name]");
   // proof-chip copy is placeholder claims: read at runtime so the wording stays free
   for (const c of index.match(/<[a-z]+\b[^>]*class="hero-chip\b[\s\S]*?<\/p>/g) || []) {
