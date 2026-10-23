@@ -54,9 +54,9 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 ### Quality
 
-- [ ] **QA-01**: Both pages look polished at phone (320px+), tablet and desktop widths with no horizontal scrolling and tap targets ≥ 44px
-- [ ] **QA-02**: Keyboard user can reach and operate every link, control and form field with a visible focus style
-- [ ] **QA-03**: Home page first view loads fast (≈ 500KB budget, no layout shift)
+- [x] **QA-01**: Both pages look polished at phone (320px+), tablet and desktop widths with no horizontal scrolling and tap targets ≥ 44px
+- [x] **QA-02**: Keyboard user can reach and operate every link, control and form field with a visible focus style
+- [x] **QA-03**: Home page first view loads fast (≈ 500KB budget, no layout shift)
 
 ## v2 Requirements
 
@@ -121,9 +121,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CON-05 | Phase 4 | Complete |
 | CON-06 | Phase 4 | Complete |
 | CON-07 | Phase 4 | Complete |
-| QA-01 | Phase 5 | Pending |
-| QA-02 | Phase 5 | Pending |
-| QA-03 | Phase 5 | Pending |
+| QA-01 | Phase 5 | Complete |
+| QA-02 | Phase 5 | Complete |
+| QA-03 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 33 total

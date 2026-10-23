@@ -15,7 +15,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 - [x] **Phase 2: Shared Shell & Static Home** - Header/nav/footer and a complete, readable Home page with placeholder content system (completed 2026-10-22)
 - [x] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe (completed 2026-10-22)
 - [x] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic (completed 2026-10-22)
-- [ ] **Phase 5: Polish & QA** - Responsive, keyboard, performance and screen-reader verification across both pages
+- [x] **Phase 5: Polish & QA** - Responsive, keyboard, performance and screen-reader verification across both pages (completed 2026-10-23)
 
 ## Phase Details
 
@@ -140,12 +140,12 @@ Plans:
   3. Home first view loads within roughly a 500KB budget with no layout shift
   4. Double-click `file://` opening and subfolder static hosting both work, and header/footer match across pages
 
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — QA browser guard (overflow, tap, keyboard, shell, weight+CLS, hosting), vendor Unsplash photos, minimal fixes
+- [x] 05-01-PLAN.md — QA browser guard (overflow, tap, keyboard, shell, weight+CLS, hosting), vendor Unsplash photos, minimal fixes
 **UI hint**: yes
 
 ## Progress
@@ -159,4 +159,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 | 2. Shared Shell & Static Home | 6/6 | Complete    | 2026-10-22 |
 | 3. Kinetic Hero | 1/1 | Complete    | 2026-10-22 |
 | 4. Contact Page | 1/1 | Complete    | 2026-10-22 |
-| 5. Polish & QA | 0/TBD | Not started | - |
+| 5. Polish & QA | 1/1 | Complete   | 2026-10-23 |
