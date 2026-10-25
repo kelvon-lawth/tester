@@ -1,0 +1,46 @@
+# Deploys the two-page site to GitHub Pages on every push to main.
+# Only the public files are published (no tools/, .planning/ or styleguide.html),
+# and the footer "Style guide (dev)" link is stripped from the hosted copy.
+# Local files are left unchanged.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build _site
+        run: |
+          mkdir _site
+          cp -R index.html contact.html css js assets _site/
+          sed -i '/href="styleguide.html"/d' _site/index.html _site/contact.html
+          if grep -q 'styleguide.html' _site/*.html; then
+            echo "Style guide link still present" >&2
+            exit 1
+          fi
+          grep -q 'Prototype — sample content' _site/index.html
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
