@@ -70,10 +70,10 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 - [ ] **AUTH-01**: Visitor can reach a login page from the shared header on every page
 - [ ] **AUTH-02**: Invited client can sign in with email and password and sign out; the session survives a reload
-- [ ] **AUTH-03**: Client can reset a forgotten password by email
+- [ ] **AUTH-03**: Password reset by email is built and works for addresses the sender can reach (Supabase team members until an email service is added, D-12); other clients get help from the marketer
 - [ ] **AUTH-04**: Signed-in client sees a dashboard with a welcome, their plan and next steps (placeholder content, per client); signed-out visitors are sent to login
 - [ ] **AUTH-05**: Client data is enforced by the service: a client can read only their own row, and signed-out requests get none, even when calling the service directly
-- [ ] **AUTH-06**: Accounts are invite-only: public sign-up is off, and the marketer adds clients and edits dashboards in the hosted service's admin console
+- [ ] **AUTH-06**: Accounts are invite-only: public sign-up is off, and the marketer creates client accounts with a temporary password (D-12) and edits dashboards in the hosted service's admin console
 - [ ] **AUTH-07**: Home and Contact load no auth code, still open by double-click and stay within the page-weight budget; login shows a clear message when not on the hosted site
 
 ## v2 Requirements

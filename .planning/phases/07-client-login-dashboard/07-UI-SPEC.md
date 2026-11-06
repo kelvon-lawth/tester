@@ -35,6 +35,8 @@ Also new (checker notes, 2026-11-06): `.lede` (no such rule exists yet; only `.h
 
 **Focal points:** login is the h1 and the "Sign in" button; dashboard is the h1 and the "Next steps" card.
 
+**Amendments from research (2026-11-06; these win over anything below):** the "Send it again" countdown is 60s, matching the server limit. `set-password.html` strips the token from the URL immediately and shows a "Continue" button, which is what uses the link, because email scanners open links in advance. The password minimum comes from a single `PASSWORD_MIN` constant matching the console setting (10). Per D-12, reset copy must not promise that an email reaches every client: tell people to contact the marketer if no email arrives. Add a client-facing path for accounts given a temporary password to change it.
+
 ### New JS (contract only)
 Auth code loads ONLY on `login.html`, `set-password.html`, `dashboard.html` (D-09). Home and Contact load none. Plan decides the file split.
 
