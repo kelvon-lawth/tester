@@ -335,7 +335,7 @@ groups.replace = () => {
   for (const h of ["Identity", "Contact details", "Numbers and claims", "Photos", "Testimonials", "Logos", "Copy blocks", "Pricing", "Shell"]) {
     if (!new RegExp("^## " + h + "$", "m").test(replaceMe)) e.push("REPLACE-ME.md missing heading ## " + h);
   }
-  const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "01632 960 123", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer", "Local Basics", "Growth", "£195", "£395", "Most popular", "No contracts. Cancel any month."].concat(LOGOS); // quick 261022-bsb: pricing terms
+  const terms = ["Sam Whitlock", "Elmhollow", "Fenwick Cross", "Thornby", "hello@samwhitlock.example", "01632 960 123", "40+", "ten years", "Priya Nair", "Marcus Bell", "Lena Fischer", "Local Basics", "Growth", "£195", "£395", "Most popular", "No contracts. Cancel any month.", "Neighbours I’ve helped", "Scroll", "Trusted by", "What my neighbours say", "Let’s talk", "Send message", "This form needs JavaScript", "(required)", "Skip to main content", "When the site goes live"].concat(LOGOS); // quick 261022-bsb: pricing terms
   for (const t of terms) if (!replaceMe.includes(t)) e.push("REPLACE-ME.md missing: " + t);
   for (const m of index.match(/<img\b[^>]*>/g) || []) {
     const src = (m.match(/\bsrc="([^"]+)"/) || [])[1] || "";

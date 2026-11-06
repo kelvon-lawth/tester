@@ -15,25 +15,6 @@ const exists = (rel) => fs.existsSync(path.join(ROOT, rel));
 const htmlFiles = fs.readdirSync(ROOT).filter((f) => f.endsWith(".html"));
 
 // ---- CSS rules (a) and (b)
-const rawCss = read("css/styles.css");
-let css = rawCss.replace(/\/\*[\s\S]*?\*\//g, "");
-const start = css.indexOf(":root {");
-let end = -1;
-if (start < 0) fail("css/styles.css", "no :root block");
-else {
-  let depth = 0;
-  for (let i = css.indexOf("{", start); i < css.length; i++) {
-    if (css[i] === "{") depth++;
-    else if (css[i] === "}" && --depth === 0) { end = i; break; }
-  }
-}
-if (start >= 0 && end === -1) fail("css/styles.css", ":root block has unbalanced braces");
-const outside = start < 0 || end === -1 ? css : css.slice(0, start) + css.slice(end + 1);
-// data-URIs may legitimately contain encoded characters; ignore url(...) contents
-const scanned = outside.replace(/@font-face\s*\{[^}]*\}/g, "").replace(/url\(\s*(["']?)data:[^)]*?\1\s*\)/gi, "url()");
-
-// Per-declaration scan. Accepts a missing trailing ';' before '}'. Selectors and
-// @media preludes end in '{', so they never match.
 const NAMED_COLOURS = [
   "black", "white", "red", "green", "blue", "yellow", "orange", "purple", "pink", "brown",
   "gray", "grey", "navy", "teal", "coral", "tomato", "gold", "silver", "maroon", "olive",
@@ -42,24 +23,73 @@ const NAMED_COLOURS = [
 ];
 const namedRe = new RegExp("(?<![-\\w])(" + NAMED_COLOURS.join("|") + ")(?![-\\w])", "i");
 const declRe = /([a-z-]+)\s*:\s*([^;{}]+)(?=;|\})/gi;
-let d;
-while ((d = declRe.exec(scanned))) {
-  const prop = d[1].toLowerCase();
-  const value = d[2].trim();
-  const decl = prop + ": " + value;
-  if (/#[0-9a-fA-F]{3,8}\b/.test(value)) fail("css/styles.css", "hex colour outside :root: " + decl);
-  if (/\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\s*\(/i.test(value))
-    fail("css/styles.css", "colour function outside :root: " + decl);
-  if (namedRe.test(value)) fail("css/styles.css", "named colour outside :root: " + decl);
-  if (prop === "font") fail("css/styles.css", "font shorthand bypasses size/weight tokens: " + decl);
-  if (prop === "font-size" && !/var\(--fs-/.test(value)) fail("css/styles.css", "font-size not a token: " + decl);
-  if (prop === "font-weight" && !/var\(--fw-/.test(value)) fail("css/styles.css", "font-weight not a token: " + decl);
+
+// Scans one stylesheet. Returns the comment-stripped CSS and the part outside :root.
+// Accepts a missing trailing ';' before '}'. Selectors and @media preludes end in '{',
+// so they never match the per-declaration regex.
+function scanCss(rel, rawCss, excludeRoot) {
+  const stripped = rawCss.replace(/\/\*[\s\S]*?\*\//g, "");
+  let outsideCss = stripped;
+  if (excludeRoot) {
+    const start = stripped.indexOf(":root {");
+    let end = -1;
+    if (start < 0) fail(rel, "no :root block");
+    else {
+      let depth = 0;
+      for (let i = stripped.indexOf("{", start); i < stripped.length; i++) {
+        if (stripped[i] === "{") depth++;
+        else if (stripped[i] === "}" && --depth === 0) { end = i; break; }
+      }
+    }
+    if (start >= 0 && end === -1) fail(rel, ":root block has unbalanced braces");
+    outsideCss = start < 0 || end === -1 ? stripped : stripped.slice(0, start) + stripped.slice(end + 1);
+  }
+  // data-URIs may legitimately contain encoded characters; ignore url(...) contents
+  const scannedCss = outsideCss.replace(/@font-face\s*\{[^}]*\}/g, "").replace(/url\(\s*(["']?)data:[^)]*?\1\s*\)/gi, "url()");
+  let d;
+  declRe.lastIndex = 0;
+  while ((d = declRe.exec(scannedCss))) {
+    const prop = d[1].toLowerCase();
+    const value = d[2].trim();
+    const decl = prop + ": " + value;
+    if (/#[0-9a-fA-F]{3,8}\b/.test(value)) fail(rel, "hex colour outside :root: " + decl);
+    if (/\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\s*\(/i.test(value))
+      fail(rel, "colour function outside :root: " + decl);
+    if (namedRe.test(value)) fail(rel, "named colour outside :root: " + decl);
+    if (prop === "font") fail(rel, "font shorthand bypasses size/weight tokens: " + decl);
+    if (prop === "font-size" && !/var\(--fs-/.test(value)) fail(rel, "font-size not a token: " + decl);
+    if (prop === "font-weight" && !/var\(--fw-/.test(value)) fail(rel, "font-weight not a token: " + decl);
+  }
+  for (const word of ["grain", "noise", "blob", "feTurbulence", "italic"]) {
+    if (new RegExp(word, "i").test(stripped)) fail(rel, "forbidden word: " + word);
+  }
+  if (/removed in Phase 5/.test(rawCss)) fail(rel, 'stale comment "removed in Phase 5"');
+  return { css: stripped, outside: outsideCss };
 }
 
+const main = scanCss("css/styles.css", read("css/styles.css"), true);
+const css = main.css;
+const outside = main.outside;
 if (!/\.divider-squiggle\b/.test(css)) fail("css/styles.css", ".divider-squiggle not defined");
 if (!/\.accent-underline\b/.test(css)) fail("css/styles.css", ".accent-underline not defined");
-for (const word of ["grain", "noise", "blob", "feTurbulence", "italic"]) {
-  if (new RegExp(word, "i").test(css)) fail("css/styles.css", "forbidden word: " + word);
+if (/(^|[\s,}>+~])\.sg-/.test(css)) fail("css/styles.css", ".sg- selector found; style guide rules belong in css/styleguide.css");
+
+if (!exists("css/styleguide.css")) {
+  fail("css/styleguide.css", "file missing");
+} else {
+  const sgRaw = read("css/styleguide.css");
+  const sgCss = scanCss("css/styleguide.css", sgRaw, false).css;
+  const ruleRe2 = /([^{}]+)\{[^{}]*\}/g;
+  let m2;
+  while ((m2 = ruleRe2.exec(sgCss))) {
+    for (const raw of m2[1].split(",")) {
+      const sel = raw.replace(/\s+/g, " ").trim();
+      if (sel && !sel.startsWith(".sg-")) fail("css/styleguide.css", "selector does not start with .sg-: " + sel);
+    }
+  }
+}
+for (const f of ["index.html", "contact.html"]) {
+  if (exists(f) && /css\/styleguide\.css/.test(read(f))) fail(f, "must not mention css/styleguide.css");
 }
 
 // ---- Style guide (c) and (e)
@@ -69,6 +99,10 @@ if (!exists("styleguide.html")) {
   const sg = read("styleguide.html");
   for (const id of ["sg-colors", "sg-contrast", "sg-type", "sg-spacing", "sg-accents", "sg-hero", "sg-buttons", "sg-icons", "sg-photo", "sg-grid"]) {
     if (!new RegExp('id="' + id + '"').test(sg)) fail("styleguide.html", "missing section id " + id);
+  }
+  {
+    const i1 = sg.indexOf("css/styles.css"), i2 = sg.indexOf("css/styleguide.css");
+    if (i2 < 0 || i1 < 0 || i2 < i1) fail("styleguide.html", "must link css/styleguide.css after css/styles.css");
   }
   const m = sg.match(/data-words="([^"]*)"/);
   if (!m || m[1] !== "bakery,café,salon,gym,florist,shop,restaurant") fail("styleguide.html", "data-words list missing or wrong order");
@@ -133,7 +167,7 @@ const BLUE_ALLOWED = new Set([
     if (!/var\(--color-blue\)/.test(r[2])) continue;
     for (const raw of r[1].split(",")) {
       const sel = raw.replace(/\s+/g, " ").trim();
-      if (!BLUE_ALLOWED.has(sel) && !sel.startsWith(".sg-")) fail("css/styles.css", "blue used outside the reserved list: " + sel);
+      if (!BLUE_ALLOWED.has(sel)) fail("css/styles.css", "blue used outside the reserved list: " + sel);
     }
   }
 }

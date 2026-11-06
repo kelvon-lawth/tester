@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Dev-only QA guard (Phase 5): overflow, tap targets, keyboard focus, shell parity, first-view weight + CLS, subfolder/file:// hosting.
-// Usage: node tools/qa-browser-test.js [overflow|tap|keyboard|shell|weight|hosting ...]
+// Dev-only QA guard (Phase 5): overflow, tap targets, keyboard focus, shell parity, first-view weight + CLS, subfolder/file:// hosting, style guide CSS split.
+// Usage: node tools/qa-browser-test.js [overflow|tap|keyboard|shell|weight|hosting|styleguide ...]
 // Zero dependencies. Raw Chrome DevTools Protocol over Node's global WebSocket.
 "use strict";
 
@@ -16,7 +16,7 @@ const CHROME =
   process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PAGES = ["index.html", "contact.html"];
 const fileUrl = (p) => url.pathToFileURL(path.join(ROOT, p)).href;
-const ALL = ["overflow", "tap", "keyboard", "shell", "weight", "hosting"];
+const ALL = ["overflow", "tap", "keyboard", "shell", "weight", "hosting", "styleguide"];
 
 const requested = process.argv.slice(2);
 for (const g of requested) {
@@ -472,6 +472,33 @@ results.hosting = async () => {
     try { fs.rmSync(tmp, { recursive: true, force: true }); } catch (e) { /* best effort */ }
   }
   return "copy in 'sub dir/site' works over file:// and http subpath: assets load, no errors, nav links work";
+};
+
+// ---------------------------------------------------------------------------
+// styleguide: .sg- rules live in css/styleguide.css, linked only by styleguide.html
+// ---------------------------------------------------------------------------
+results.styleguide = async () => {
+  await withPage(1280, 800, { url: fileUrl("styleguide.html") }, async (sid, evaluate, log) => {
+    const r = await evaluate(`async()=>{
+      await sleep(500);
+      const sheets=[...document.styleSheets].map(s=>s.href||'');
+      const sw=document.querySelector('.sg-swatch');
+      const grid=document.querySelector('.sg-swatches');
+      const ratio=document.querySelector('.sg-ratio');
+      return{sheets,swatch:sw?getComputedStyle(sw).blockSize:null,grid:grid?getComputedStyle(grid).display:null,ratio:ratio?ratio.textContent.trim():null};}`);
+    if (!r.sheets.some((h) => /css\/styleguide\.css$/.test(h))) throw new Error("css/styleguide.css not loaded: " + r.sheets.join(", "));
+    if (r.swatch !== "64px") throw new Error(".sg-swatch block-size is " + r.swatch + ", expected 64px");
+    if (r.grid !== "grid") throw new Error(".sg-swatches display is " + r.grid + ", expected grid");
+    if (!r.ratio || !/:1$/.test(r.ratio)) throw new Error(".sg-ratio text is " + JSON.stringify(r.ratio) + ", expected to end with :1");
+    const failed = log.failed.filter((f) => !/\.woff2 \(/.test(f));
+    if (log.exceptions.length || log.errors.length || failed.length || log.bad.length)
+      throw new Error("page problems: " + JSON.stringify({ ex: log.exceptions, err: log.errors, failed, bad: log.bad }));
+  });
+  await withPage(1280, 800, { url: fileUrl("index.html") }, async (sid, evaluate) => {
+    const sheets = await evaluate("async()=>[...document.styleSheets].map(s=>s.href||'')");
+    if (sheets.some((h) => /styleguide/.test(h))) throw new Error("index.html loads a style guide stylesheet");
+  });
+  return "styleguide.html styled via css/styleguide.css over file://; index.html does not load it";
 };
 
 // ---------------------------------------------------------------------------
