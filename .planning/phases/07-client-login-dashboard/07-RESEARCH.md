@@ -404,15 +404,19 @@ Env vars (set by the human in their own shell or an untracked `.env.local`; `.gi
 | A10 | Free-tier pricing of SMTP providers and whether they accept an unverified domain | Pitfall 1 | Medium; human decision, flagged as Open Question |
 | A11 | Project restore window 1 year (docs) vs 90 days (stale copy) | Free plan | Low |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Email delivery for non-team clients (needs user decision).**
    - Known: built-in SMTP only mails org team members at 2/hour; custom SMTP needs a provider and normally a sending domain.
    - Unclear: whether the user will set up SMTP now, or demo with team-member emails / console-created passwords.
    - Recommendation: plan the code for email flows regardless; human-step list includes SMTP as "required before inviting a real client", with option (c) console-created user for the prototype demo. Ask the user which route.
+   - RESOLVED: D-12. No custom email service for now; the marketer creates accounts with a temporary password, and invite and reset are tested with a Supabase team member's address.
 2. **CLAUDE.md wording** ("Exactly two pages", "Static only"): raise with user, per CONTEXT. Do not edit silently.
+   - RESOLVED: D-13. The user approved the update, applied in 07-07.
 3. **Free-project pausing**: accept for prototype or add a keep-alive? Recommend accept and document.
+   - RESOLVED: D-14. Pausing accepted for the prototype with no keep-alive; the check before a demo is documented in CLIENT-GUIDE.md (07-07).
 4. **Spec amendments** for the UI checker: 60 s resend countdown, extra "Continue" step on set-password, `PASSWORD_MIN` constant.
+   - RESOLVED: the amendments in 07-UI-SPEC.md, implemented in 07-06.
 
 ## Environment Availability
 

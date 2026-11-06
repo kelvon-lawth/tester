@@ -90,6 +90,7 @@ Plans:
 **Wave 6** *(blocked on Wave 5 completion)*
 
 - [x] 02-06-PLAN.md — REPLACE-ME.md audit, full guard sweep, human review checkpoint
+
 **UI hint**: yes
 
 ### Phase 3: Kinetic Hero
@@ -126,7 +127,9 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
+
 - [x] 04-01-PLAN.md — CON-07 inline-SVG area map (guards first), D-01 descope of CON-02/03, full guard re-verify
+
 **UI hint**: yes
 
 ### Phase 5: Polish & QA
@@ -148,6 +151,7 @@ Plans:
 **Wave 1**
 
 - [x] 05-01-PLAN.md — QA browser guard (overflow, tap, keyboard, shell, weight+CLS, hosting), vendor Unsplash photos, minimal fixes
+
 **UI hint**: yes
 
 ## Progress
@@ -190,13 +194,13 @@ Plans:
 
 - [ ] 06-02-PLAN.md — Vercel import, live HTTP checks, remove pages.yml and prove auto-deploy, disable Pages, correct records
 
-
 ### Phase 7: Client Login & Dashboard
 
 **Goal**: A client invited by the marketer can sign in on the hosted site, see their own private dashboard, and sign out, with their data protected by the auth service and not just hidden by the page
 **Mode:** mvp
 **Depends on**: Phase 6 Task 2 (Vercel hosting; retiring GitHub Pages is not required)
 **Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, AUTH-07
+**Before executing**: with the plans committed, run `git switch -c phase-07-client-login main` in the primary checkout, so all Phase 7 work stays off main (main redeploys the live site). Do not run this phase through `/gsd-autonomous`; it has approvals that must stop for the user.
 **Success Criteria** (what must be TRUE):
 
   1. A visitor can reach a login page from the shared header on every page
@@ -207,7 +211,37 @@ Plans:
   6. Home and Contact still work offline by double-click and stay within the page-weight budget; login explains itself when opened without the hosted site
   7. All guards pass, including the deploy allowlist with the new pages
 
-**Plans:** 0 plans
+**Plans:** 8 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 7 to break down)
+**Wave 1**
+
+- [ ] 07-01-PLAN.md — Phase branch and guards first: secrets scan, static auth guard, live RLS test (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 07-02-PLAN.md — Guards first: auth browser test, existing guards extended to five pages (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 07-04-PLAN.md — Human project setup, public config, live proof of RLS and invite-only (wave 3)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 07-05-PLAN.md — Human package check and pinned SDK, header link, sign-in, private dashboard, sign-out (wave 4)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 07-06-PLAN.md — Reset request, set-password page, temporary password change (wave 5)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 07-07-PLAN.md — Security headers, marketer's guide, placeholders, constraints, gate against a recorded commit (wave 6)
+
+**Wave 7** *(blocked on Wave 6 completion)*
+
+- [ ] 07-08-PLAN.md — Human-approved preview, then main push and deployed verification (wave 7)
+
+**Wave 8** *(blocked on Wave 7 completion)*
+
+- [ ] 07-09-PLAN.md — Real inbox and security check by the human, then close the records (wave 8)
