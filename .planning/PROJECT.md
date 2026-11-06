@@ -27,9 +27,9 @@ The home page must make a strong first impression: polished, professional and wa
 
 ### Out of Scope
 
-- Additional pages (blog, portfolio, pricing, separate about page) — user specified exactly two pages
+- Additional public pages (blog, portfolio, pricing, separate about page) — two public pages only; Login and Dashboard were added for clients by user decision on 2026-11-06
 - Real form submission or email delivery — prototype; form is front-end only
-- CMS or admin panel — content is placeholder and hand-edited
+- CMS or custom admin panel — content is hand-edited; client accounts and dashboards are managed in the auth service console
 - Real business name, branding, photos or testimonials — placeholders until the real freelancer's details exist
 - Analytics, cookies and SEO tuning — not needed for a show-ready prototype
 

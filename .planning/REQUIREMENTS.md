@@ -66,6 +66,16 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 - [x] **OPS-04**: Visitor can load the site from a Vercel address, and pushing to main redeploys it
 - [ ] **OPS-05**: GitHub Pages deploy is retired after Vercel is confirmed working
 
+### Client Login
+
+- [ ] **AUTH-01**: Visitor can reach a login page from the shared header on every page
+- [ ] **AUTH-02**: Invited client can sign in with email and password and sign out; the session survives a reload
+- [ ] **AUTH-03**: Client can reset a forgotten password by email
+- [ ] **AUTH-04**: Signed-in client sees a dashboard with a welcome, their plan and next steps (placeholder content, per client); signed-out visitors are sent to login
+- [ ] **AUTH-05**: Client data is enforced by the service: a client can read only their own row, and signed-out requests get none, even when calling the service directly
+- [ ] **AUTH-06**: Accounts are invite-only: public sign-up is off, and the marketer adds clients and edits dashboards in the hosted service's admin console
+- [ ] **AUTH-07**: Home and Contact load no auth code, still open by double-click and stay within the page-weight budget; login shows a clear message when not on the hosted site
+
 ## v2 Requirements
 
 Deferred. Tracked but not in the current roadmap.
@@ -86,7 +96,7 @@ Deferred. Tracked but not in the current roadmap.
 
 | Feature | Reason |
 |---------|--------|
-| Pages beyond Home and Contact (blog, portfolio, pricing, about) | User specified exactly two pages |
+| Pages beyond Home, Contact, Login and Dashboard (blog, portfolio, pricing, about) | Two public pages plus the login area added by user decision, 2026-11-06 |
 | Real form submission, CAPTCHA, backend | Prototype; front-end only |
 | CMS / admin panel | Placeholder content is hand-edited |
 | Chat widgets, popups, cookie banners | Clutter; works against the warm feel |
@@ -136,11 +146,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OPS-02 | Phase 6 | Complete |
 | OPS-03 | Phase 6 | Complete |
 | OPS-04 | Phase 6 | Complete |
+| AUTH-01 | Phase 7 | Pending |
+| AUTH-02 | Phase 7 | Pending |
+| AUTH-03 | Phase 7 | Pending |
+| AUTH-04 | Phase 7 | Pending |
+| AUTH-05 | Phase 7 | Pending |
+| AUTH-06 | Phase 7 | Pending |
+| AUTH-07 | Phase 7 | Pending |
 | OPS-05 | Phase 6 | Partial: workflow removed, Pages not yet disabled |
 
 **Coverage:**
-- v1 requirements: 38 total
-- Mapped to phases: 38
+- v1 requirements: 45 total
+- Mapped to phases: 45
 - Unmapped: 0 ✓
 - Descoped: 2 (CON-02, CON-03 by D-01)
 

@@ -17,6 +17,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 - [x] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic (completed 2026-10-22)
 - [x] **Phase 5: Polish & QA** - Responsive, keyboard, performance and screen-reader verification across both pages (completed 2026-10-23)
 - [ ] **Phase 6: Tech Debt & Vercel Launch** - Clear audit debt, deploy public files only to Vercel, retire GitHub Pages
+- [ ] **Phase 7: Client Login & Dashboard** - Invited clients sign in through a hosted auth service and see a private dashboard
 
 ## Phase Details
 
@@ -152,7 +153,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5 -> 6
+Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -162,6 +163,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5 -> 6
 | 4. Contact Page | 1/1 | Complete    | 2026-10-22 |
 | 5. Polish & QA | 1/1 | Complete    | 2026-10-23 |
 | 6. Tech Debt & Vercel Launch | 1/2 | Paused (GitHub Pages retirement delayed) | - |
+| 7. Client Login & Dashboard | 0/? | Not started | - |
 
 ### Phase 6: Tech Debt & Vercel Launch
 
@@ -188,3 +190,24 @@ Plans:
 
 - [ ] 06-02-PLAN.md — Vercel import, live HTTP checks, remove pages.yml and prove auto-deploy, disable Pages, correct records
 
+
+### Phase 7: Client Login & Dashboard
+
+**Goal**: A client invited by the marketer can sign in on the hosted site, see their own private dashboard, and sign out, with their data protected by the auth service and not just hidden by the page
+**Mode:** mvp
+**Depends on**: Phase 6 Task 2 (Vercel hosting; retiring GitHub Pages is not required)
+**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, AUTH-07
+**Success Criteria** (what must be TRUE):
+
+  1. A visitor can reach a login page from the shared header on every page
+  2. An invited client can sign in with email and password, reset a forgotten password, stay signed in across reloads and sign out
+  3. A signed-in client sees a dashboard with a welcome, their plan and next steps
+  4. One client cannot read another client's data, and a signed-out visitor gets no client data, even by calling the service directly
+  5. Nobody can create their own account
+  6. Home and Contact still work offline by double-click and stay within the page-weight budget; login explains itself when opened without the hosted site
+  7. All guards pass, including the deploy allowlist with the new pages
+
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 7 to break down)
