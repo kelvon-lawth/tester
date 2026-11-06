@@ -23,6 +23,7 @@
 
 - **D-12 Email:** no custom email service for now. The marketer creates client accounts in the Supabase console with a temporary password. The invite and reset pages are still built, and are tested with a Supabase team member's address, because the built-in sender only reaches team members (2 emails an hour). Real clients cannot reset by email until an email service is added; the login page must not promise otherwise without that being clear, and the plan must record this as a known limit. Adding SMTP is future work.
 - **D-13 CLAUDE.md:** update "Exactly two pages" and "Static only" in this phase to two public pages plus Login, Set password and Dashboard, static hosting, and Supabase as the one outside service. Approved by the user.
+- **D-15 PROJECT.md:** the user approved making the same constraint edits in `.planning/PROJECT.md` as in `CLAUDE.md`, so regenerating `CLAUDE.md` can't undo them (2026-11-06).
 - **D-14 Pausing:** accept free-project pausing for the prototype, with no keep-alive. Document checking the project before a demo.
 - **D-04 confirmed by research:** Supabase. See 07-RESEARCH.md.
 
