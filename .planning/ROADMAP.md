@@ -16,6 +16,7 @@ A two-page static prototype (Home + Contact) built with hand-written HTML, token
 - [x] **Phase 3: Kinetic Hero** - Cycling business-type headline that is smooth, stable, accessible and motion-safe (completed 2026-10-22)
 - [x] **Phase 4: Contact Page** - Validated front-end-only form, honest success state, direct contact details and area graphic (completed 2026-10-22)
 - [x] **Phase 5: Polish & QA** - Responsive, keyboard, performance and screen-reader verification across both pages (completed 2026-10-23)
+- [ ] **Phase 6: Tech Debt & Vercel Launch** - Clear audit debt, deploy public files only to Vercel, retire GitHub Pages
 
 ## Phase Details
 
@@ -104,7 +105,7 @@ Plans:
   4. Visitor with reduce-motion enabled, or with no JavaScript, sees a complete static headline with no cycling
   5. Screen-reader user hears one complete headline rather than each word change, and the animation runs without visible jank on a typical laptop and phone
 
-**Plans**: TBD
+**Plans:** 1/1 plans complete
 **UI hint**: yes
 **Research flag**: Needs deeper research before planning (CSS/WAAPI vs GSAP technique, grid-stack slot sizing with chosen fonts, WCAG 2.2.2 pause approach, reduced-motion behavior). Default to CSS-first, word-level.
 
@@ -160,3 +161,30 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 | 3. Kinetic Hero | 1/1 | Complete    | 2026-10-22 |
 | 4. Contact Page | 1/1 | Complete    | 2026-10-22 |
 | 5. Polish & QA | 1/1 | Complete    | 2026-10-23 |
+| 6. Tech Debt & Vercel Launch | 0/? | Not started | - |
+
+### Phase 6: Tech Debt & Vercel Launch
+
+**Goal**: The site is live on Vercel with only public files deployed, auto-deploying from main, and the audit's worthwhile tech debt is cleared
+**Mode:** mvp
+**Depends on**: Phase 5
+**Requirements**: OPS-01, OPS-02, OPS-03, OPS-04, OPS-05
+**Success Criteria** (what must be TRUE):
+
+  1. The deployed site contains only public files: no style guide page, script or CSS, and no tools/, .planning/ or repo docs
+  2. REPLACE-ME.md lists every visible placeholder string, including the three the audit found missing
+  3. The site loads from a vercel.app address, and pushing to main redeploys it
+  4. GitHub Pages is retired only after Vercel is confirmed working
+  5. All guards still pass, and planning records match reality
+
+**Plans:** 2 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 06-01-PLAN.md — Failing deploy guard, POSIX allowlist build, vercel.json, style guide CSS move, REPLACE-ME.md, push to main
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 06-02-PLAN.md — Vercel import, live HTTP checks, remove pages.yml and prove auto-deploy, disable Pages, correct records
+
