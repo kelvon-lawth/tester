@@ -94,8 +94,17 @@ Six invented inline-SVG wordmarks. Replace each with a real client logo.
 | Contact intro | Whether you run a bakery, a gym or the shop on the corner, I’d love to hear what you’re working on. Drop me a note below or give me a ring, and I’ll get back to you within a day or two. | `contact.html` | `.contact__intro` | [ ] |
 | Contact form labels and hints | Your name, Phone number, Email address, Message (optional); "Tell me a bit about your business and what you’d like help with." | `contact.html` | `#contact-form` labels, `#message-hint` | [ ] |
 | Contact form error messages | "Please tell me your name.", "Please add a phone number so I can call you back.", "Please add your email address.", plus email and phone format messages | `js/main.js` | contact-form IIFE, `messageFor()` | [ ] |
-| Contact success message | Thanks, that’s all looking good. This is a prototype, so nothing was actually sent. (Rewrite when a real submission is wired up) | `contact.html` | `#contact-success` | [ ] |
+| Contact success message | Thanks, that’s all looking good. This is a prototype, so nothing was actually sent. (Rewrite when a real submission is wired up.) The rest of the paragraph also needs rewriting: "When the site goes live, this is where your message would reach me. For now, you can email or ring me using the details on this page." | `contact.html` | `#contact-success` | [ ] |
 | Contact direct details heading and line | Rather talk directly? I’m happy to chat by phone or email, whichever suits you. | `contact.html` | `#contact-details-title` and the paragraph after it | [ ] |
+| Hero trust line | Trusted by 40+ local businesses in Elmhollow (the count follows the Client count row) | `index.html` | `.trust-cue` | [ ] |
+| Hero scroll cue | Scroll | `index.html` | `.hero-scroll-cue__label` | [ ] |
+| Logo strip caption | Neighbours I’ve helped | `index.html` | `#logos-title` | [ ] |
+| Testimonials heading | What my neighbours say | `index.html` | `#kind-words-title` | [ ] |
+| Main button label and Contact heading | Let’s talk | `index.html`, `contact.html` | `index.html` `.btn--primary` and `.sticky-cta` (six places); `contact.html` `h1` | [ ] |
+| Form submit button | Send message | `contact.html` | `#contact-form` submit button | [ ] |
+| Required field marker | (required) | `contact.html` | `.field__req` | [ ] |
+| No-JavaScript form notice | This form needs JavaScript, which is turned off in your browser. Please email hello@samwhitlock.example or give me a ring on 01632 960 123 instead. | `contact.html` | `.contact__noscript` | [ ] |
+| Skip link | Skip to main content | `index.html`, `contact.html` | `.skip-link` | [ ] |
 
 ## Pricing
 
@@ -118,17 +127,22 @@ All plan names, prices and features are placeholders. Set real prices before lau
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
 | Copyright line | © 2026 Sam Whitlock. All names and details are made up. | `index.html`, `contact.html` | `.site-footer__fine` | [ ] |
-| Prototype note | Prototype — sample content | `index.html`, `contact.html` | `.site-footer__fine` (remove at launch) | [ ] |
-| Dev style-guide link | Style guide (dev) | `index.html`, `contact.html` | `.site-footer__fine`, remove before launch | [ ] |
+| Prototype note | Prototype — sample content | `index.html`, `contact.html` | `.site-footer__fine` (remove at launch). `tools/build-site.sh`, `tools/check-deploy.js` and `tools/check-home.js` check for this text, so removing it means updating those too | [ ] |
+| Dev style-guide link | Style guide (dev) | `index.html`, `contact.html` | `.site-footer__fine`. The build strips it from deploys automatically; it stays in the local files | [ ] |
 
 ## Fonts
 
 Fraunces and Figtree are SIL OFL and self-hosted. See `assets/fonts/SOURCES.md`. No swap needed.
 
-## Dev-only files to remove before launch
+## Dev-only files (excluded from deploys automatically)
+
+`tools/build-site.sh` publishes an allowlist to `_site`, so nothing has to be removed by hand before deploying. `tools/check-deploy.js` fails if anything else appears in `_site`. These stay out of every deploy:
 
 - `styleguide.html`
 - `js/styleguide.js`
-- `tools/` (dev-only harness: `font-metrics.html`, `font-metrics.js`, `*-test.js`, `check-*.js`; remove the whole folder, it must not ship, threat T-01-10)
-- the "Style guide (dev)" footer link in `index.html` and `contact.html`
-- the "Style guide (dev only)" block in `css/styles.css`
+- `css/styleguide.css` (the style guide CSS now lives here, not in `css/styles.css`)
+- `tools/` (dev-only harness: `font-metrics.html`, `font-metrics.js`, `*-test.js`, `check-*.js`, `build-site.sh`; it must not ship, threat T-01-10)
+- `.planning/`, `CLAUDE.md`, `REPLACE-ME.md`, `vercel.json`
+- `assets/fonts/SOURCES.md`, `assets/js/vendor/GSAP-VERSION.md`
+
+The "Style guide (dev)" footer link stays in the local `index.html` and `contact.html`; the build strips it from the deployed copies.
