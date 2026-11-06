@@ -60,10 +60,10 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 
 ### Launch Readiness
 
-- [ ] **OPS-01**: Deployed site contains only public files: no style guide page, script or CSS, and no tools, planning files or repo docs
-- [ ] **OPS-02**: REPLACE-ME.md lists every visible placeholder string
-- [ ] **OPS-03**: Planning records match reality (summary requirement fields, roadmap, state)
-- [ ] **OPS-04**: Visitor can load the site from a Vercel address, and pushing to main redeploys it
+- [x] **OPS-01**: Deployed site contains only public files: no style guide page, script or CSS, and no tools, planning files or repo docs
+- [x] **OPS-02**: REPLACE-ME.md lists every visible placeholder string
+- [x] **OPS-03**: Planning records match reality (summary requirement fields, roadmap, state)
+- [x] **OPS-04**: Visitor can load the site from a Vercel address, and pushing to main redeploys it
 - [ ] **OPS-05**: GitHub Pages deploy is retired after Vercel is confirmed working
 
 ## v2 Requirements
@@ -132,11 +132,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | QA-01 | Phase 5 | Complete |
 | QA-02 | Phase 5 | Complete |
 | QA-03 | Phase 5 | Complete |
-| OPS-01 | Phase 6 | Pending |
-| OPS-02 | Phase 6 | Pending |
-| OPS-03 | Phase 6 | Pending |
-| OPS-04 | Phase 6 | Pending |
-| OPS-05 | Phase 6 | Pending |
+| OPS-01 | Phase 6 | Complete |
+| OPS-02 | Phase 6 | Complete |
+| OPS-03 | Phase 6 | Complete |
+| OPS-04 | Phase 6 | Complete |
+| OPS-05 | Phase 6 | Partial: workflow removed, Pages not yet disabled |
 
 **Coverage:**
 - v1 requirements: 38 total

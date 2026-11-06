@@ -33,6 +33,7 @@ key-decisions:
   - "smoke-test uses spawn and kills Chrome after </html> because headless Chrome here does not exit after --dump-dom"
 duration: ~15min
 completed: 2026-10-12
+requirements-completed: [FND-01]
 ---
 
 # Phase 1 Plan 01: Walking Skeleton Summary

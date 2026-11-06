@@ -14,6 +14,7 @@ decisions:
 metrics:
   completed: 2026-10-22
   tasks: 3
+requirements-completed: [CON-01, CON-04, CON-05, CON-06, CON-07]
 ---
 
 # Phase 4 Plan 01: Contact area-served map Summary

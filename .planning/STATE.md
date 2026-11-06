@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-05-PLAN.md
-last_updated: "2026-11-06T09:09:38.041Z"
-last_activity: 2026-11-06 -- Phase 6 planning complete
+stopped_at: Phase 6 plan 06-02 paused before Task 3 (user delayed disabling GitHub Pages)
+last_updated: "2026-11-06T12:00:00.000Z"
+last_activity: 2026-11-06 -- Vercel live; GitHub Pages retirement delayed by user
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 14
-  completed_plans: 12
-  percent: 83
+  completed_plans: 13
+  percent: 93
 ---
 
 # Project State
@@ -21,16 +21,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-12)
 
 **Core value:** The home page must make a strong first impression: polished, professional and warm, with an impressive animated headline.
-**Current focus:** Milestone complete
+**Current focus:** Phase 6 paused (GitHub Pages retirement delayed); login feature being scoped
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-11-06 -- Phase 6 planning complete
+Phase: 6 (Tech Debt & Vercel Launch)
+Plan: 06-01 complete; 06-02 paused before Task 3
+Status: Paused, waiting on the user to disable GitHub Pages
+Last activity: 2026-11-06 -- Vercel live; GitHub Pages retirement delayed by user
+Hosting: https://tester-five-sage.vercel.app (pushes to main redeploy). GitHub Pages at https://kelvon-lawth.github.io/tester/ still serves its last deploy; its workflow is removed.
 
-Progress: [██████████] 100%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
@@ -70,20 +71,26 @@ Progress: [██████████] 100%
 - [Phase 1]: P01: static Fraunces SemiBold + Figtree 400/600 (41KB) self-hosted; smoke-test spawns Chrome and kills after </html>
 - [Phase 1]: Phase 1 Plan 02: --color-on-navy-hover token added; guards ignore @font-face and data-URIs
 - [Phase 01]: 01-03: Fraunces fallback uses local(Georgia Bold) at weight 600
+- [Phase 6]: Deploy uses an allowlist build (tools/build-site.sh to _site); a build-SHA comment in the deployed index.html proves redeploys over HTTP
 
 ### Roadmap Evolution
 
 - Phase 6 added: Address tech debt and launch on Vercel (from the v1.0 audit, 2026-11-06)
 
+### Accepted Debt
+
+- D-06: .btn--ghost, .divider-squiggle--coral, .media--placeholder, .prose, .span-4 and .span-8 stay as the design kit shown in the style guide
+- styleguide.html preloads two of three font files; UI-SPEC lists the old form border token and font stacks; Android and Linux fallback font metrics not measured
+- No phase has a VALIDATION.md (the guards are the working test coverage)
+
 ### Pending Todos
 
-None yet.
+- User: disable GitHub Pages at https://github.com/kelvon-lawth/tester/settings/pages, then resume 06-02 Task 4 (delayed by user, 2026-11-06)
+- tools/build-site.sh comment still mentions pages.yml; tidy when OPS-05 closes
 
 ### Blockers/Concerns
 
-- Phase 3 needs research before planning (technique, slot sizing, WCAG 2.2.2, reduced motion)
-- Font selection and fallback metrics unresolved; settle in Phase 1
-- Screen-reader pattern needs real VoiceOver verification in Phase 5
+No blockers. Human checks still open: real-device animation smoothness (HERO-06) and a VoiceOver or NVDA pass (HERO-05).
 
 ### Quick Tasks Completed
 
@@ -98,6 +105,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-10-23T04:06:44.861Z
-Stopped at: Completed 02-05-PLAN.md
-Resume file: None
+Last session: 2026-11-06
+Stopped at: 06-02 paused before Task 3; login feature being scoped
+Resume file: .planning/phases/02-shared-shell-static-home/.continue-here.md

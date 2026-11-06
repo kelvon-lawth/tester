@@ -152,7 +152,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
+Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -161,7 +161,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 | 3. Kinetic Hero | 1/1 | Complete    | 2026-10-22 |
 | 4. Contact Page | 1/1 | Complete    | 2026-10-22 |
 | 5. Polish & QA | 1/1 | Complete    | 2026-10-23 |
-| 6. Tech Debt & Vercel Launch | 0/? | Not started | - |
+| 6. Tech Debt & Vercel Launch | 1/2 | Paused (GitHub Pages retirement delayed) | - |
 
 ### Phase 6: Tech Debt & Vercel Launch
 
@@ -182,7 +182,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5
 Plans:
 **Wave 1**
 
-- [ ] 06-01-PLAN.md — Failing deploy guard, POSIX allowlist build, vercel.json, style guide CSS move, REPLACE-ME.md, push to main
+- [x] 06-01-PLAN.md — Failing deploy guard, POSIX allowlist build, vercel.json, style guide CSS move, REPLACE-ME.md, push to main
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
