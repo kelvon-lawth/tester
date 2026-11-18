@@ -107,5 +107,5 @@ No blockers. Human checks still open: real-device animation smoothness (HERO-06)
 ## Session Continuity
 
 Last session: 2026-11-18T16:17:50.085Z
-Stopped at: 06-02 paused before Task 3; login feature being scoped
+Stopped at: 07-05 done offline (stand-in config); 07-04 Task 2 awaits the Supabase project
 Resume file: None
