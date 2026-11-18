@@ -2352,9 +2352,76 @@ html.has-motion .text-coral-on-navy {
 #login-view[hidden],
 #reset-view[hidden],
 #file-card[hidden],
+#password-view[hidden],
+.auth [hidden],
 .dash[hidden],
 .dash [hidden] {
   display: none;
+}
+
+#reset-sent .link-cta,
+#reset-again {
+  margin-block-start: var(--space-md);
+}
+
+#reset-again {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+#reset-again:disabled {
+  color: var(--color-ink-soft);
+  cursor: default;
+  text-decoration: none;
+}
+
+#login-title:focus,
+#sp-title:focus {
+  outline: none;
+}
+
+.auth__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+.auth__actions .btn {
+  align-self: stretch;
+}
+
+@media (min-width: 640px) {
+  .auth__actions .btn { align-self: flex-start; }
+}
+
+.auth__actions .link-cta {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+
+.dash__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+.dash__actions .link-cta {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+
+@media (min-width: 640px) {
+  .dash__actions { align-items: flex-end; }
 }
 
 .dash__head {

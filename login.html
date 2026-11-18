@@ -54,9 +54,9 @@
         </div>
 
         <div id="login-view" hidden>
-          <h1>Welcome back</h1>
-          <p class="lede">Sign in to see your plan and what’s coming next.</p>
-          <div class="card card--white auth__card">
+          <h1 id="login-title" tabindex="-1">Welcome back</h1>
+          <p class="lede" id="login-lede">Sign in to see your plan and what’s coming next.</p>
+          <div id="signin-card" class="card card--white auth__card">
             <div id="auth-status" class="auth__status" role="status" aria-live="polite" hidden></div>
             <!-- method="post" and a disabled submit (enabled by js/login.js) mean the form can never fall back to a GET that puts an email or password in the URL. -->
             <form id="login-form" class="contact-form" novalidate method="post" action="#">
@@ -79,7 +79,29 @@
               <button class="link-cta" id="forgot-link" type="button">Forgotten your password?</button>
             </div>
           </div>
-          <div id="reset-view" hidden></div>
+          <div id="reset-view" class="card card--white auth__card" hidden>
+            <div id="reset-status" class="auth__status" role="status" aria-live="polite" hidden></div>
+            <div id="reset-request">
+              <p class="reset-lede">Pop your email in and I’ll send a reset link if I can. If nothing arrives, email me and I’ll sort it out.</p>
+              <form id="reset-form" class="contact-form" novalidate method="post" action="#">
+                <div class="field">
+                  <label class="field__label" for="reset-email">Email address</label>
+                  <input class="field__input" id="reset-email" name="email" type="email" autocomplete="username email" required aria-describedby="reset-email-error">
+                  <p class="field__error" id="reset-email-error" aria-live="polite"></p>
+                </div>
+                <button class="btn btn--primary" type="submit">Send reset link</button>
+              </form>
+            </div>
+            <div id="reset-sent" hidden>
+              <h2 id="reset-sent-title" tabindex="-1">Check your inbox</h2>
+              <p>If that email belongs to a client, a reset link should be on its way. It can take a few minutes, and it’s worth checking your spam folder. If nothing arrives, email me at <a href="mailto:hello@samwhitlock.example">hello@samwhitlock.example</a> and I’ll sort it out.</p>
+              <p class="visually-hidden" id="reset-announce" role="status" aria-live="polite"></p>
+              <button class="link-cta" id="reset-again" type="button" disabled>Send it again in 60s</button>
+            </div>
+            <div class="auth__links">
+              <button class="link-cta" id="reset-back" type="button">Back to sign in</button>
+            </div>
+          </div>
           <p class="auth__note">Clients only. If you’d like to work together, <a href="contact.html">get in touch</a>.</p>
         </div>
       </div>

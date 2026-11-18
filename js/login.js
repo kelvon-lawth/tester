@@ -17,7 +17,31 @@
   var password = document.getElementById("login-password");
   var toggle = document.getElementById("login-toggle");
   var submit = form ? form.querySelector("button[type=submit]") : null;
+  var loginTitle = document.getElementById("login-title");
+  var loginLede = document.getElementById("login-lede");
+  var signinCard = document.getElementById("signin-card");
+  var forgot = document.getElementById("forgot-link");
+  var resetView = document.getElementById("reset-view");
+  var resetStatus = document.getElementById("reset-status");
+  var resetRequest = document.getElementById("reset-request");
+  var resetForm = document.getElementById("reset-form");
+  var resetEmail = document.getElementById("reset-email");
+  var resetSent = document.getElementById("reset-sent");
+  var resetSentTitle = document.getElementById("reset-sent-title");
+  var resetAnnounce = document.getElementById("reset-announce");
+  var resetAgain = document.getElementById("reset-again");
+  var resetBack = document.getElementById("reset-back");
   if (!gateEl || !view || !status || !form || !email || !password || !toggle || !submit) return;
+  if (!loginTitle || !loginLede || !signinCard || !forgot || !resetView || !resetStatus || !resetRequest ||
+      !resetForm || !resetEmail || !resetSent || !resetSentTitle || !resetAnnounce || !resetAgain || !resetBack) return;
+
+  var TITLE_SIGNIN = loginTitle.textContent;
+  var LEDE_SIGNIN = loginLede.textContent;
+  var TITLE_RESET = "Let\u2019s get you back in";
+  var COUNTDOWN = 60;
+  var resetBusy = false;
+  var countTimer = null;
+  var lastResetEmail = "";
 
   var busy = false;
 
@@ -163,6 +187,7 @@
     app.show(view);
     submit.disabled = false;
     var msg = app.flash.take();
+    if (location.hash === "#reset") { showReset(); return; }
     if (msg) banner({ title: msg, lines: [], alert: false });
   }
 
@@ -174,6 +199,145 @@
       else openForm();
     }, openForm);
   }
+
+  // ----- forgotten password
+  function clearResetBanner() {
+    while (resetStatus.firstChild) resetStatus.removeChild(resetStatus.firstChild);
+    resetStatus.hidden = true;
+  }
+
+  function resetBanner(title, lines, alertIt, retry) {
+    clearResetBanner();
+    var b = el("div", "auth__banner" + (alertIt ? "" : " auth__banner--info"));
+    b.setAttribute("role", alertIt ? "alert" : "status");
+    b.appendChild(el("p", "auth__title", title));
+    lines.forEach(function (l) { b.appendChild(el("p", "", l)); });
+    if (retry) {
+      var last = b.lastChild;
+      last.appendChild(document.createTextNode(" "));
+      var a = el("a", "", "hello@samwhitlock.example");
+      a.setAttribute("href", MAILTO);
+      last.appendChild(a);
+      last.appendChild(document.createTextNode("."));
+      var btn = el("button", "btn btn--primary", "Try again");
+      btn.type = "button";
+      btn.addEventListener("click", function () { sendReset(lastResetEmail, false); });
+      b.appendChild(btn);
+    }
+    resetStatus.appendChild(b);
+    resetStatus.hidden = false;
+  }
+
+  function stopCountdown() {
+    if (countTimer) { clearInterval(countTimer); countTimer = null; }
+  }
+
+  function startCountdown() {
+    stopCountdown();
+    var left = COUNTDOWN;
+    resetAgain.disabled = true;
+    resetAgain.textContent = "Send it again in " + left + "s";
+    resetAnnounce.textContent = "You can ask for another email in " + left + " seconds.";
+    countTimer = setInterval(function () {
+      left--;
+      if (left <= 0) {
+        stopCountdown();
+        resetAgain.disabled = false;
+        resetAgain.textContent = "Send it again";
+        resetAnnounce.textContent = "You can ask for another email now.";
+        return;
+      }
+      resetAgain.textContent = "Send it again in " + left + "s";
+    }, 1000);
+  }
+
+  function showSignin(focusTitle) {
+    stopCountdown();
+    clearResetBanner();
+    hidePassword();
+    resetView.hidden = true;
+    resetSent.hidden = true;
+    resetRequest.hidden = false;
+    resetEmail.value = "";
+    setFieldError(resetEmail, "");
+    loginTitle.textContent = TITLE_SIGNIN;
+    loginLede.textContent = LEDE_SIGNIN;
+    loginLede.hidden = false;
+    signinCard.hidden = false;
+    if (focusTitle) loginTitle.focus();
+  }
+
+  function showReset() {
+    clearBanner();
+    hidePassword();
+    signinCard.hidden = true;
+    loginTitle.textContent = TITLE_RESET;
+    loginLede.textContent = "";
+    loginLede.hidden = true;
+    resetView.hidden = false;
+    resetEmail.value = email.value.trim();
+    loginTitle.focus();
+  }
+
+  // Any answer from the service other than a rate limit looks the same to the person, so the
+  // page never reveals whether an address belongs to a client. A dropped connection is different:
+  // nothing was sent, so it must not say "check your inbox".
+  function isNetwork(error) {
+    return !error.status || error.name === "AuthRetryableFetchError";
+  }
+
+  function sendReset(address, fromAgain) {
+    if (resetBusy) return;
+    resetBusy = true;
+    clearResetBanner();
+    lastResetEmail = address;
+    app.sb.auth.resetPasswordForEmail(address).then(function (res) {
+      resetBusy = false;
+      var error = res && res.error;
+      if (error && Number(error.status) === 429) {
+        resetBanner("Let\u2019s slow down a moment", ["That\u2019s a lot of tries in a short time. Please wait a few minutes and try again."], true, false);
+        return;
+      }
+      if (error && isNetwork(error)) { resetServiceBanner(); return; }
+      resetRequest.hidden = true;
+      resetSent.hidden = false;
+      startCountdown();
+      if (!fromAgain) resetSentTitle.focus();
+    }, function () {
+      resetBusy = false;
+      resetServiceBanner();
+    });
+  }
+
+  function resetServiceBanner() {
+    resetBanner("I couldn\u2019t reach the sign-in service",
+      ["That\u2019s on my side, not yours. Check your connection and try again in a moment. If it keeps happening, email"], true, true);
+  }
+
+  resetForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    setFieldError(resetEmail, "");
+    var v = resetEmail.value.trim();
+    if (v === "") {
+      setFieldError(resetEmail, "Please add your email address.");
+      resetEmail.focus();
+      return;
+    }
+    if (!resetEmail.validity.valid) {
+      setFieldError(resetEmail, EMAIL_MSG);
+      resetEmail.focus();
+      return;
+    }
+    sendReset(v, false);
+  });
+  resetEmail.addEventListener("input", function () { setFieldError(resetEmail, ""); });
+  resetAgain.addEventListener("click", function () {
+    if (resetAgain.disabled || !lastResetEmail) return;
+    resetAgain.disabled = true;
+    sendReset(lastResetEmail, true);
+  });
+  forgot.addEventListener("click", showReset);
+  resetBack.addEventListener("click", function () { showSignin(true); });
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
