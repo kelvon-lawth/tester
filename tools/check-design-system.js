@@ -179,15 +179,20 @@ const BLUE_ALLOWED = new Set([
     const b = text.indexOf("<!-- SHELL:" + name + " END -->");
     return a < 0 || b < 0 ? null : text.slice(a, b).replace(/ aria-current="page"/g, "");
   };
+  const FIVE = ["index.html", "contact.html", "login.html", "set-password.html", "dashboard.html"];
   for (const name of ["HEADER", "FOOTER"]) {
-    const blocks = ["index.html", "contact.html"].map((f) => {
+    const blocks = FIVE.map((f) => {
+      if (!exists(f)) { fail(f, "page missing"); return null; }
       const b = block(read(f), name);
       if (b === null) fail(f, "SHELL:" + name + " marker missing");
       return b;
     });
-    if (blocks[0] !== null && blocks[1] !== null && blocks[0] !== blocks[1]) fail("index.html", "SHELL:" + name + " differs between index.html and contact.html");
+    blocks.forEach((b, i) => {
+      if (blocks[0] !== null && b !== null && b !== blocks[0]) fail(FIVE[i], "SHELL:" + name + " differs from index.html");
+    });
   }
-  for (const file of ["index.html", "contact.html"]) {
+  for (const file of FIVE) {
+    if (!exists(file)) continue; // already reported as missing above
     const stripped = read(file)
       .replace(/<script\b[\s\S]*?<\/script>/gi, "")
       .replace(/<style\b[\s\S]*?<\/style>/gi, "")

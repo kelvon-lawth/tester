@@ -5,12 +5,18 @@
 
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const ROOT = path.resolve(__dirname, "..");
 const failures = [];
 const fail = (file, reason) => failures.push("FAIL " + file + ": " + reason);
 
-const REQUIRED_PAGES = ["index.html", "contact.html"];
+const REQUIRED_PAGES = ["index.html", "contact.html", "login.html", "set-password.html", "dashboard.html"];
+// The vendored Supabase SDK contains fetch( and XMLHttpRequest. It never runs over file:// because
+// js/auth-common.js checks the protocol first. The exemption covers those two rules only, for this one
+// file, and only while its bytes match this hash.
+const SDK_FILE = "assets/js/vendor/supabase.min.js";
+const SDK_SHA = "a867edbcfb029370aeec7223dd6180b560b621fbe3bc64c6584fb0369d1b7bce";
 const BLOCKED_HOSTS = [
   "fonts.googleapis.com",
   "fonts.gstatic.com",
@@ -127,10 +133,20 @@ for (const file of cssFiles) {
 for (const file of jsFiles) {
   const text = read(file);
   const code = text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
-  if (/\bfetch\s*\(/.test(code)) fail(file, "fetch( is not allowed (breaks over file://)");
+  const sdkExempt = file.split(path.sep).join("/") === SDK_FILE &&
+    crypto.createHash("sha256").update(fs.readFileSync(path.join(ROOT, file))).digest("hex") === SDK_SHA;
+  if (!sdkExempt && /\bfetch\s*\(/.test(code)) fail(file, "fetch( is not allowed (breaks over file://)");
   if (/^\s*import\s/m.test(code)) fail(file, "import statement is not allowed");
   if (/\bimport\s*\(/.test(code)) fail(file, "dynamic import( is not allowed (breaks over file://)");
-  if (/\bXMLHttpRequest\b/.test(code)) fail(file, "XMLHttpRequest is not allowed (breaks over file://)");
+  if (!sdkExempt && /\bXMLHttpRequest\b/.test(code)) fail(file, "XMLHttpRequest is not allowed (breaks over file://)");
+}
+
+// Public pages must never load the SDK or any auth script (keeps the original guarantee where it matters).
+for (const file of ["index.html", "contact.html", "styleguide.html"]) {
+  if (!fs.existsSync(path.join(ROOT, file))) continue;
+  const text = read(file);
+  if (/supabase\.min\.js/.test(text)) fail(file, "public page must not reference supabase.min.js");
+  if (/js\/auth-[\w-]*\.js/.test(text)) fail(file, "public page must not reference a js/auth-* file");
 }
 
 for (const file of [...htmlFiles, ...cssFiles, ...jsFiles]) {

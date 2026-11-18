@@ -15,7 +15,7 @@ const CHROME =
 
 let pages = process.argv.slice(2);
 if (!pages.length) {
-  pages = ["index.html", "contact.html"];
+  pages = ["index.html", "contact.html", "login.html", "set-password.html", "dashboard.html"];
   if (fs.existsSync(path.join(ROOT, "styleguide.html"))) pages.push("styleguide.html");
 }
 

@@ -15,6 +15,10 @@ const ROOT = path.resolve(__dirname, "..");
 const CHROME =
   process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PAGES = ["index.html", "contact.html"];
+// Phase 7: overflow, tap, shell and hosting cover all five pages (each in its file:// state).
+// keyboard keeps PAGES (unchanged).
+const PAGES5 = ["index.html", "contact.html", "login.html", "set-password.html", "dashboard.html"];
+const needPage = (p) => { if (!fs.existsSync(path.join(ROOT, p))) throw new Error(p + " is missing"); };
 const fileUrl = (p) => url.pathToFileURL(path.join(ROOT, p)).href;
 const ALL = ["overflow", "tap", "keyboard", "shell", "weight", "hosting", "styleguide"];
 
@@ -228,7 +232,8 @@ const OVERFLOW = `async()=>{
 
 results.overflow = async () => {
   const done = [];
-  for (const page of PAGES) {
+  for (const page of PAGES5) {
+    needPage(page);
     for (const w of [320, 375, 768, 1280]) {
       const v = await withPage(w, 800, { url: fileUrl(page) }, (s, ev) => ev(OVERFLOW));
       if (v.first > 0 || v.bottom > 0) throw new Error(page + " @" + w + " scrolls sideways (load " + v.first + "px, bottom " + v.bottom + "px)");
@@ -265,7 +270,8 @@ const TAP = `async()=>{
 results.tap = async () => {
   const bad = [];
   let total = 0;
-  for (const page of PAGES) {
+  for (const page of PAGES5) {
+    needPage(page);
     const v = await withPage(375, 812, { url: fileUrl(page) }, (s, ev) => ev(TAP));
     total += v.n;
     v.fails.forEach((f) => bad.push(page + ": " + f));
@@ -358,17 +364,28 @@ results.shell = async () => {
       ev(`async()=>{const h=document.querySelector('header.site-header'),f=document.querySelector('footer.site-footer');
         const cur=[...document.querySelectorAll('[aria-current]')].map(a=>a.getAttribute('href'));
         return{h:h&&h.outerHTML,f:f&&f.outerHTML,cur};}`));
-  const a = await grab("index.html");
-  const b = await grab("contact.html");
-  if (!a.h || !b.h) throw new Error("header.site-header missing");
-  if (!a.f || !b.f) throw new Error("footer.site-footer missing");
+  const WANT = { "index.html": "index.html", "contact.html": "contact.html", "login.html": "login.html", "dashboard.html": "login.html", "set-password.html": null };
+  const got = {};
+  for (const page of PAGES5) { needPage(page); got[page] = await grab(page); }
+  const a = got["index.html"];
+  if (!a.h) throw new Error("header.site-header missing");
+  if (!a.f) throw new Error("footer.site-footer missing");
   const strip = (x) => x.replace(/ aria-current="page"/g, "");
-  if (strip(a.h) !== strip(b.h)) throw new Error("rendered header differs between pages");
-  if (strip(a.f) !== strip(b.f)) throw new Error("rendered footer differs between pages");
-  const ok = (cur, want) => cur.filter((h) => h.indexOf("#") !== 0).length === 1 && cur.some((h) => h.replace(/^\.\//, "") === want);
-  if (!ok(a.cur, "index.html")) throw new Error("index aria-current links: " + JSON.stringify(a.cur));
-  if (!ok(b.cur, "contact.html")) throw new Error("contact aria-current links: " + JSON.stringify(b.cur));
-  return "header and footer identical (ignoring aria-current); one aria-current per page";
+  for (const page of PAGES5) {
+    const b = got[page];
+    if (!b.h) throw new Error(page + ": header.site-header missing");
+    if (!b.f) throw new Error(page + ": footer.site-footer missing");
+    if (strip(a.h) !== strip(b.h)) throw new Error("rendered header differs between index.html and " + page);
+    if (strip(a.f) !== strip(b.f)) throw new Error("rendered footer differs between index.html and " + page);
+    const real = b.cur.filter((h) => h.indexOf("#") !== 0);
+    const want = WANT[page];
+    if (want === null) {
+      if (real.length !== 0) throw new Error(page + " aria-current links: " + JSON.stringify(b.cur) + " (expected none)");
+    } else if (real.length !== 1 || !real.some((h) => h.replace(/^\.\//, "") === want)) {
+      throw new Error(page + " aria-current links: " + JSON.stringify(b.cur) + " (expected " + want + ")");
+    }
+  }
+  return "header and footer identical across five pages (ignoring aria-current); expected aria-current per page";
 };
 
 // ---------------------------------------------------------------------------
@@ -458,11 +475,11 @@ results.hosting = async () => {
   try {
     const dest = path.join(tmp, "sub dir", "site");
     fs.mkdirSync(dest, { recursive: true });
-    for (const f of ["index.html", "contact.html", "styleguide.html", "css", "js", "assets"]) {
+    for (const f of ["index.html", "contact.html", "login.html", "set-password.html", "dashboard.html", "styleguide.html", "css", "js", "assets"]) {
       if (fs.existsSync(path.join(ROOT, f))) fs.cpSync(path.join(ROOT, f), path.join(dest, f), { recursive: true });
     }
     const fileBase = url.pathToFileURL(dest).href.replace(/\/?$/, "/");
-    for (const p of PAGES) await hostingCheck(fileBase + p, "file://", false);
+    for (const p of PAGES5) { needPage(p); await hostingCheck(fileBase + p, "file://", false); }
     server = await startServer(tmp);
     const httpBase = "http://127.0.0.1:" + server.port + "/sub%20dir/site/";
     await hostingCheck(httpBase, "http", true);

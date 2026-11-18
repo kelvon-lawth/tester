@@ -20,7 +20,12 @@ const REQUIRED = [
   "assets/fonts/Fraunces-SemiBold.woff2", "assets/fonts/Figtree-Regular.woff2", "assets/fonts/Figtree-SemiBold.woff2",
   "assets/fonts/OFL-Fraunces.txt", "assets/fonts/OFL-Figtree.txt",
   "assets/js/vendor/gsap.min.js", "assets/js/vendor/ScrollTrigger.min.js", "assets/js/vendor/SplitText.min.js",
+  "login.html", "set-password.html", "dashboard.html",
+  "js/auth-config.js", "js/auth-common.js", "js/login.js", "js/set-password.js", "js/dashboard.js",
+  "assets/js/vendor/supabase.min.js", "assets/js/vendor/SUPABASE-LICENSE.txt",
 ];
+const PAGES = ["index.html", "contact.html", "login.html", "set-password.html", "dashboard.html"];
+const AUTH_JS = ["js/auth-config.js", "js/auth-common.js", "js/login.js", "js/set-password.js", "js/dashboard.js"];
 const IMG_RE = /^assets\/img\/[^/]+\.(webp|jpg|jpeg|png|svg|avif)$/i;
 const REQUIRED_IMG = [
   "about-portrait.webp", "avatar-lena-fischer.webp", "avatar-marcus-bell.webp",
@@ -73,7 +78,7 @@ if (built) {
     if (!REQUIRED.includes(f) && !IMG_RE.test(f)) fail("_site", "unexpected file " + f);
   }
 
-  for (const f of ["index.html", "contact.html"]) {
+  for (const f of PAGES) {
     const local = readIf(path.join(ROOT, f)) || "";
     if (!local.includes('href="styleguide.html"')) fail(f, 'local copy lost its href="styleguide.html" footer link (D-05)');
   }
@@ -90,13 +95,13 @@ if (built) {
 
   // Content checks
   const texts = {};
-  for (const f of ["index.html", "contact.html", "css/styles.css", "js/main.js"]) texts[f] = readIf(path.join(SITE, f)) || "";
+  for (const f of [...PAGES, "css/styles.css", "js/main.js", ...AUTH_JS]) texts[f] = readIf(path.join(SITE, f)) || "";
   for (const f of Object.keys(texts)) {
     if (/styleguide|style guide/i.test(texts[f])) fail("_site/" + f, "mentions the style guide");
   }
   if (texts["css/styles.css"].includes(".sg-")) fail("_site/css/styles.css", "contains .sg- rules");
   if (texts["css/styles.css"].includes("removed in Phase 5")) fail("_site/css/styles.css", 'contains "removed in Phase 5"');
-  for (const f of ["index.html", "contact.html"]) {
+  for (const f of PAGES) {
     if (!texts[f].includes("Prototype — sample content")) fail("_site/" + f, "prototype note missing");
   }
 
@@ -114,7 +119,7 @@ if (built) {
     if (target !== SITE && !target.startsWith(SITE + path.sep)) return fail("_site/" + file, "reference escapes _site: " + v);
     if (!fs.existsSync(target)) fail("_site/" + file, "unresolved reference " + v);
   };
-  for (const f of ["index.html", "contact.html"]) {
+  for (const f of PAGES) {
     let t;
     while ((t = tagRe.exec(texts[f]))) {
       let a;
@@ -144,13 +149,16 @@ if (built) {
       if (j.outputDirectory !== "_site") fail("vercel.json", 'outputDirectory must be "_site"');
       if (j.framework !== null) fail("vercel.json", "framework must be null");
       if (j.cleanUrls === true) fail("vercel.json", "cleanUrls must not be true");
+      const hdrs = Array.isArray(j.headers) ? j.headers : [];
+      const hasCsp = hdrs.some((h) => (h.headers || []).some((e) => /^content-security-policy$/i.test(e.key || "")));
+      if (!hasCsp) fail("vercel.json", "headers array with a Content-Security-Policy is required");
     }
   }
   const gi = readIf(path.join(ROOT, ".gitignore"));
   if (gi === null) fail(".gitignore", "file missing");
   else {
     const lines = gi.split(/\r?\n/).map((l) => l.trim());
-    for (const need of ["_site/", ".vercel/"]) if (!lines.includes(need)) fail(".gitignore", "missing line " + need);
+    for (const need of ["_site/", ".vercel/", ".env*"]) if (!lines.includes(need)) fail(".gitignore", "missing line " + need);
     if (lines.some((l) => l.includes(".claude"))) fail(".gitignore", "must not mention .claude (D-08)");
   }
   const pages = readIf(path.join(ROOT, ".github/workflows/pages.yml"));
