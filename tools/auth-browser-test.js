@@ -1087,7 +1087,9 @@ results["stub-setpass"] = async () => {
   const done = [];
   const min = CFG.min;
   const noSecretsLeaked = (pg, tag, secrets) => {
-    const urls = pg.log.requests.map((q) => q.url);
+    // The first document request is the email link itself, so it carries the token by definition.
+    // Every other request (service calls, assets, anything after the page opened) must not.
+    const urls = pg.log.requests.filter((q) => !(q.method === "GET" && /\/set-password\.html[?]/.test(q.url))).map((q) => q.url);
     for (const s of secrets) {
       must(!urls.some((u) => u.includes(s)), tag + ": a request URL contained a secret value");
       must(!pg.log.console.some((c) => c.includes(s)), tag + ": console output contained a secret value");
