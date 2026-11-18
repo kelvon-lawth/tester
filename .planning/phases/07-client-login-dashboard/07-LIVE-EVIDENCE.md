@@ -23,3 +23,11 @@ What the app does with each error status (decided from HTTP status, from the stu
 LIVE-REGRESSION | 2026-11-18 | NOT RUN
 
 Reason: same as above, no project and no test credentials. `node tools/auth-browser-test.js live` reports "LIVE TESTS NOT RUN: missing TEST_CLIENT_A_EMAIL ...". Also unobserved live: research assumption A3 (what the recover endpoint returns for an unknown address; the page shows one identical result for any non-429, non-network outcome, so it is covered either way), real email delivery and link format for invite and reset (07-09).
+
+## 2026-11-18 security headers run (07-07 Task 1)
+
+CSP headers from vercel.json applied by the local test server. PASS: `check-auth csp secrets`, `check-deploy`, and `auth-browser-test csp public stub-login stub-dashboard stub-setpass` (no CSP violation on 10 page loads, Home and Contact included).
+
+LIVE-UNDER-CSP | 2026-11-18 | NOT RUN
+
+Reason: no Supabase project and no test credentials; `node tools/auth-browser-test.js live` exited 2 with "missing TEST_CLIENT_A_EMAIL ...". Whether connect-src lets the real sign-in through is unproven. connect-src currently names the stand-in origin https://standin.supabase.co and must be changed together with js/auth-config.js in 07-04 Task 3 (the csp guard fails if they drift). The policy still has to be proven on the deployed site in 07-08.
