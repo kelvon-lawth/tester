@@ -17,3 +17,9 @@ What the app does with each error status (decided from HTTP status, from the stu
 - 400, 401, 403 at sign-in: one "That didn't work" message for wrong email, wrong password and unconfirmed account; password cleared, email kept.
 - Network failure, status 0, 5xx and anything unknown: "I couldn't reach the sign-in service" with Try again, form kept.
 - 401 or PGRST301 on the dashboard row read: local session dropped, "Your session has ended. Please sign in again." shown on the login page.
+
+## 2026-11-18 live regression run (07-06 Task 3)
+
+LIVE-REGRESSION | 2026-11-18 | NOT RUN
+
+Reason: same as above, no project and no test credentials. `node tools/auth-browser-test.js live` reports "LIVE TESTS NOT RUN: missing TEST_CLIENT_A_EMAIL ...". Also unobserved live: research assumption A3 (what the recover endpoint returns for an unknown address; the page shows one identical result for any non-429, non-network outcome, so it is covered either way), real email delivery and link format for invite and reset (07-09).
