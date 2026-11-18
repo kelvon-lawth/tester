@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Your dashboard | Sam Whitlock</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preload" href="assets/fonts/Fraunces-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Figtree-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- supabase-js 2.119.0 UMD, MIT, see assets/js/vendor/SUPABASE-VERSION.md -->
+  <script defer src="js/main.js"></script>
+  <script defer src="assets/js/vendor/supabase.min.js"></script>
+  <script defer src="js/auth-config.js"></script>
+  <script defer src="js/auth-common.js"></script>
+  <script defer src="js/dashboard.js"></script>
+</head>
+<body class="page-auth page-dashboard">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- SHELL:HEADER START -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="wordmark" href="index.html">Sam Whitlock</a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html" aria-current="page">Client login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <!-- SHELL:HEADER END -->
+
+  <main id="main" tabindex="-1">
+    <section class="section">
+      <div class="container">
+        <noscript>
+          <div class="card card--white auth__card">
+            <h2>Sign-in needs JavaScript</h2>
+            <p>Your browser has JavaScript turned off, and signing in can’t work without it. Please turn it on and reload, or email me at <a href="mailto:hello@samwhitlock.example">hello@samwhitlock.example</a> and I’ll help.</p>
+          </div>
+        </noscript>
+        <div class="auth">
+          <div id="auth-gate" class="auth-gate card card--white auth__card">
+            <p class="auth__title">One moment</p>
+            <p>Checking you’re signed in…</p>
+          </div>
+          <div id="file-card" class="card card--white auth__card" hidden>
+            <h2>Sign-in only works on the live site</h2>
+            <p>You’ve opened this page straight from a file, so the sign-in service can’t reach it. Open the hosted site instead: <a href="https://tester-five-sage.vercel.app/login.html">tester-five-sage.vercel.app</a>. The Home and Contact pages work fine from a file.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="dash" id="dash" hidden>
+      <section class="section dash__top">
+        <div class="container">
+          <div class="dash__head">
+            <div class="dash__intro">
+              <h1 id="dash-title" tabindex="-1"></h1>
+              <p class="lede" id="dash-lede" hidden>Here’s where things stand with your marketing.</p>
+              <p class="dash__sample" id="dash-sample" hidden>Sample content for this prototype</p>
+            </div>
+            <button class="btn btn--ghost" id="signout" type="button">Sign out</button>
+          </div>
+        </div>
+      </section>
+      <section class="section section--tint">
+        <div class="container">
+          <div class="dash__grid" id="dash-grid"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- SHELL:FOOTER START -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div>
+          <a class="wordmark" href="index.html">Sam Whitlock</a>
+          <p>Helping local businesses in Elmhollow and nearby villages get found and get busy.</p>
+        </div>
+        <div>
+          <p class="label">Get in touch</p>
+          <a href="mailto:hello@samwhitlock.example">hello@samwhitlock.example</a>
+          <a href="tel:+441632960123">01632 960 123</a>
+        </div>
+        <div>
+          <p class="label">Area served</p>
+          <p>Elmhollow, Fenwick Cross and Thornby</p>
+        </div>
+      </div>
+      <div class="site-footer__fine">
+        <p>Prototype — sample content</p>
+        <p>© 2026 Sam Whitlock. All names and details are made up.</p>
+        <a href="styleguide.html">Style guide (dev)</a>
+      </div>
+    </div>
+  </footer>
+  <!-- SHELL:FOOTER END -->
+</body>
+</html>

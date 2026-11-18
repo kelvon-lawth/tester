@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Client login | Sam Whitlock</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preload" href="assets/fonts/Fraunces-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Figtree-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- supabase-js 2.119.0 UMD, MIT, see assets/js/vendor/SUPABASE-VERSION.md -->
+  <script defer src="js/main.js"></script>
+  <script defer src="assets/js/vendor/supabase.min.js"></script>
+  <script defer src="js/auth-config.js"></script>
+  <script defer src="js/auth-common.js"></script>
+  <script defer src="js/login.js"></script>
+</head>
+<body class="page-auth">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- SHELL:HEADER START -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="wordmark" href="index.html">Sam Whitlock</a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html" aria-current="page">Client login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <!-- SHELL:HEADER END -->
+
+  <main id="main" tabindex="-1">
+    <section class="section section--tint">
+      <div class="auth">
+        <noscript>
+          <div class="card card--white auth__card">
+            <h2>Sign-in needs JavaScript</h2>
+            <p>Your browser has JavaScript turned off, and signing in can’t work without it. Please turn it on and reload, or email me at <a href="mailto:hello@samwhitlock.example">hello@samwhitlock.example</a> and I’ll help.</p>
+          </div>
+        </noscript>
+        <div id="auth-gate" class="auth-gate card card--white auth__card">
+          <p class="auth__title">One moment</p>
+          <p>Checking you’re signed in…</p>
+        </div>
+        <div id="file-card" class="card card--white auth__card" hidden>
+          <h2>Sign-in only works on the live site</h2>
+          <p>You’ve opened this page straight from a file, so the sign-in service can’t reach it. Open the hosted site instead: <a href="https://tester-five-sage.vercel.app/login.html">tester-five-sage.vercel.app</a>. The Home and Contact pages work fine from a file.</p>
+        </div>
+
+        <div id="login-view" hidden>
+          <h1>Welcome back</h1>
+          <p class="lede">Sign in to see your plan and what’s coming next.</p>
+          <div class="card card--white auth__card">
+            <div id="auth-status" class="auth__status" role="status" aria-live="polite" hidden></div>
+            <!-- method="post" and a disabled submit (enabled by js/login.js) mean the form can never fall back to a GET that puts an email or password in the URL. -->
+            <form id="login-form" class="contact-form" novalidate method="post" action="#">
+              <div class="field">
+                <label class="field__label" for="login-email">Email address</label>
+                <input class="field__input" id="login-email" name="email" type="email" autocomplete="username email" required aria-describedby="login-email-error">
+                <p class="field__error" id="login-email-error" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="login-password">Password</label>
+                <input class="field__input" id="login-password" name="password" type="password" autocomplete="current-password" required aria-describedby="login-password-error">
+                <button class="field__toggle" id="login-toggle" type="button" aria-pressed="false" aria-controls="login-password">Show password</button>
+                <p class="field__error" id="login-password-error" aria-live="polite"></p>
+              </div>
+
+              <button class="btn btn--primary" type="submit" disabled>Sign in</button>
+            </form>
+            <div class="auth__links">
+              <button class="link-cta" id="forgot-link" type="button">Forgotten your password?</button>
+            </div>
+          </div>
+          <div id="reset-view" hidden></div>
+          <p class="auth__note">Clients only. If you’d like to work together, <a href="contact.html">get in touch</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SHELL:FOOTER START -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div>
+          <a class="wordmark" href="index.html">Sam Whitlock</a>
+          <p>Helping local businesses in Elmhollow and nearby villages get found and get busy.</p>
+        </div>
+        <div>
+          <p class="label">Get in touch</p>
+          <a href="mailto:hello@samwhitlock.example">hello@samwhitlock.example</a>
+          <a href="tel:+441632960123">01632 960 123</a>
+        </div>
+        <div>
+          <p class="label">Area served</p>
+          <p>Elmhollow, Fenwick Cross and Thornby</p>
+        </div>
+      </div>
+      <div class="site-footer__fine">
+        <p>Prototype — sample content</p>
+        <p>© 2026 Sam Whitlock. All names and details are made up.</p>
+        <a href="styleguide.html">Style guide (dev)</a>
+      </div>
+    </div>
+  </footer>
+  <!-- SHELL:FOOTER END -->
+</body>
+</html>

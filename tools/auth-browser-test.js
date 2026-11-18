@@ -322,7 +322,9 @@ const CSP_TEXT = /Content Security Policy|Refused to (load|apply|execute|connect
 
 // o: { url, width, height, stub (mkStub result), session (bool), init (string) }
 async function withPage(o, fn) {
-  const { targetId } = await send("Target.createTarget", { url: "about:blank" });
+  // Each page gets its own browser context, so a session stored by one scenario cannot leak into the next.
+  const { browserContextId } = await send("Target.createBrowserContext", {});
+  const { targetId } = await send("Target.createTarget", { url: "about:blank", browserContextId });
   const { sessionId } = await send("Target.attachToTarget", { targetId, flatten: true });
   const log = { requests: [], failed: [], bad: [], exceptions: [], errors: [], console: [], violations: [],
     finished: [], ws: [], status: new Map(), docHeaders: {} };
@@ -443,6 +445,7 @@ async function withPage(o, fn) {
     return await fn(pg);
   } finally {
     try { await send("Target.closeTarget", { targetId }); } catch (e) { /* ignore */ }
+    try { await send("Target.disposeBrowserContext", { browserContextId }); } catch (e) { /* ignore */ }
   }
 }
 
