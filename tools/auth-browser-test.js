@@ -84,6 +84,9 @@ function readConfig() {
 }
 const CFG = readConfig();
 const STORAGE_KEY = "sb-" + CFG.ref + "-auth-token";
+// The harness probes the origin the CSP allows (connect-src names the configured project), so the
+// served security headers do not block the stub check itself.
+const harnessUrl = "https://" + CFG.ref + ".supabase.co";
 
 // ---------------------------------------------------------------------------
 // vercel.json headers, served locally
@@ -570,9 +573,9 @@ results.harness = async () => {
   const L = await ensureLocal();
   L.memory["/__t/h.html"] = { type: "text/html; charset=utf-8", body: '<!doctype html><html><head><title>h</title></head><body><script src="/__t/h.js"></script></body></html>' };
   L.memory["/__t/h.js"] = { type: "text/javascript", body:
-    "(async function(){var r={};try{var a=await fetch('" + fixedUrl + "/auth/v1/user',{headers:{apikey:'k',authorization:'Bearer t'}});r.s1=a.status;var j=await a.json();r.id=j.id;}catch(e){r.e1=String(e);}" +
-    "try{var b=await fetch('" + fixedUrl + "/auth/v1/recover',{method:'POST',headers:{'content-type':'application/json',apikey:'k'},body:JSON.stringify({email:'x@example.com'})});r.s2=b.status;}catch(e){r.e2=String(e);}" +
-    "try{await fetch('" + fixedUrl + "/auth/v1/logout',{method:'POST',headers:{apikey:'k'}});r.dropped=false;}catch(e){r.dropped=true;}" +
+    "(async function(){var r={};try{var a=await fetch('" + harnessUrl + "/auth/v1/user',{headers:{apikey:'k',authorization:'Bearer t'}});r.s1=a.status;var j=await a.json();r.id=j.id;}catch(e){r.e1=String(e);}" +
+    "try{var b=await fetch('" + harnessUrl + "/auth/v1/recover',{method:'POST',headers:{'content-type':'application/json',apikey:'k'},body:JSON.stringify({email:'x@example.com'})});r.s2=b.status;}catch(e){r.e2=String(e);}" +
+    "try{await fetch('" + harnessUrl + "/auth/v1/logout',{method:'POST',headers:{apikey:'k'}});r.dropped=false;}catch(e){r.dropped=true;}" +
     "window.__r=r;})();" };
   const st = mkStub({ recover: { status: 429 }, logout: { fail: true } });
   return await withPage({ url: L.origin + "/__t/h.html", stub: st }, async (pg) => {
