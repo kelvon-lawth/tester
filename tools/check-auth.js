@@ -484,7 +484,7 @@ function groupDocs() {
   const r = read("REPLACE-ME.md");
   if (r === null) fails.push(missing("REPLACE-ME.md"));
   else {
-    const m = r.match(/^## Client login[^\n]*\n([\s\S]*?)(\n## |$)/m);
+    const m = r.match(/^## Client login[^\n]*\n([\s\S]*?)(\n## |(?![\s\S]))/m);
     if (!m) fails.push("REPLACE-ME.md: no '## Client login' heading");
     else {
       for (const w of ["login.html", "set-password.html", "dashboard.html", "auth-config.js"]) {
