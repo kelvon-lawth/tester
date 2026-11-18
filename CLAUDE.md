@@ -9,8 +9,8 @@ A two-page prototype website for a freelance marketer who offers advertising and
 
 ### Constraints
 
-- **Scope**: Exactly two pages (Home, Contact) — per user request
-- **Hosting**: Static only, no server — prototype must open without backend infrastructure
+- **Scope**: Two public pages (Home, Contact), plus Login, Set password and Dashboard for invited clients — per user decision (D-13)
+- **Hosting**: Static hosting with no server of our own; Supabase (Auth + Postgres) is the one outside service. Home and Contact still open without any backend
 - **Content**: Placeholders acceptable — prototype stage
 - **Performance**: Animation must stay smooth on typical laptops and phones
 <!-- GSD:project-end -->
