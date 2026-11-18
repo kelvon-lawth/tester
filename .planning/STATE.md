@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: 06-02 paused before Task 3; login feature being scoped
+stopped_at: "07-04 paused at Task 2 (user creates Supabase project); user replied not yet on 2026-11-18"
 last_updated: "2026-11-18T15:56:46.141Z"
 last_activity: 2026-11-18
 progress:
