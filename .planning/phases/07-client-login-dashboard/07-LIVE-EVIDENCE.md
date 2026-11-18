@@ -31,3 +31,15 @@ CSP headers from vercel.json applied by the local test server. PASS: `check-auth
 LIVE-UNDER-CSP | 2026-11-18 | NOT RUN
 
 Reason: no Supabase project and no test credentials; `node tools/auth-browser-test.js live` exited 2 with "missing TEST_CLIENT_A_EMAIL ...". Whether connect-src lets the real sign-in through is unproven. connect-src currently names the stand-in origin https://standin.supabase.co and must be changed together with js/auth-config.js in 07-04 Task 3 (the csp guard fails if they drift). The policy still has to be proven on the deployed site in 07-08.
+RLS-RUN | 2026-11-18 | d34f18a7928831e2cd377b47f963f25923112f9b | NOT RUN
+
+## Pre-push (2026-11-18)
+
+Not ready to push. Gates 1, 2 and 3 did not pass: there is still no Supabase project. js/auth-config.js is the stand-in (check-auth config fails on purpose), and the RLS test and live sign-in could not run without the project and test credentials. AUTH-05 and AUTH-06 are not verified.
+
+TESTED_SHA: d34f18a7928831e2cd377b47f963f25923112f9b
+GATE-1 FAILED ALL GUARDS (13 of 14; check-auth config fails on the stand-in js/auth-config.js) d34f18a7928831e2cd377b47f963f25923112f9b
+GATE-2 NOT RUN RLS (no Supabase project or test credentials) d34f18a7928831e2cd377b47f963f25923112f9b
+GATE-3 NOT RUN LIVE SIGN-IN (no Supabase project or test credentials) d34f18a7928831e2cd377b47f963f25923112f9b
+GATE-4 PASS HISTORY CLEAN d34f18a7928831e2cd377b47f963f25923112f9b
+GATE-5 PASS NO UNCOMMITTED CODE d34f18a7928831e2cd377b47f963f25923112f9b
