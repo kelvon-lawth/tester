@@ -43,3 +43,18 @@ GATE-2 NOT RUN RLS (no Supabase project or test credentials) d34f18a7928831e2cd3
 GATE-3 NOT RUN LIVE SIGN-IN (no Supabase project or test credentials) d34f18a7928831e2cd377b47f963f25923112f9b
 GATE-4 PASS HISTORY CLEAN d34f18a7928831e2cd377b47f963f25923112f9b
 GATE-5 PASS NO UNCOMMITTED CODE d34f18a7928831e2cd377b47f963f25923112f9b
+RLS-RUN | 2026-11-18 | d87a64dd64acceddbfee99dfa8a68239d64f468f | FAILED
+
+## 07-04 live setup and first live run (2026-11-18)
+
+The project was configured through the Supabase Management API with a personal access token the user supplied (the user chose this over the console steps). The token was kept in a session temp file outside the repo and never committed.
+
+- A5 labels: n/a (set by API). Values confirmed by reading them back: disable_signup true, password_min_length 10, mailer_autoconfirm false (confirm email on), mailer_otp_exp 86400, site_url https://tester-five-sage.vercel.app, uri_allow_list https://tester-five-sage.vercel.app/**.
+- Email templates: NOT APPLIED. The API refused with `entitlement_required`: free projects on the default email provider cannot change templates without custom SMTP. The default templates use ConfirmationURL, not the token_hash links set-password.html expects, so invite and reset emails do not reach the set-password flow yet.
+- SQL verification: client_dashboards relrowsecurity = true; one policy "clients read own dashboard", cmd SELECT, roles {authenticated}; grants are authenticated SELECT only, with nothing for anon or public.
+- Test accounts: two accounts created by the admin API with random 24-character passwords written straight to .env.local (0600, git-ignored). The values were never displayed. Seed: Sample Alex / Sample Starter Plan and Sample Blake / Sample Growth Plan.
+- A6 (invite with sign-up off): not yet checked.
+
+Live RLS run: every data-protection case passed (R1 to R9 and S1: own row only, no cross-read, signed-out and forged-token reads 401, every write 401 or 403, rows unchanged, sign-up refused 422). P1 wrong password: 400 invalid_credentials (A4). P3 invalid token_hash: 403 otp_expired (A8).
+
+**P2 FAILED (A3 is false here).** /auth/v1/recover returns 400 `email_address_invalid` for the existing test account (the default email provider rejects @example.com addresses) and 200 for an unknown address. The API therefore shows whether an account exists. The page itself shows the same message either way, but anyone can call the API directly. The likely fix is custom SMTP, which also unlocks the templates. The result was left as it is; the test was not changed, and the decision is with the user.

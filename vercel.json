@@ -9,7 +9,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-qvivYhW+2mBvcheivW9LjQqEsx/8ko5H2KYGitb2C9o='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://standin.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' 'sha256-qvivYhW+2mBvcheivW9LjQqEsx/8ko5H2KYGitb2C9o='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://jrnhvattwppdlpbqnvar.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         },
         { "key": "Referrer-Policy", "value": "same-origin" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },

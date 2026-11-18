@@ -1,12 +1,13 @@
-/* PLACEHOLDER STAND-IN. These are NOT real values. They must be replaced with the real
-   project URL and publishable key in plan 07-04 Task 3 before anything is pushed.
-   `node tools/check-auth.js config` fails on purpose while this stand-in is in place.
+/* Supabase project settings for the client login.
 
-   Once real, these values are public by design: the project URL and the publishable key are
-   shipped to every browser. Protection comes from row level security in the database, not from
-   hiding these. The secret key must never appear in this repository. */
+   These values are public by design: the project URL and the publishable key are shipped to
+   every browser. Protection comes from row level security in the database, not from hiding
+   these. The secret key must never appear in this repository.
+
+   If the project changes, update the connect-src origin in vercel.json at the same time
+   (`node tools/check-auth.js csp` fails if they drift). */
 window.AUTH_CONFIG = {
-  url: "https://standin.supabase.co",
-  publishableKey: "sb_publishable_standin",
+  url: "https://jrnhvattwppdlpbqnvar.supabase.co",
+  publishableKey: "sb_publishable_qkwSkLG5HPjASRjTgryxVQ_eX_b_1E6",
   PASSWORD_MIN: 10
 };
