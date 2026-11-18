@@ -8,16 +8,16 @@ Before launch, also grep every file for `Sam`, `Elmhollow`, `samwhitlock` and `0
 
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
-| Freelancer name | Sam Whitlock (and the first name "Sam" on its own) | `index.html`, `contact.html` | `.wordmark` in header and footer, `<title>`, copyright line; `contact.html` meta description; first name "Sam" in `.hero__lede` ("I’m Sam"), `#about-title` ("Hi, I’m Sam"), the Priya Nair and Marcus Bell testimonial quotes, and the About photo alt ("a stand-in portrait for Sam") | [ ] |
+| Freelancer name | Sam Whitlock (and the first name "Sam" on its own) | `index.html`, `contact.html`, `login.html`, `set-password.html`, `dashboard.html` | `.wordmark` in header and footer, `<title>`, copyright line; `contact.html` meta description; first name "Sam" in `.hero__lede` ("I’m Sam"), `#about-title` ("Hi, I’m Sam"), the Priya Nair and Marcus Bell testimonial quotes, and the About photo alt ("a stand-in portrait for Sam") | [ ] |
 | Town | Elmhollow | `index.html`, `contact.html` | `<title>`, meta description, footer tagline, hero copy; `contact.html` `.area-map` (SVG `<title>` and the Elmhollow `<text>` label) | [ ] |
 | Nearby villages | Fenwick Cross, Thornby | `index.html`, `contact.html` | "Area served" in the SHELL:FOOTER block; `contact.html` `.area-map` (SVG `<title>` and the Fenwick Cross and Thornby `<text>` labels) | [ ] |
-| Header and footer wordmark | Text "Sam Whitlock" | `index.html`, `contact.html` | `.wordmark` | [ ] |
+| Header and footer wordmark | Text "Sam Whitlock" | `index.html`, `contact.html`, `login.html`, `set-password.html`, `dashboard.html` | `.wordmark` | [ ] |
 
 ## Contact details
 
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
-| Email | hello@samwhitlock.example (and its `mailto:` href) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `index.html` `.cta-band__email` (text and `mailto:` href); `contact.html` `.contact__details` and the `.contact__noscript` note | [ ] |
+| Email | hello@samwhitlock.example (and its `mailto:` href) | `index.html`, `contact.html`, `login.html`, `set-password.html`, `dashboard.html` | SHELL:FOOTER block, "Get in touch"; `index.html` `.cta-band__email` (text and `mailto:` href); `contact.html` `.contact__details` and the `.contact__noscript` note | [ ] |
 | Phone | 01632 960 123 (and `tel:+441632960123` href; UK Ofcom drama-range number, never in service) | `index.html`, `contact.html` | SHELL:FOOTER block, "Get in touch"; `contact.html` `.contact__details` and the `.contact__noscript` note | [ ] |
 | Area served | Elmhollow, Fenwick Cross and Thornby | `index.html`, `contact.html` | SHELL:FOOTER block, "Area served"; `contact.html` `.contact__list` "Based in" | [ ] |
 | Area-served map | Stylised inline-SVG map: Elmhollow (centre), Fenwick Cross, Thornby, dashed service-radius rings; caption ‘Elmhollow and the villages around it, about a 20-minute drive’ | `contact.html` | `figure.area-map` in `.contact__details`: `<title id="area-map-title">`, the three `.area-map__label` `<text>` labels and `.area-map__caption`. Redraw road/pin positions for the real town | [ ] |
@@ -126,9 +126,28 @@ All plan names, prices and features are placeholders. Set real prices before lau
 
 | Item | Current placeholder | File | How to find it | Done |
 |------|---------------------|------|----------------|------|
-| Copyright line | © 2026 Sam Whitlock. All names and details are made up. | `index.html`, `contact.html` | `.site-footer__fine` | [ ] |
+| Copyright line | © 2026 Sam Whitlock. All names and details are made up. | `index.html`, `contact.html`, `login.html`, `set-password.html`, `dashboard.html` | `.site-footer__fine` | [ ] |
 | Prototype note | Prototype — sample content | `index.html`, `contact.html` | `.site-footer__fine` (remove at launch). `tools/build-site.sh`, `tools/check-deploy.js` and `tools/check-home.js` check for this text, so removing it means updating those too | [ ] |
 | Dev style-guide link | Style guide (dev) | `index.html`, `contact.html` | `.site-footer__fine`. The build strips it from deploys automatically; it stays in the local files | [ ] |
+
+## Client login
+
+Added in Phase 7 (login, set password and dashboard pages). Everything below is a placeholder or a project-specific setup value. Moving to a new Supabase project or a new domain means changing the URL, key, `connect-src` and console redirect settings together. Known limit: Supabase's built-in email only reaches your own team, at 2 emails an hour, so real clients cannot get invite or reset emails yet; see `CLIENT-GUIDE.md`.
+
+| Item | Current placeholder | File | How to find it | Done |
+|------|---------------------|------|----------------|------|
+| Voice copy and wordmark | "Sam" in first-person copy ("email me", "Email Sam") and the wordmark "Sam Whitlock" (follows the Identity rows) | `login.html`, `set-password.html`, `dashboard.html`, `js/login.js`, `js/set-password.js`, `js/dashboard.js` | `.wordmark` in header and footer, `<title>`, copyright line, the no-JavaScript and error messages | [ ] |
+| Contact email | hello@samwhitlock.example and its `mailto:` href | `login.html`, `set-password.html`, `dashboard.html`, `js/login.js`, `js/set-password.js`, `js/dashboard.js` | SHELL:FOOTER block; the `MAILTO` constant and link text in each script | [ ] |
+| Hosted URL in the file:// message | https://tester-five-sage.vercel.app | `login.html`, `set-password.html`, `dashboard.html` | The "You've opened this page straight from a file" notice | [ ] |
+| Sample label | Sample content for this prototype | `dashboard.html` | `#dash-sample` (shown when the row's `is_sample` is true) | [ ] |
+| Sample dashboard strings | Sample Alex, Sample Blake, Sample Starter Plan, Sample Growth Plan, the "Sample: ..." plan items, check-ins and "Sample step: ..." steps, and the two `@example.com` test addresses | `supabase/seed-test-clients.sql` | Run in the SQL Editor only after creating both test users; delete or replace for real clients | [ ] |
+| Project URL | https://standin.supabase.co (placeholder stand-in) | `js/auth-config.js` | Supabase dashboard, Project Settings, API, Project URL | [ ] |
+| Publishable key | sb_publishable_standin (placeholder stand-in) | `js/auth-config.js` | Supabase dashboard, Project Settings, API Keys, publishable key. Never the secret key | [ ] |
+| Content Security Policy origin | https://standin.supabase.co | `vercel.json` | `connect-src` in the Content-Security-Policy header. Must name the same origin as `js/auth-config.js`; `node tools/check-auth.js csp` fails if they differ | [ ] |
+| Password minimum | `PASSWORD_MIN: 10` | `js/auth-config.js` | Must match the minimum password length set in the Supabase console (Authentication, Sign In / Providers, Email) | [ ] |
+| Site URL and redirect URL | https://tester-five-sage.vercel.app and https://tester-five-sage.vercel.app/** | Supabase console | Authentication, URL Configuration. Do not add preview URLs | [ ] |
+| Email templates | Invite and Reset templates | Supabase console | Authentication, Email Templates; text in `supabase/email-templates.md` | [ ] |
+| Test accounts | test-client-a@example.com and test-client-b@example.com | Supabase console | Authentication, Users. Delete before any real launch; credentials live only in `.env.local` | [ ] |
 
 ## Fonts
 
@@ -143,6 +162,7 @@ Fraunces and Figtree are SIL OFL and self-hosted. See `assets/fonts/SOURCES.md`.
 - `css/styleguide.css` (the style guide CSS now lives here, not in `css/styles.css`)
 - `tools/` (dev-only harness: `font-metrics.html`, `font-metrics.js`, `*-test.js`, `check-*.js`, `build-site.sh`; it must not ship, threat T-01-10)
 - `.planning/`, `CLAUDE.md`, `REPLACE-ME.md`, `vercel.json`
+- `CLIENT-GUIDE.md` (the marketer's guide, including the known email limit), `supabase/` (SQL and setup notes), `.env.local` (test credentials, never committed), `assets/js/vendor/SUPABASE-VERSION.md`
 - `assets/fonts/SOURCES.md`, `assets/js/vendor/GSAP-VERSION.md`
 
 The "Style guide (dev)" footer link stays in the local `index.html` and `contact.html`; the build strips it from the deployed copies.
