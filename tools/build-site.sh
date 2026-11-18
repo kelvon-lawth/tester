@@ -12,7 +12,7 @@ mkdir -p _site/css _site/js _site/assets/fonts _site/assets/js/vendor _site/asse
 cp index.html contact.html login.html dashboard.html _site/
 cp css/styles.css _site/css/
 cp js/main.js _site/js/
-cp js/auth-config.js js/auth-common.js js/login.js _site/js/
+cp js/auth-config.js js/auth-common.js js/login.js js/dashboard.js _site/js/
 cp assets/fonts/*.woff2 _site/assets/fonts/
 cp assets/fonts/OFL-*.txt _site/assets/fonts/
 cp assets/js/vendor/*.min.js _site/assets/js/vendor/
