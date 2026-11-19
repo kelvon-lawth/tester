@@ -58,3 +58,15 @@ The project was configured through the Supabase Management API with a personal a
 Live RLS run: every data-protection case passed (R1 to R9 and S1: own row only, no cross-read, signed-out and forged-token reads 401, every write 401 or 403, rows unchanged, sign-up refused 422). P1 wrong password: 400 invalid_credentials (A4). P3 invalid token_hash: 403 otp_expired (A8).
 
 **P2 FAILED (A3 is false here).** /auth/v1/recover returns 400 `email_address_invalid` for the existing test account (the default email provider rejects @example.com addresses) and 200 for an unknown address. The API therefore shows whether an account exists. The page itself shows the same message either way, but anyone can call the API directly. The likely fix is custom SMTP, which also unlocks the templates. The result was left as it is; the test was not changed, and the decision is with the user.
+RLS-RUN | 2026-11-19 | c34a976bbd80a703823d7ab9a4f7ddcc8ff257ae | FAILED
+RLS-RUN | 2026-11-19 | c34a976bbd80a703823d7ab9a4f7ddcc8ff257ae | RLS OK
+
+## Custom SMTP, templates, P2 and A6 (2026-11-19)
+
+- Resend domain samwhitlockmarketing.com.de verified (DNS in Cloudflare: CNAME send, CNAME rsend, TXT resend._domainkey, TXT _dmarc; all DNS only). The user entered SMTP in Supabase themselves; read back by API: smtp.resend.com:465, user resend, sender no-reply@samwhitlockmarketing.com.de, password set (never seen by Claude).
+- Email templates APPLIED by API: invite and recovery now link to set-password.html?token_hash=...&type=invite|recovery. Read back and checked.
+- First re-run: P2 still FAILED (known 500, unknown 200). Resend logs showed 422 validation_error: Resend refuses @example.com recipients. The email itself (template, link, sender) was correct.
+- Fix (user approved): the two test accounts moved by the admin API to delivered+client-a@resend.dev and delivered+client-b@resend.dev (Resend test addresses); .env.local updated. The test itself was not changed.
+- A6 (invite with sign-up off): admin invite to delivered+a6-invite@resend.dev returned 200 with invited_at set; Resend accepted the email (200). The invited user was deleted afterwards.
+
+RLS-RUN | 2026-11-19 | c34a976bbd80a703823d7ab9a4f7ddcc8ff257ae | OK (R1-R9, S1, P1, P2 known 200 / unknown 200, P3 all PASS)
