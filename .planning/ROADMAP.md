@@ -167,7 +167,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 / 4 (parallelizable) -> 5 -> 6 -> 7
 | 4. Contact Page | 1/1 | Complete    | 2026-10-22 |
 | 5. Polish & QA | 1/1 | Complete    | 2026-10-23 |
 | 6. Tech Debt & Vercel Launch | 1/2 | Paused (GitHub Pages retirement delayed) | - |
-| 7. Client Login & Dashboard | 5/8 | In Progress|  |
+| 7. Client Login & Dashboard | 6/8 | In Progress|  |
 
 ### Phase 6: Tech Debt & Vercel Launch
 
@@ -211,7 +211,7 @@ Plans:
   6. Home and Contact still work offline by double-click and stay within the page-weight budget; login explains itself when opened without the hosted site
   7. All guards pass, including the deploy allowlist with the new pages
 
-**Plans:** 5/8 plans executed
+**Plans:** 6/8 plans executed
 
 Plans:
 **Wave 1**
@@ -224,7 +224,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 07-04-PLAN.md — Human project setup, public config, live proof of RLS and invite-only (wave 3)
+- [x] 07-04-PLAN.md — Human project setup, public config, live proof of RLS and invite-only (wave 3)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
