@@ -66,7 +66,6 @@ RLS-RUN | 2026-11-19 | c34a976bbd80a703823d7ab9a4f7ddcc8ff257ae | RLS OK
 - Resend domain samwhitlockmarketing.com.de verified (DNS in Cloudflare: CNAME send, CNAME rsend, TXT resend._domainkey, TXT _dmarc; all DNS only). The user entered SMTP in Supabase themselves; read back by API: smtp.resend.com:465, user resend, sender no-reply@samwhitlockmarketing.com.de, password set (never seen by Claude).
 - Email templates APPLIED by API: invite and recovery now link to set-password.html?token_hash=...&type=invite|recovery. Read back and checked.
 - First re-run: P2 still FAILED (known 500, unknown 200). Resend logs showed 422 validation_error: Resend refuses @example.com recipients. The email itself (template, link, sender) was correct.
-- Fix (user approved): the two test accounts moved by the admin API to delivered+client-a@resend.dev and delivered+client-b@resend.dev (Resend test addresses); .env.local updated. The test itself was not changed.
-- A6 (invite with sign-up off): admin invite to delivered+a6-invite@resend.dev returned 200 with invited_at set; Resend accepted the email (200). The invited user was deleted afterwards.
-
-RLS-RUN | 2026-11-19 | c34a976bbd80a703823d7ab9a4f7ddcc8ff257ae | OK (R1-R9, S1, P1, P2 known 200 / unknown 200, P3 all PASS)
+- Fix (user approved): the two test accounts moved by the admin API to Resend test-recipient addresses on resend.dev; .env.local updated. The test itself was not changed.
+- A6 (invite with sign-up off): admin invite to a throwaway Resend test-recipient address returned 200 with invited_at set; Resend accepted the email (200). The invited user was deleted afterwards.
+RLS-RUN | 2026-11-19 | 89eb8bf4e146d69654c6b0c836e16c53f2be897f | RLS OK
