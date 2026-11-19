@@ -138,14 +138,14 @@ Added in Phase 7 (login, set password and dashboard pages). Everything below is 
 |------|---------------------|------|----------------|------|
 | Voice copy and wordmark | "Sam" in first-person copy ("email me", "Email Sam") and the wordmark "Sam Whitlock" (follows the Identity rows) | `login.html`, `set-password.html`, `dashboard.html`, `js/login.js`, `js/set-password.js`, `js/dashboard.js` | `.wordmark` in header and footer, `<title>`, copyright line, the no-JavaScript and error messages | [ ] |
 | Contact email | hello@samwhitlock.example and its `mailto:` href | `login.html`, `set-password.html`, `dashboard.html`, `js/login.js`, `js/set-password.js`, `js/dashboard.js` | SHELL:FOOTER block; the `MAILTO` constant and link text in each script | [ ] |
-| Hosted URL in the file:// message | https://tester-five-sage.vercel.app | `login.html`, `set-password.html`, `dashboard.html` | The "You've opened this page straight from a file" notice | [ ] |
+| Hosted URL in the file:// message | https://www.samwhitlockmarketing.com.de | `login.html`, `set-password.html`, `dashboard.html`, `js/auth-common.js` (LIVE_SITE) | The "You've opened this page straight from a file" notice | [ ] |
 | Sample label | Sample content for this prototype | `dashboard.html` | `#dash-sample` (shown when the row's `is_sample` is true) | [ ] |
 | Sample dashboard strings | Sample Alex, Sample Blake, Sample Starter Plan, Sample Growth Plan, the "Sample: ..." plan items, check-ins and "Sample step: ..." steps, and the two `@example.com` test addresses | `supabase/seed-test-clients.sql` | Run in the SQL Editor only after creating both test users; delete or replace for real clients | [ ] |
 | Project URL | https://standin.supabase.co (placeholder stand-in) | `js/auth-config.js` | Supabase dashboard, Project Settings, API, Project URL | [ ] |
 | Publishable key | sb_publishable_standin (placeholder stand-in) | `js/auth-config.js` | Supabase dashboard, Project Settings, API Keys, publishable key. Never the secret key | [ ] |
 | Content Security Policy origin | https://standin.supabase.co | `vercel.json` | `connect-src` in the Content-Security-Policy header. Must name the same origin as `js/auth-config.js`; `node tools/check-auth.js csp` fails if they differ | [ ] |
 | Password minimum | `PASSWORD_MIN: 10` | `js/auth-config.js` | Must match the minimum password length set in the Supabase console (Authentication, Sign In / Providers, Email) | [ ] |
-| Site URL and redirect URL | https://tester-five-sage.vercel.app and https://tester-five-sage.vercel.app/** | Supabase console | Authentication, URL Configuration. Do not add preview URLs | [ ] |
+| Site URL and redirect URL | https://www.samwhitlockmarketing.com.de; redirects https://www.samwhitlockmarketing.com.de/**, https://samwhitlockmarketing.com.de/** and https://tester-five-sage.vercel.app/** | Supabase console | Authentication, URL Configuration. Do not add preview URLs | [ ] |
 | Email templates | Invite and Reset templates | Supabase console | Authentication, Email Templates; text in `supabase/email-templates.md` | [ ] |
 | Test accounts | test-client-a@example.com and test-client-b@example.com | Supabase console | Authentication, Users. Delete before any real launch; credentials live only in `.env.local` | [ ] |
 

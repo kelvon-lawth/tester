@@ -17,9 +17,10 @@ Public and private values:
    password length to 10. Check "Confirm email" is on. If offered, set "Email OTP
    expiration" to 24 hours (86400 seconds). Tell Claude if any label differs or the
    setting isn't there.
-3. In Authentication, URL Configuration: set Site URL to `https://tester-five-sage.vercel.app`
-   and add the redirect URL `https://tester-five-sage.vercel.app/**`. Do not add preview
-   wildcards.
+3. In Authentication, URL Configuration: set Site URL to `https://www.samwhitlockmarketing.com.de`
+   and add the redirect URLs `https://www.samwhitlockmarketing.com.de/**`,
+   `https://samwhitlockmarketing.com.de/**` and `https://tester-five-sage.vercel.app/**`.
+   Do not add preview wildcards.
 4. In Authentication, Email Templates: paste the Invite and Reset templates from
    `supabase/email-templates.md`.
 5. In the SQL Editor: run `supabase/schema.sql`. Share the results of the three

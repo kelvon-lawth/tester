@@ -3,7 +3,7 @@
 (function () {
   "use strict";
 
-  var LIVE_SITE = "https://tester-five-sage.vercel.app/login.html";
+  var LIVE_SITE = "https://www.samwhitlockmarketing.com.de/login.html";
   var FLASH_KEY = "auth-flash";
 
   function show(el) { if (el) el.hidden = false; }
