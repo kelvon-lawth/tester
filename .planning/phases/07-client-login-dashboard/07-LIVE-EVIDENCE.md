@@ -69,3 +69,15 @@ RLS-RUN | 2026-11-19 | c34a976bbd80a703823d7ab9a4f7ddcc8ff257ae | RLS OK
 - Fix (user approved): the two test accounts moved by the admin API to Resend test-recipient addresses on resend.dev; .env.local updated. The test itself was not changed.
 - A6 (invite with sign-up off): admin invite to a throwaway Resend test-recipient address returned 200 with invited_at set; Resend accepted the email (200). The invited user was deleted afterwards.
 RLS-RUN | 2026-11-19 | 89eb8bf4e146d69654c6b0c836e16c53f2be897f | RLS OK
+RLS-RUN | 2026-11-21 | 5dd575cf1f844bf73979308d03329818e51bcbf9 | RLS OK
+
+## Pre-push (2026-11-21)
+
+Ready to push. Two earlier full guard runs at this SHA timed out in the browser guards (home, motion, qa; also contact and auth in the first). Each passed when run alone. The cause was macOS throttling headless Chrome while the display was off. With `caffeinate -dimsu`, the full run passed 14 of 14 in 303s. No code or assertion was changed.
+
+TESTED_SHA: 5dd575cf1f844bf73979308d03329818e51bcbf9
+GATE-1 PASS ALL GUARDS PASS 5dd575cf1f844bf73979308d03329818e51bcbf9
+GATE-2 PASS RLS OK 5dd575cf1f844bf73979308d03329818e51bcbf9
+GATE-3 PASS LIVE SIGN-IN 5dd575cf1f844bf73979308d03329818e51bcbf9
+GATE-4 PASS HISTORY CLEAN 5dd575cf1f844bf73979308d03329818e51bcbf9
+GATE-5 PASS NO UNCOMMITTED CODE 5dd575cf1f844bf73979308d03329818e51bcbf9
