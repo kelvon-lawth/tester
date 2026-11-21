@@ -88,3 +88,5 @@ The user typed "push branch". Pushed once with `git push origin phase-07-client-
 PRE_PUSH_STAMP: ea4e626a2833ff8c4810c28966e676e6bc094d6d
 PUSHED_SHA: 025f8453ac55e51434500d7bfa2bef2e445f739f
 The remote branch matches the local branch. origin/main is unchanged at ea4e626. Two minutes after the push, the live stamp still equals PRE_PUSH_STAMP on both https://tester-five-sage.vercel.app and https://www.samwhitlockmarketing.com.de, so production did not change.
+
+Preview check (2026-11-21): deployment tester-4i4tn6jio-wii-test.vercel.app (025f845) is behind Vercel login. `auth-browser-test deployed csp` gave NOT RUN: address is protected (expected). Manual check: Claude, in the user's Chrome, confirmed Home with has-motion, GSAP running, 5/5 images and 5/5 fonts loaded, full scroll; Contact rendered; login page rendered; X-Frame-Options DENY, Referrer-Policy same-origin and CSP present. The user then checked in their own browser and replied "preview ok". The only console error, on all three pages, was the CSP blocking Vercel's preview-only feedback toolbar script (https://vercel.live/_next-live/feedback/feedback.js). That is expected; the CSP was not widened.
