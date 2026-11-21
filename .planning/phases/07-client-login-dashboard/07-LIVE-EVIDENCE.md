@@ -81,3 +81,10 @@ GATE-2 PASS RLS OK 5dd575cf1f844bf73979308d03329818e51bcbf9
 GATE-3 PASS LIVE SIGN-IN 5dd575cf1f844bf73979308d03329818e51bcbf9
 GATE-4 PASS HISTORY CLEAN 5dd575cf1f844bf73979308d03329818e51bcbf9
 GATE-5 PASS NO UNCOMMITTED CODE 5dd575cf1f844bf73979308d03329818e51bcbf9
+
+## Preview (2026-11-21)
+
+The user typed "push branch". Pushed once with `git push origin phase-07-client-login` (no force).
+PRE_PUSH_STAMP: ea4e626a2833ff8c4810c28966e676e6bc094d6d
+PUSHED_SHA: 025f8453ac55e51434500d7bfa2bef2e445f739f
+The remote branch matches the local branch. origin/main is unchanged at ea4e626. Two minutes after the push, the live stamp still equals PRE_PUSH_STAMP on both https://tester-five-sage.vercel.app and https://www.samwhitlockmarketing.com.de, so production did not change.
