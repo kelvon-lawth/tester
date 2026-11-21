@@ -9,3 +9,4 @@ status: complete
 - supabase/SETUP.md and REPLACE-ME.md describe Site URL = www domain; redirect allow list = www, apex and vercel.app (matches the live Supabase config set by API on 2026-11-19).
 - Verified: no old URL left in the pages or JS; `node tools/check-auth.js` AUTH OK (csp and docs PASS).
 - Full `tools/run-guards.sh`: 12 of 14 passed; motion-browser-test and qa-browser-test FAILED (both passed at d34f18a; this change touched only auth pages and docs; possibly flaky under load, not yet investigated). Re-run each on its own before the 07-08 gate.
+- 2026-11-21 re-run alone at 9e3e43f: motion-browser-test MOTION OK, qa-browser-test QA BROWSER OK. The earlier failures were load-related flakiness, not a regression.
