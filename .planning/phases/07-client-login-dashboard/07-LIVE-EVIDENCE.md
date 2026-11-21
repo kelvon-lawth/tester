@@ -95,3 +95,12 @@ RLS-RUN | 2026-11-21 | 911b34d586be2c9211294a8f113e43978d5e1962 | RLS OK
 Fresh run at the tip (2026-11-21), with caffeinate -dimsu: guards 14/14, RLS OK, live sign-in OK.
 PRE_MERGE_SHA: 911b34d586be2c9211294a8f113e43978d5e1962
 ALL GUARDS PASS 911b34d586be2c9211294a8f113e43978d5e1962
+RLS-RUN | 2026-11-21 | f7d593d4473f98a4e06afb28119ebff43d7de4de | RLS OK
+
+## Deployed (2026-11-21)
+
+The user typed "push main 911b34d". `git fetch . phase-07-client-login:main` fast-forwarded main, then `git push origin main` ran once (ea4e626..f7d593d, no force).
+MAIN_SHA: f7d593d4473f98a4e06afb28119ebff43d7de4de
+- https://tester-five-sage.vercel.app: deployed PASS (stamp matches, five pages 200, dev files 404, secret scan clean over 16 files); csp PASS (10 loads, scroll and resize, no violation); live sign-in PASS (A own content, reload, sign-out, wrong password, B only B).
+- https://www.samwhitlockmarketing.com.de: deployed PASS, csp PASS, live sign-in PASS.
+- RLS re-run: RLS OK (own line below).
