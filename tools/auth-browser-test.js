@@ -984,7 +984,7 @@ results["stub-dashboard"] = async () => {
       const v = await pg.ev("()=>({xss:window.__xss===undefined,els:document.querySelectorAll('main img, main svg, main b, main script').length})");
       must(v.xss, "row content ran as script");
       must(v.els === 0, "row content created " + v.els + " element(s)");
-      await pg.needText("<script>window.__xss=4</script>", 2000);
+      await pg.needText('<b onmouseover="window.__xss=7">t</b>', 2000);
       done.push("row text stays text");
     });
   }
