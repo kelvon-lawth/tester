@@ -10,7 +10,8 @@ const { spawnSync } = require("child_process");
 const authEnv = require("./auth-env");
 
 const ROOT = path.resolve(__dirname, "..");
-const EVIDENCE = path.join(ROOT, ".planning", "phases", "07-client-login-dashboard", "07-LIVE-EVIDENCE.md");
+// Phase 7 lines stay in 07-LIVE-EVIDENCE.md; runs from 07.1 on append here.
+const EVIDENCE = path.join(ROOT, ".planning", "phases", "07.1-useful-client-dashboard", "07.1-LIVE-EVIDENCE.md");
 
 authEnv.load();
 
@@ -153,6 +154,8 @@ async function main() {
   add("R8/R9", "re-read A unchanged", afterA.status, rows(afterA).length, JSON.stringify(afterA.json) === JSON.stringify(readA.json));
   add("R8/R9", "re-read B unchanged", afterB.status, rows(afterB).length, JSON.stringify(afterB.json) === JSON.stringify(readB.json));
 
+  await planTierCases(A, B);
+
   // S1 AUTH-06 sign-up closed
   const settings = await http("GET", "/auth/v1/settings");
   const closed = settings.status === 200 && settings.json && settings.json.disable_signup === true;
@@ -177,6 +180,142 @@ async function main() {
     "observed code=" + (p3.json && (p3.json.error_code || p3.json.error) || "none"));
 
   return finish();
+}
+
+// ---- Phase 7.1 plan-tier lock (G1-G9). Labels, statuses and counts only: never row contents or ids.
+const GROWTH = ["content_calendar", "ad_results", "report_archive"];
+const NEW = ["monthly_metrics", "dashboard_items"].concat(GROWTH);
+const ORDER = { monthly_metrics: "month", ad_results: "month", report_archive: "month", dashboard_items: "id", content_calendar: "id" };
+const REST = "/rest/v1/";
+
+// Previous month of a YYYY-MM-DD string, by string arithmetic (never Date/UTC).
+function prevMonth(d) {
+  let y = parseInt(d.slice(0, 4), 10);
+  let m = parseInt(d.slice(5, 7), 10) - 1;
+  if (m === 0) { m = 12; y -= 1; }
+  return String(y).padStart(4, "0") + "-" + String(m).padStart(2, "0") + "-01";
+}
+
+function probeBody(table, uid) {
+  switch (table) {
+    case "monthly_metrics": return { user_id: uid, month: "2020-01-01", kpi1: 1 };
+    case "dashboard_items": return { user_id: uid, title: "Sample: probe" };
+    case "content_calendar": return { user_id: uid, post_on: "2020-01-01", title: "Sample: probe" };
+    case "ad_results": return { user_id: uid, month: "2020-01-01" };
+    default: return { user_id: uid, month: "2020-01-01", title: "Sample: probe", url: "https://example.com/probe" };
+  }
+}
+
+async function snapshot(who) {
+  const out = {};
+  const d = await http("GET", REST + "client_dashboards?select=*", { token: who.token });
+  out.client_dashboards = JSON.stringify(d.json);
+  for (const t of NEW) {
+    const r = await http("GET", REST + t + "?select=*&order=" + ORDER[t], { token: who.token });
+    out[t] = JSON.stringify(r.json);
+  }
+  return out;
+}
+
+async function planTierCases(A, B) {
+  const before = { A: await snapshot(A), B: await snapshot(B) };
+  const own = (r, id) => rows(r).every((x) => x.user_id === id);
+
+  // G1 positive control: B (growth) sees its own Growth rows
+  for (const t of GROWTH) {
+    const r = await http("GET", REST + t + "?select=*", { token: B.token });
+    const ok = r.status === 200 && rows(r).length >= 1 && own(r, B.id);
+    add("G1", "B reads own " + t, r.status, rows(r).length, ok, ok ? "" : "table empty or unreachable, G2 would prove nothing");
+  }
+
+  // G2 A (basics) gets nothing from Growth tables, plain, by own filter, by B's filter
+  for (const t of GROWTH) {
+    for (const [lbl, q] of [["plain", ""], ["own filter", "&user_id=eq." + A.id], ["B filter", "&user_id=eq." + B.id]]) {
+      const r = await http("GET", REST + t + "?select=*" + q, { token: A.token });
+      add("G2", "A " + t + " " + lbl, r.status, rows(r).length, noRows(r));
+    }
+  }
+  // G2b embedding
+  const emb = await http("GET", REST + "client_dashboards?select=user_id,plan_tier,content_calendar(*),ad_results(*),report_archive(*)", { token: A.token });
+  const e0 = rows(emb)[0] || {};
+  const embOk = emb.status === 200 && rows(emb).length === 1 && e0.user_id === A.id && e0.plan_tier === "basics" &&
+    GROWTH.every((t) => Array.isArray(e0[t]) && e0[t].length === 0);
+  add("G2b", "A embeds Growth tables", emb.status, rows(emb).length, embOk);
+
+  // G3 B cannot read A's rows
+  for (const t of GROWTH) {
+    const r = await http("GET", REST + t + "?select=*&user_id=eq." + A.id, { token: B.token });
+    add("G3", "B reads A " + t, r.status, rows(r).length, noRows(r));
+  }
+
+  // G4 metrics window
+  const raR = await http("GET", REST + "client_dashboards?select=report_month", { token: A.token });
+  const rbR = await http("GET", REST + "client_dashboards?select=report_month", { token: B.token });
+  const RA = rows(raR)[0] && rows(raR)[0].report_month;
+  const RB = rows(rbR)[0] && rows(rbR)[0].report_month;
+  const mA = await http("GET", REST + "monthly_metrics?select=*&order=month.desc", { token: A.token });
+  const wantA = RA ? [RA, prevMonth(RA)] : [];
+  const gotA = rows(mA).map((x) => String(x.month).slice(0, 10)).sort();
+  const okMA = !!RA && mA.status === 200 && rows(mA).length === 2 && own(mA, A.id) &&
+    JSON.stringify(gotA) === JSON.stringify(wantA.slice().sort());
+  add("G4", "A metrics = report month + prior", mA.status, rows(mA).length, okMA);
+  const mB = await http("GET", REST + "monthly_metrics?select=*&order=month.desc", { token: B.token });
+  const okMB = !!RB && mB.status === 200 && rows(mB).length >= 6 && own(mB, B.id) &&
+    rows(mB).every((x) => String(x.month).slice(0, 10) <= RB);
+  add("G4", "B metrics up to report month", mB.status, rows(mB).length, okMB);
+  const mBA = await http("GET", REST + "monthly_metrics?select=*&user_id=eq." + A.id, { token: B.token });
+  add("G4", "B reads A metrics", mBA.status, rows(mBA).length, noRows(mBA));
+  const diA = await http("GET", REST + "dashboard_items?select=*", { token: A.token });
+  add("G4", "A reads own items", diA.status, rows(diA).length, diA.status === 200 && rows(diA).length >= 1 && own(diA, A.id));
+  const diAB = await http("GET", REST + "dashboard_items?select=*&user_id=eq." + B.id, { token: A.token });
+  add("G4", "A reads B items", diAB.status, rows(diAB).length, noRows(diAB));
+
+  // G5 signed out, G6 forged token
+  for (const t of NEW) {
+    for (const q of ["", "&user_id=eq." + A.id]) {
+      const r = await http("GET", REST + t + "?select=*" + q);
+      add("G5", "signed-out " + t + (q ? " filtered" : ""), r.status, rows(r).length, noRows(r));
+    }
+    const f = await http("GET", REST + t + "?select=*", { token: "forged.token.value" });
+    add("G6", "forged token " + t, f.status, rows(f).length, noRows(f));
+  }
+
+  // G9 the deployed Phase 7 page's exact select still works
+  const leg = await http("GET", REST + "client_dashboards?select=first_name,plan_name,plan_items,check_in,steps,is_sample", { token: A.token });
+  add("G9", "legacy Phase 7 select", leg.status, rows(leg).length, leg.status === 200 && rows(leg).length === 1);
+
+  // G7 writes: Prefer return=representation so a silent success shows rows
+  const PREF = "return=representation";
+  const g7 = (label, r) => add("G7", label, r.status, rows(r).length, refusedOrZero(r));
+  const CD = REST + "client_dashboards?user_id=eq." + A.id;
+  g7("A PATCH plan_tier", await http("PATCH", CD, { token: A.token, prefer: PREF, body: { plan_tier: "growth" } }));
+  g7("A PATCH report_month", await http("PATCH", CD, { token: A.token, prefer: PREF, body: { report_month: "2020-01-01" } }));
+  for (const t of NEW) {
+    for (const [who, tok] of [["A", A.token], ["signed-out", undefined]]) {
+      const lbl = (x) => who + " " + x + " " + t;
+      g7(lbl("POST A row"), await http("POST", REST + t, { token: tok, prefer: PREF, body: probeBody(t, A.id) }));
+      g7(lbl("POST B row"), await http("POST", REST + t, { token: tok, prefer: PREF, body: probeBody(t, B.id) }));
+      g7(lbl("PATCH A rows"), await http("PATCH", REST + t + "?user_id=eq." + A.id, { token: tok, prefer: PREF, body: { user_id: A.id } }));
+      g7(lbl("PATCH B rows"), await http("PATCH", REST + t + "?user_id=eq." + B.id, { token: tok, prefer: PREF, body: { user_id: B.id } }));
+      g7(lbl("DELETE A rows"), await http("DELETE", REST + t + "?user_id=eq." + A.id, { token: tok, prefer: PREF }));
+      g7(lbl("DELETE B rows"), await http("DELETE", REST + t + "?user_id=eq." + B.id, { token: tok, prefer: PREF }));
+    }
+  }
+  const reA = await http("GET", REST + "client_dashboards?select=plan_tier,report_month", { token: A.token });
+  const r0 = rows(reA)[0] || {};
+  add("G7", "A tier and month unchanged", reA.status, rows(reA).length, r0.plan_tier === "basics" && r0.report_month === RA);
+  for (const t of GROWTH) {
+    const r = await http("GET", REST + t + "?select=*", { token: A.token });
+    add("G7", "A still no " + t, r.status, rows(r).length, noRows(r));
+  }
+
+  // G8 before/after snapshots identical
+  const after = { A: await snapshot(A), B: await snapshot(B) };
+  for (const [name, key] of [["A", "A"], ["B", "B"]]) {
+    for (const t of ["client_dashboards"].concat(NEW)) {
+      add("G8", name + " " + t + " unchanged", "-", "-", before[key][t] === after[key][t]);
+    }
+  }
 }
 
 function finish(stop) {
