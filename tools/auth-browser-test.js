@@ -265,7 +265,53 @@ const SAMPLE_ROW = {
     { title: "Sample step: chat about next month\u2019s offer", detail: "A short call.", due: "Sample date: later" },
   ],
   is_sample: true, updated_at: "2026-01-01T00:00:00Z",
+  plan_tier: "basics", report_month: "2026-10-01", next_check_in: "2026-12-04", renewal_on: "2027-01-15",
+  kpi1_label: "Sample: calls", kpi2_label: "Sample: directions", kpi3_label: "Sample: visits",
+  monthly_metrics: [
+    { month: "2026-10-01", kpi1: 45, kpi2: 27, kpi3: 905 },
+    { month: "2026-09-01", kpi1: 40, kpi2: 24, kpi3: 810 },
+  ],
+  dashboard_items: [
+    { kind: "waiting", title: "Sample step: pick your favourite shop photos", detail: "Choose five photos you like.", item_date: "2026-11-27", sort_order: 1 },
+    { kind: "waiting", title: "Sample step: approve the first week of posts", detail: "Read them over and say yes.", item_date: null, sort_order: 2 },
+    { kind: "done", title: "Sample: refreshed your opening hours", detail: null, item_date: "2026-10-08", sort_order: 1 },
+    { kind: "done", title: "Sample: old September job", detail: null, item_date: "2026-09-15", sort_order: 2 },
+  ],
 };
+const SAMPLE_GROWTH_ROW = Object.assign({}, SAMPLE_ROW, {
+  user_id: "00000000-0000-4000-8000-00000000000b", first_name: "Blake", plan_name: "Sample Growth Plan", plan_tier: "growth",
+  monthly_metrics: [
+    { month: "2026-10-01", kpi1: 45, kpi2: 27, kpi3: 905 },
+    { month: "2026-09-01", kpi1: 40, kpi2: 24, kpi3: 810 },
+    { month: "2026-08-01", kpi1: 38, kpi2: 25, kpi3: 760 },
+    { month: "2026-07-01", kpi1: 33, kpi2: 22, kpi3: 690 },
+    { month: "2026-06-01", kpi1: 35, kpi2: 20, kpi3: 700 },
+    { month: "2026-05-01", kpi1: 31, kpi2: 18, kpi3: 640 },
+  ],
+  dashboard_items: [
+    { kind: "waiting", title: "Sample step: pick your favourite shop photos", detail: "Choose five photos you like.", item_date: "2026-11-27", sort_order: 1 },
+    { kind: "done", title: "Sample: refreshed your opening hours", detail: null, item_date: "2026-10-08", sort_order: 1 },
+  ],
+});
+// Local-date helpers (never toISOString: that shifts the day in some timezones).
+const ymd = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const plusDays = (n) => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + n); return ymd(d); };
+function growthStub() {
+  return {
+    calendar: [
+      { post_on: plusDays(2), channel: "Instagram", title: "Sample: bake sale post", status: "Planned" },
+      { post_on: plusDays(5), channel: "Facebook", title: "Sample: newsletter teaser", status: "Needs your OK" },
+      { post_on: plusDays(11), channel: "Instagram", title: "Sample: Christmas hours", status: "Planned" },
+      { post_on: plusDays(-4), channel: "Instagram", title: "Sample: old post", status: "Planned" },
+      { post_on: plusDays(20), channel: "Facebook", title: "Sample: far post", status: "Planned" },
+    ],
+    ads: [{ month: "2026-10-01", campaign: "Sample: half-term offer", spend: 120.5, clicks: 340, results: 18, results_label: "enquiries" }],
+    reports: [
+      { month: "2026-10-01", title: "Sample: October report", url: "https://example.com/sample-report-2026-10.pdf" },
+      { month: "2026-09-01", title: "Sample: bad link", url: "javascript:alert(1)" },
+    ],
+  };
+}
 
 const ERRBODY = {
   400: { code: 400, error_code: "invalid_credentials", msg: "Invalid login credentials" },
@@ -280,6 +326,7 @@ function mkStub(over) {
   const st = Object.assign({
     token: { status: 200 }, recover: { status: 200 }, verify: { status: 200 }, update: { status: 200 },
     user: { status: 200 }, logout: { status: 204 }, rowMode: "row", rowDelay: 0, rowData: SAMPLE_ROW, rowCount: 0,
+    growth: growthStub(), growthMode: {},
   }, over || {});
   st.handler = (req) => {
     const p = req.path;
@@ -310,6 +357,13 @@ function mkStub(over) {
           : Object.assign({ status: 200, body: [] }, d);
       }
       return Object.assign({ status: 200, body: wantObj ? st.rowData : [st.rowData] }, d);
+    }
+    const gmap = { "/rest/v1/content_calendar": ["content_calendar", "calendar"], "/rest/v1/ad_results": ["ad_results", "ads"],
+      "/rest/v1/report_archive": ["report_archive", "reports"] };
+    if (gmap[p]) {
+      const mode = typeof st.growthMode === "string" ? st.growthMode : (st.growthMode || {})[gmap[p][0]];
+      if (mode === "500") return { status: 500, body: { message: "boom" } };
+      return { status: 200, body: (st.growth || {})[gmap[p][1]] || [] };
     }
     return { status: 404, body: { message: "not stubbed" } };
   };
@@ -374,6 +428,7 @@ async function withPage(o, fn) {
     }
     await send("Emulation.setDeviceMetricsOverride",
       { width: o.width || 1280, height: o.height || 800, deviceScaleFactor: 1, mobile: (o.width || 1280) < 640 }, sessionId);
+    if (o.timezone) await send("Emulation.setTimezoneOverride", { timezoneId: o.timezone }, sessionId);
     const init = BASE_INIT + (o.session ? seedScript() : "") + (o.init || "");
     await send("Page.addScriptToEvaluateOnNewDocument", { source: init }, sessionId);
 
@@ -869,7 +924,7 @@ results["stub-dashboard"] = async () => {
       must(st.rowCount > 0, "no row request was made with a session present");
       const v = await pg.ev(`()=>({t:document.body.innerText,dash:[...document.querySelectorAll('.dash')].filter(vis).length})`);
       must(/One moment/.test(v.t), "the checking state was not visible while waiting");
-      must(!/Hello,|Sample|Your plan|Next steps/.test(v.t), "protected content was visible before the row arrived");
+      must(!/Hello,|Sample|Your plan|At a glance|Waiting on you|Coming up|Growth plan/.test(v.t), "protected content was visible before the row arrived");
       must(v.dash === 0, "the protected region was visible before the row arrived");
       await dashReady(pg);
       await pg.clean("loading");
@@ -891,9 +946,12 @@ results["stub-dashboard"] = async () => {
     const st = mkStub();
     await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
       await dashReady(pg);
-      for (const s of ["Your plan", "Next steps", "Sample Starter Plan", "Sample: monthly social posts", "Sample: Google profile tune-up",
-        "Sample: one small local ad", "Sample: every second Friday", "Sample step: pick your favourite shop photos",
-        "Choose five photos you like.", "Sample date: this week", "Sample content for this prototype"]) await pg.needText(s, 2000);
+      for (const s of ["At a glance", "Figures for October 2026", "Sample: calls", "45", "Up 13% on last month", "Sample: visits",
+        "Up 12% on last month", "Waiting on you", "Sample step: pick your favourite shop photos", "Choose five photos you like.",
+        "By Friday 27 November", "Done this month", "Sample: refreshed your opening hours", "8 October", "Coming up",
+        "Friday 4 December 2026", "Sample: every second Friday", "15 January 2027", "Your plan", "Sample Starter Plan", "Local Basics",
+        "Sample: monthly social posts", "Sample content for this prototype"]) await pg.needText(s, 2000);
+      for (const s of ["Sample: old September job", "Next steps", "Sample date: this week", "Note from", "A note from Sam"]) await pg.lacksText(s);
       await pg.clean("ready");
       done.push("row renders");
     });
@@ -911,6 +969,8 @@ results["stub-dashboard"] = async () => {
       plan_name: '<img src=x onerror="window.__xss=2">Plan',
       plan_items: ['<b onmouseover="window.__xss=3">bold</b>'],
       steps: [{ title: "<script>window.__xss=4</script>", detail: "<svg onload=\"window.__xss=5\">", due: "x" }],
+      kpi1_label: '<img src=x onerror="window.__xss=6">calls',
+      dashboard_items: [{ kind: "waiting", title: '<b onmouseover="window.__xss=7">t</b>', detail: '<img src=x onerror="window.__xss=8">', item_date: null, sort_order: 1 }],
     });
     const st = mkStub({ rowData: evil });
     await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
