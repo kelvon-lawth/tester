@@ -159,6 +159,8 @@ const BLUE_ALLOWED = new Set([
   ".link-cta",                      // item 3: text CTA link
   ".service-card__icon",            // item 5 (Phase 2): service icons
   ".step__badge",                   // item 6 (Phase 2): step badges
+  ".dash-chart__line",              // Phase 7.1: dashboard trend chart line (data ink)
+  ".dash-chart__dot",               // Phase 7.1: dashboard trend chart single point
 ]);
 {
   const ruleRe = /([^{}]+)\{([^{}]*)\}/g;
