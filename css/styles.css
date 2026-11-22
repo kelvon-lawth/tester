@@ -2463,7 +2463,11 @@ html.has-motion .text-coral-on-navy {
 @media (min-width: 1024px) {
   .dash__grid { grid-template-columns: repeat(12, 1fr); }
   .dash__grid > .dash__plan { grid-column: span 5; }
-  .dash__grid > .dash__next { grid-column: span 7; }
+  .dash__grid > .dash__glance { grid-column: 1 / -1; }
+  .dash__grid > .dash__waiting { grid-column: span 7; }
+  .dash__grid > .dash__done { grid-column: span 5; }
+  .dash__grid > .dash__coming { grid-column: span 7; }
+  .dash__tiles { grid-template-columns: repeat(3, 1fr); }
   .dash__grid > .dash__empty { grid-column: 1 / -1; }
 }
 
@@ -2515,3 +2519,18 @@ html.has-motion .text-coral-on-navy {
   font-size: var(--fs-label);
   color: var(--color-ink-soft);
 }
+
+.dash__month,
+.dash__note,
+.dash__change {
+  color: var(--color-ink-soft);
+}
+
+.dash__month { margin: 0 0 var(--space-md); font-size: var(--fs-label); font-weight: var(--fw-semibold); }
+.dash__tiles { display: grid; grid-template-columns: 1fr; gap: var(--space-lg); }
+.dash__tile { padding: var(--space-md); background: var(--color-tint); border-radius: var(--radius-md); }
+.dash__tile p { margin: 0; }
+.dash__tile-label { font-size: var(--fs-label); color: var(--color-ink-soft); }
+.dash__tile-num { font-family: var(--font-display); font-size: var(--fs-heading); line-height: var(--lh-heading); color: var(--color-ink); }
+.dash__change { font-size: var(--fs-label); }
+.dash__contact { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); margin-top: var(--space-lg); }
