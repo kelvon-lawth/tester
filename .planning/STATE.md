@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: 07-05 done offline (stand-in config); 07-04 Task 2 awaits the Supabase project
-last_updated: "2026-11-19T17:45:41.176Z"
-last_activity: 2026-11-19
+last_updated: "2026-11-22T20:38:51.974Z"
+last_activity: 2026-11-22
 progress:
-  total_phases: 7
+  total_phases: 9
   completed_phases: 5
-  total_plans: 22
-  completed_plans: 19
-  percent: 71
+  total_plans: 31
+  completed_plans: 21
+  percent: 56
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-12)
 
 **Core value:** The home page must make a strong first impression: polished, professional and warm, with an impressive animated headline.
-**Current focus:** Phase 07 — client-login-dashboard
+**Current focus:** Phase 07.1 — useful-client-dashboard
 
 ## Current Position
 
-Phase: 07 (client-login-dashboard) — EXECUTING
-Plan: 5 of 8 (07-04 paused at Task 2; 07-05 and 07-06 built offline)
+Phase: 07.1 (useful-client-dashboard) — EXECUTING
+Plan: 2 of 9
 Status: Ready to execute
-Last activity: 2026-11-19
+Last activity: 2026-11-22
 Hosting: https://tester-five-sage.vercel.app (pushes to main redeploy). GitHub Pages at https://kelvon-lawth.github.io/tester/ still serves its last deploy; its workflow is removed.
 
 Progress: [████████░░] 77%
