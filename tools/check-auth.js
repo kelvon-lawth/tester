@@ -223,6 +223,38 @@ function groupSdk() {
 
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 
+const SQL_TABLES = ["monthly_metrics", "dashboard_items", "content_calendar", "ad_results", "report_archive"];
+const SQL_POLICY_NAMES = [
+  "clients read own dashboard",
+  "clients read own items",
+  "clients read own metrics by plan",
+  "growth clients read own calendar",
+  "growth clients read own ad results",
+  "growth clients read own reports",
+];
+
+// Shared checks for schema.sql (6 policies) and migration-07.1.sql (5 policies).
+function sqlPolicyChecks(label, text, expected, fails) {
+  const policies = text.match(/create\s+policy[^;]*;/gi) || [];
+  if (policies.length !== expected) fails.push(label + ": expected exactly " + expected + " create policy, found " + policies.length);
+  for (const p of policies) {
+    if (!/for\s+select/i.test(p)) fails.push(label + ": a policy is not for select");
+    if (!/to\s+authenticated/i.test(p)) fails.push(label + ": a policy is not to authenticated");
+    if (!/auth\.uid\(\)/i.test(p)) fails.push(label + ": a policy does not use auth.uid()");
+    if (/\banon\b/i.test(p)) fails.push(label + ": a policy names anon");
+  }
+  for (const name of SQL_POLICY_NAMES) {
+    if (name === "clients read own dashboard" && expected === 5) continue;
+    if (!text.includes('"' + name + '"')) fails.push(label + ": missing policy " + name);
+  }
+  for (const name of ["growth clients read own calendar", "growth clients read own ad results", "growth clients read own reports"]) {
+    const p = policies.find((x) => x.includes('"' + name + '"'));
+    if (p && !/plan_tier\s*=\s*'growth'/.test(p)) fails.push(label + ": policy " + name + " lacks plan_tier = 'growth'");
+  }
+  const m = policies.find((x) => x.includes('"clients read own metrics by plan"'));
+  if (m && !/report_month/.test(m)) fails.push(label + ": metrics policy does not use report_month");
+}
+
 function groupSql() {
   const fails = [];
   const s = read("supabase/schema.sql");
@@ -233,19 +265,45 @@ function groupSql() {
       fails.push("schema.sql: no revoke from anon and authenticated");
     }
     if (!/grant\s+select\s[^;]*\bto\s+authenticated\b/i.test(s)) fails.push("schema.sql: no grant select to authenticated");
-    const policies = s.match(/create\s+policy[^;]*;/gi) || [];
-    if (policies.length !== 1) fails.push("schema.sql: expected exactly one create policy, found " + policies.length);
-    else {
-      const p = policies[0];
-      if (!/for\s+select/i.test(p)) fails.push("schema.sql: policy is not for select");
-      if (!/to\s+authenticated/i.test(p)) fails.push("schema.sql: policy is not to authenticated");
-      if (!/auth\.uid\(\)/i.test(p)) fails.push("schema.sql: policy does not use auth.uid()");
-      if (/\banon\b/i.test(p)) fails.push("schema.sql: policy names anon");
+    sqlPolicyChecks("schema.sql", s, 6, fails);
+    for (const tb of SQL_TABLES) {
+      if (!new RegExp("alter\\s+table\\s+public\\." + tb + "\\s+enable\\s+row\\s+level\\s+security", "i").test(s)) {
+        fails.push("schema.sql: no enable row level security for " + tb);
+      }
     }
+    if (!s.includes("^https://")) fails.push("schema.sql: report_archive url lacks ^https:// check");
     if (/user_metadata/i.test(s)) fails.push("schema.sql: mentions user_metadata");
     if (/raw_user_meta_data/i.test(s)) fails.push("schema.sql: mentions raw_user_meta_data");
     if (/force\s+row\s+level/i.test(s)) fails.push("schema.sql: uses force row level");
     if (/\bgrant\b[^;]*\banon\b/i.test(s)) fails.push("schema.sql: grants to anon");
+  }
+  const mig = read("supabase/migration-07.1.sql");
+  if (mig === null) fails.push(missing("supabase/migration-07.1.sql"));
+  else {
+    sqlPolicyChecks("migration-07.1.sql", mig, 5, fails);
+    for (const tb of SQL_TABLES) {
+      if (!mig.includes(tb)) fails.push("migration-07.1.sql: does not mention " + tb);
+    }
+    if (!/enable\s+row\s+level\s+security/i.test(mig)) fails.push("migration-07.1.sql: no enable row level security");
+    if (!/^begin;/im.test(mig) || !/^commit;/im.test(mig)) fails.push("migration-07.1.sql: missing begin; or commit;");
+    if (/drop\s+table|drop\s+column|alter\s+column|\brename\b|\btruncate\b/i.test(mig)) {
+      fails.push("migration-07.1.sql: contains a destructive statement (must be additive)");
+    }
+    if (/force\s+row\s+level|security\s+definer|\bgrant\b[^;]*\banon\b/i.test(mig)) fails.push("migration-07.1.sql: force rls, security definer or grant to anon");
+  }
+  const live = read("supabase/seed-07.1-live.sql");
+  if (live === null) fails.push(missing("supabase/seed-07.1-live.sql"));
+  else {
+    if (!/raise\s+exception/i.test(live)) fails.push("seed-07.1-live.sql: no raise exception guard");
+    if ((live.match(EMAIL_RE) || []).length) fails.push("seed-07.1-live.sql: contains an email address");
+    const allowed = new Set(["Instagram", "Facebook", "Planned", "Needs your OK", "enquiries", "calls"]);
+    const code = live.replace(/--[^\n]*/g, "").replace(/raise\s+exception\s+'[^']*'/gi, "");
+    for (const m of code.matchAll(/'((?:[^']|'')*)'/g)) {
+      const v = m[1];
+      if (/^[A-Z][A-Za-z]{3,}/.test(v) && !v.startsWith("Sample") && !allowed.has(v)) {
+        fails.push("seed-07.1-live.sql: text value not marked Sample: " + v.slice(0, 40));
+      }
+    }
   }
   const seed = read("supabase/seed-test-clients.sql");
   if (seed === null) fails.push(missing("supabase/seed-test-clients.sql"));
