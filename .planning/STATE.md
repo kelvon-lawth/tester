@@ -76,6 +76,8 @@ Progress: [████████░░] 77%
 
 ### Roadmap Evolution
 
+- Phase 8 added (2026-11-22): Paid sign-up, automatic onboarding and plan-tier gating (Stripe Checkout + webhook to Supabase Edge Function; Growth features visible but locked for Local Basics).
+
 - Phase 6 added: Address tech debt and launch on Vercel (from the v1.0 audit, 2026-11-06)
 
 ### Accepted Debt

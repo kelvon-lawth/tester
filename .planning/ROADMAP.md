@@ -245,3 +245,14 @@ Plans:
 **Wave 8** *(blocked on Wave 7 completion)*
 
 - [ ] 07-09-PLAN.md — Real inbox and security check by the human, then close the records (wave 8)
+
+### Phase 8: Paid sign-up, automatic onboarding and plan-tier gating
+
+**Goal:** A visitor who pays for a plan gets their client login and a ready dashboard without the marketer doing anything, and each client sees only what their plan includes. Payment uses Stripe Checkout, one per plan (Local Basics £195, Growth £395). A verified Stripe webhook calls a Supabase Edge Function, which creates the account, sends the invite through the existing Resend SMTP and seeds the dashboard row from a plan template. Cancelling a subscription removes access. Growth-tier features show on a Local Basics dashboard as visible but locked (upgrade prompt). The lock is enforced server-side by the client's plan, through RLS or a plan column, not only hidden in the page. No manual approval step for either plan (user decision, 2026-11-22). Built and tested in Stripe test mode first.
+**Requirements**: TBD (define in discuss/plan)
+**Depends on:** Phase 7. Also: the D-11 human security sign-off (07-09 part E) before any real customer data, and an approved change to the CLAUDE.md hosting constraint, because Stripe becomes a second outside service.
+**Open questions for discuss-phase:** monthly subscription or one-off; VAT; refunds; which dashboard features belong to Growth only; what happens to data on cancel.
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 8 to break down)
