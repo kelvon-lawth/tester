@@ -246,6 +246,16 @@ Plans:
 
 - [ ] 07-09-PLAN.md — Real inbox and security check by the human, then close the records (wave 8)
 
+### Phase 07.1: Useful client dashboard (INSERTED)
+
+**Goal:** Make the client dashboard worth opening, based on 07.1-RESEARCH-NOTES.md: key numbers with change since last month in plain words, a note from Sam, items waiting on the client, work done, what's coming up, and contact. The marketer enters the data in Supabase, still protected by RLS. It defines which features are Growth-only, so Phase 8 can lock them for Local Basics.
+**Requirements**: TBD
+**Depends on:** Phase 7
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 07.1 to break down)
+
 ### Phase 8: Paid sign-up, automatic onboarding and plan-tier gating
 
 **Goal:** A visitor who pays for a plan gets their client login and a ready dashboard without the marketer doing anything, and each client sees only what their plan includes. Payment uses Stripe Checkout, one per plan (Local Basics £195, Growth £395). A verified Stripe webhook calls a Supabase Edge Function, which creates the account, sends the invite through the existing Resend SMTP and seeds the dashboard row from a plan template. Cancelling a subscription removes access. Growth-tier features show on a Local Basics dashboard as visible but locked (upgrade prompt). The lock is enforced server-side by the client's plan, through RLS or a plan column, not only hidden in the page. No manual approval step for either plan (user decision, 2026-11-22). Built and tested in Stripe test mode first.
