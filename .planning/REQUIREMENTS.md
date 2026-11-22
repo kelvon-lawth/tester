@@ -76,6 +76,20 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 - [x] **AUTH-06**: Accounts are invite-only: public sign-up is off, and the marketer creates client accounts with a temporary password (D-12) and edits dashboards in the hosted service's admin console
 - [x] **AUTH-07**: Home and Contact load no auth code, still open by double-click and stay within the page-weight budget; login shows a clear message when not on the hosted site
 
+### Client Dashboard (Phase 07.1)
+
+- [ ] **DASH-01**: "At a glance" shows 3 key numbers for the reported month, labelled per client, each with an arrow and the change since last month in plain words ("Up 12% on last month"; absolute wording when last month was under 10; safe when last month is missing or zero), under a visible "Figures for <month>" label
+- [ ] **DASH-02**: "Waiting on you" lists the approvals and things needed from the client, from table rows
+- [ ] **DASH-03**: "Done this month" lists the work delivered in the reported month
+- [ ] **DASH-04**: "Coming up" shows the next check-in date and the renewal date for that client
+- [ ] **DASH-05**: Contact buttons to call, email or book a chat, using the site-wide details and no third-party service
+- [ ] **DASH-06**: Each client has a plan tier (basics or growth); a Local Basics client cannot read Growth-only data even through the REST API, sees only the reported month and the month before in the monthly numbers, and no client can change their own tier or any data
+- [ ] **DASH-07**: Local Basics clients see the four Growth-only cards locked, with an upgrade prompt, and their page makes no request for Growth data
+- [ ] **DASH-08**: Growth clients see a 6-month trend chart (inline SVG), the content calendar for the next 2 weeks, ad results (spend, clicks, results) and the monthly report archive links
+- [ ] **DASH-09**: A live RLS test proves Basics denied, Growth own-only, signed-out none, no writes and no self-upgrade, against seeded hidden Growth rows
+- [ ] **DASH-10**: The additive migration is applied to the live project before the new page ships, both test clients are re-seeded (A basics, B growth), and CLIENT-GUIDE.md explains the monthly routine
+- [ ] **DASH-11**: No regression: Home and Contact load no auth code and are unchanged, the CSP and vercel.json are unchanged, the page-weight budget holds, the file:// card still shows, and all guards pass
+
 ## v2 Requirements
 
 Deferred. Tracked but not in the current roadmap.
@@ -153,14 +167,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-05 | Phase 7 | Complete |
 | AUTH-06 | Phase 7 | Complete |
 | AUTH-07 | Phase 7 | Complete |
+| DASH-01 | Phase 07.1 | Pending |
+| DASH-02 | Phase 07.1 | Pending |
+| DASH-03 | Phase 07.1 | Pending |
+| DASH-04 | Phase 07.1 | Pending |
+| DASH-05 | Phase 07.1 | Pending |
+| DASH-06 | Phase 07.1 | Pending |
+| DASH-07 | Phase 07.1 | Pending |
+| DASH-08 | Phase 07.1 | Pending |
+| DASH-09 | Phase 07.1 | Pending |
+| DASH-10 | Phase 07.1 | Pending |
+| DASH-11 | Phase 07.1 | Pending |
 | OPS-05 | Phase 6 | Partial: workflow removed, Pages not yet disabled |
 
 **Coverage:**
-- v1 requirements: 45 total
-- Mapped to phases: 45
+- v1 requirements: 56 total
+- Mapped to phases: 56
 - Unmapped: 0 ✓
 - Descoped: 2 (CON-02, CON-03 by D-01)
 
 ---
 *Requirements defined: 2026-10-12*
-*Last updated: 2026-10-22, Phase 4*
+*Last updated: 2026-11-22, Phase 07.1 planning*

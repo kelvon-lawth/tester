@@ -337,7 +337,7 @@ function groupDashboardPage() {
   const fails = pageChecks("dashboard.html", "Your dashboard | Sam Whitlock", "dashboard.js");
   const t = read("dashboard.html");
   if (t !== null) {
-    for (const s of ["Sample Starter", "Sample step", "Hello,", "Your plan"]) {
+    for (const s of ["Sample Starter", "Sample step", "Hello,", "Your plan", "At a glance", "Waiting on you", "Done this month", "Coming up", "Growth plan", "Figures for", "Ask about Growth"]) {
       if (t.includes(s)) fails.push("dashboard.html: contains '" + s + "', it must be created by script after a verified row read");
     }
   }
