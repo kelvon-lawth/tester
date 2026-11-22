@@ -83,11 +83,11 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 - [ ] **DASH-03**: "Done this month" lists the work delivered in the reported month
 - [ ] **DASH-04**: "Coming up" shows the next check-in date and the renewal date for that client
 - [ ] **DASH-05**: Contact buttons to call, email or book a chat, using the site-wide details and no third-party service
-- [ ] **DASH-06**: Each client has a plan tier (basics or growth); a Local Basics client cannot read Growth-only data even through the REST API, sees only the reported month and the month before in the monthly numbers, and no client can change their own tier or any data
+- [x] **DASH-06**: Each client has a plan tier (basics or growth); a Local Basics client cannot read Growth-only data even through the REST API, sees only the reported month and the month before in the monthly numbers, and no client can change their own tier or any data
 - [ ] **DASH-07**: Local Basics clients see the four Growth-only cards locked, with an upgrade prompt, and their page makes no request for Growth data
 - [ ] **DASH-08**: Growth clients see a 6-month trend chart (inline SVG), the content calendar for the next 2 weeks, ad results (spend, clicks, results) and the monthly report archive links
 - [ ] **DASH-09**: A live RLS test proves Basics denied, Growth own-only, signed-out none, no writes and no self-upgrade, against seeded hidden Growth rows
-- [ ] **DASH-10**: The additive migration is applied to the live project before the new page ships, both test clients are re-seeded (A basics, B growth), and CLIENT-GUIDE.md explains the monthly routine
+- [x] **DASH-10**: The additive migration is applied to the live project before the new page ships, both test clients are re-seeded (A basics, B growth), and CLIENT-GUIDE.md explains the monthly routine
 - [ ] **DASH-11**: No regression: Home and Contact load no auth code and are unchanged, the CSP and vercel.json are unchanged, the page-weight budget holds, the file:// card still shows, and all guards pass
 
 ## v2 Requirements
@@ -172,11 +172,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DASH-03 | Phase 07.1 | Pending |
 | DASH-04 | Phase 07.1 | Pending |
 | DASH-05 | Phase 07.1 | Pending |
-| DASH-06 | Phase 07.1 | Pending |
+| DASH-06 | Phase 07.1 | Complete |
 | DASH-07 | Phase 07.1 | Pending |
 | DASH-08 | Phase 07.1 | Pending |
 | DASH-09 | Phase 07.1 | Pending |
-| DASH-10 | Phase 07.1 | Pending |
+| DASH-10 | Phase 07.1 | Complete |
 | DASH-11 | Phase 07.1 | Pending |
 | OPS-05 | Phase 6 | Partial: workflow removed, Pages not yet disabled |
 
