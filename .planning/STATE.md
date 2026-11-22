@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-10-12)
 ## Current Position
 
 Phase: 07.1 (useful-client-dashboard) — EXECUTING
-Plan: 8 of 9 (next; 07.1-01 to 07.1-07 done)
+Plan: 8 of 9 (07.1-08 guide done; pre-push gate BLOCKED at GATE-3, fix and re-run before plan 9)
 Status: Ready to execute
 Last activity: 2026-11-22
 Hosting: https://tester-five-sage.vercel.app (pushes to main redeploy). GitHub Pages at https://kelvon-lawth.github.io/tester/ still serves its last deploy; its workflow is removed.
