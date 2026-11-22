@@ -248,9 +248,235 @@
     plan.appendChild(dl);
   }
 
+  var NS = "http://www.w3.org/2000/svg";
+  var GBP = typeof Intl !== "undefined" && Intl.NumberFormat ? new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }) : null;
+  var LOCKED = [
+    ["dash__trend", "Your last 6 months", "See the last 6 months of your numbers as a simple chart."],
+    ["dash__calendar", "Posts for the next 2 weeks", "See every post planned for the next 2 weeks."],
+    ["dash__ads", "Ad results", "See what your ads cost and what they brought in."],
+    ["dash__reports", "Monthly reports", "Open every monthly report in one place."]
+  ];
+
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  function localDay(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+  function shortMonth(key) {
+    var d = parseDay(key + "-01");
+    return d ? d.toLocaleDateString("en-GB", { month: "short" }) : key;
+  }
+
+  function renderLocked() {
+    LOCKED.forEach(function (c) {
+      var card = addCard(c[0]);
+      card.appendChild(el("h2", "", c[1]));
+      card.appendChild(el("span", "dash__badge", "Growth plan"));
+      card.appendChild(el("p", "", c[2]));
+      var ghost = el("div", "dash__ghost");
+      ghost.setAttribute("aria-hidden", "true");
+      card.appendChild(ghost);
+      card.appendChild(link("link-cta", "Ask about Growth", "mailto:" + MAIL + "?subject=" + encodeURIComponent("Growth plan")));
+    });
+  }
+
+  function spark(values, w, h, label) {
+    var svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("class", "dash-chart");
+    svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", label);
+    var max = 0;
+    values.forEach(function (v) { if (v !== null && v > max) max = v; });
+    max = max === 0 ? 1 : max * 1.1;
+    var pad = 8;
+    var segs = [];
+    var cur = [];
+    values.forEach(function (v, i) {
+      if (v === null) { if (cur.length) segs.push(cur); cur = []; return; }
+      var x = pad + i * ((w - 2 * pad) / Math.max(values.length - 1, 1));
+      var y = h - pad - (v / max) * (h - 2 * pad);
+      cur.push(x.toFixed(1) + "," + y.toFixed(1));
+    });
+    if (cur.length) segs.push(cur);
+    segs.forEach(function (pts) {
+      var n;
+      if (pts.length > 1) {
+        n = document.createElementNS(NS, "polyline");
+        n.setAttribute("points", pts.join(" "));
+        n.setAttribute("class", "dash-chart__line");
+      } else {
+        var xy = pts[0].split(",");
+        n = document.createElementNS(NS, "circle");
+        n.setAttribute("cx", xy[0]);
+        n.setAttribute("cy", xy[1]);
+        n.setAttribute("r", "3");
+        n.setAttribute("class", "dash-chart__dot");
+      }
+      svg.appendChild(n);
+    });
+    return svg;
+  }
+
+  function renderTrend(card, row) {
+    var keys = [str(row.report_month) ? monthKey(row.report_month) : ""];
+    var i;
+    for (i = 0; i < 5; i++) keys.unshift(prevMonthKey(keys[0]));
+    var rows = Array.isArray(row.monthly_metrics) ? row.monthly_metrics : [];
+    var labels = [row.kpi1_label, row.kpi2_label, row.kpi3_label];
+    var figs = [];
+    labels.forEach(function (label, k) {
+      if (!str(label)) return;
+      var vals = keys.map(function (key) {
+        var v = null;
+        rows.forEach(function (m) {
+          if (m && typeof m === "object" && monthKey(m.month) === key && isNum(m["kpi" + (k + 1)])) v = m["kpi" + (k + 1)];
+        });
+        return v;
+      });
+      figs.push({ label: label, vals: vals });
+    });
+    var enough = figs.filter(function (f) {
+      return f.vals.filter(function (v) { return v !== null; }).length >= 2;
+    });
+    if (!enough.length) {
+      card.appendChild(el("p", "", "Your trend will appear after your second monthly report."));
+      return;
+    }
+    var wrap = el("div", "dash__charts");
+    enough.forEach(function (f) {
+      var parts = [];
+      var first = "";
+      var last = "";
+      var latest = null;
+      f.vals.forEach(function (v, j) {
+        if (v === null) return;
+        parts.push(shortMonth(keys[j]) + " " + fmtNum(v));
+        if (!first) first = shortMonth(keys[j]);
+        last = shortMonth(keys[j]);
+        latest = v;
+      });
+      var fig = el("figure", "dash__chart");
+      fig.appendChild(el("p", "dash__chart-label", f.label));
+      fig.appendChild(spark(f.vals, 240, 90, f.label + ", last 6 months: " + parts.join(", ")));
+      fig.appendChild(el("p", "dash__chart-meta", "Latest " + fmtNum(latest) + " (" + first + " to " + last + ")"));
+      wrap.appendChild(fig);
+    });
+    card.appendChild(wrap);
+  }
+
+  var growthRun = 0;
+
+  function resetBody(card) {
+    while (card.childNodes.length > 1) card.removeChild(card.lastChild);
+  }
+
+  function failed(card, retry) {
+    resetBody(card);
+    card.appendChild(el("p", "", "I couldn’t load this section."));
+    var btn = el("button", "btn btn--ghost", "Try again");
+    btn.type = "button";
+    btn.addEventListener("click", retry);
+    card.appendChild(btn);
+  }
+
+  function plain(card, text) { card.appendChild(el("p", "", text)); }
+
+  function fillCalendar(card, rows, today, in14) {
+    resetBody(card);
+    var list = (Array.isArray(rows) ? rows : []).filter(function (p) {
+      return p && typeof p.post_on === "string" && p.post_on >= today && p.post_on <= in14 && parseDay(p.post_on);
+    }).sort(function (a, b) { return a.post_on < b.post_on ? -1 : a.post_on > b.post_on ? 1 : 0; });
+    if (!list.length) { plain(card, "Nothing planned for the next 2 weeks."); return; }
+    var ul = el("ul", "dash__list");
+    list.forEach(function (p) {
+      var parts = [fmtDay(parseDay(p.post_on)), str(p.channel), str(p.title), str(p.status)].filter(function (x) { return x; });
+      ul.appendChild(el("li", "", parts.join(" · ")));
+    });
+    card.appendChild(ul);
+  }
+
+  function fillAds(card, rows, report) {
+    resetBody(card);
+    var list = Array.isArray(rows) ? rows.filter(function (a) { return a && str(a.campaign); }) : [];
+    if (!list.length) {
+      plain(card, "No ad results for " + (report ? report.toLocaleDateString("en-GB", { month: "long" }) : "this month") + " yet.");
+      return;
+    }
+    var ul = el("ul", "dash__list");
+    list.forEach(function (a) {
+      var li = el("li");
+      li.appendChild(el("strong", "", a.campaign));
+      var bits = [];
+      if (isNum(a.spend)) bits.push("Spent " + (GBP ? GBP.format(a.spend) : "£" + a.spend));
+      if (isNum(a.clicks)) bits.push(fmtNum(a.clicks) + " clicks");
+      if (isNum(a.results)) bits.push(fmtNum(a.results) + " " + str(a.results_label));
+      li.appendChild(el("span", "", bits.join(" · ")));
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+  }
+
+  function fillReports(card, rows) {
+    resetBody(card);
+    var list = (Array.isArray(rows) ? rows : []).filter(function (r) { return r && str(r.title); }).slice(0, 12);
+    if (!list.length) { plain(card, "No reports yet."); return; }
+    var ul = el("ul", "dash__list");
+    list.forEach(function (r) {
+      var li = el("li");
+      if (typeof r.url === "string" && /^https:\/\//.test(r.url)) {
+        var a = link("", r.title, r.url);
+        a.setAttribute("rel", "noopener noreferrer");
+        li.appendChild(a);
+      } else {
+        li.appendChild(document.createTextNode(r.title + " (link not available)"));
+      }
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+  }
+
+  function settle(p) {
+    return p.then(function (r) { return r || { error: true }; }, function () { return { error: true }; });
+  }
+
+  function loadGrowth(row, cards) {
+    var mine = ++growthRun;
+    var now = new Date();
+    var today = localDay(now);
+    var later = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14);
+    var in14 = localDay(later);
+    var report = parseDay(str(row.report_month));
+    var retry = function () { loadGrowth(row, cards); };
+    [cards.calendar, cards.ads, cards.reports].forEach(function (c) {
+      resetBody(c);
+      c.appendChild(el("p", "", "Loading…"));
+    });
+    var cal = settle(app.sb.from("content_calendar").select("post_on, channel, title, status")
+      .gte("post_on", today).lte("post_on", in14).order("post_on"));
+    var ads = settle(app.sb.from("ad_results").select("month, campaign, spend, clicks, results, results_label")
+      .eq("month", str(row.report_month)));
+    var reps = settle(app.sb.from("report_archive").select("month, title, url")
+      .order("month", { ascending: false }).limit(12));
+    Promise.all([cal, ads, reps]).then(function (out) {
+      if (mine !== growthRun) return;
+      var ended = out.some(function (r) { return r.error && (Number(r.error.status) === 401 || r.error.code === "PGRST301"); });
+      if (ended) { leave("Your session has ended. Please sign in again."); return; }
+      if (out[0].error) failed(cards.calendar, retry); else fillCalendar(cards.calendar, out[0].data, today, in14);
+      if (out[1].error) failed(cards.ads, retry); else fillAds(cards.ads, out[1].data, report);
+      if (out[2].error) failed(cards.reports, retry); else fillReports(cards.reports, out[2].data);
+    });
+  }
+
   function renderGrowthArea(row) {
-    /* Filled in by plan 07.1-07. Must not fetch anything here. */
-    return row;
+    growthRun++;
+    var growth = row && row.plan_tier === "growth";
+    if (!growth) { renderLocked(); return; }
+    var trend = addCard("dash__trend");
+    trend.appendChild(el("h2", "", "Your last 6 months"));
+    renderTrend(trend, row);
+    var cards = { calendar: addCard("dash__calendar"), ads: addCard("dash__ads"), reports: addCard("dash__reports") };
+    cards.calendar.appendChild(el("h2", "", "Posts for the next 2 weeks"));
+    cards.ads.appendChild(el("h2", "", "Ad results"));
+    cards.reports.appendChild(el("h2", "", "Monthly reports"));
+    loadGrowth(row, cards);
   }
 
   function renderReady(row) {
