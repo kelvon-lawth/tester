@@ -141,6 +141,10 @@ Added in Phase 7 (login, set password and dashboard pages). Everything below is 
 | Hosted URL in the file:// message | https://www.samwhitlockmarketing.com.de | `login.html`, `set-password.html`, `dashboard.html`, `js/auth-common.js` (LIVE_SITE) | The "You've opened this page straight from a file" notice | [ ] |
 | Sample label | Sample content for this prototype | `dashboard.html` | `#dash-sample` (shown when the row's `is_sample` is true) | [ ] |
 | Sample dashboard strings | Sample Alex, Sample Blake, Sample Starter Plan, Sample Growth Plan, the "Sample: ..." plan items, check-ins and "Sample step: ..." steps, and the two `@example.com` test addresses | `supabase/seed-test-clients.sql` | Run in the SQL Editor only after creating both test users; delete or replace for real clients | [ ] |
+| Dashboard contact buttons | tel:+441632960123 "Call 01632 960 123", mailto and "Book a chat" subject | `js/dashboard.js` | The contact constants at the top of the file | [ ] |
+| Upgrade link | "Ask about Growth" mailto with subject "Growth plan" (Phase 8 replaces it with checkout) | `js/dashboard.js` | Locked Growth cards | [ ] |
+| Sample report links | https://example.com links | `supabase/seed-07.1-live.sql`, `supabase/seed-test-clients.sql` | `report_archive` inserts | [ ] |
+| 07.1 sample dashboard strings | Sample Alex hidden rows, "Sample: phone calls" etc. | `supabase/seed-07.1-live.sql`, `supabase/seed-test-clients.sql` | KPI labels, items, calendar and ad rows | [ ] |
 | Project URL | https://standin.supabase.co (placeholder stand-in) | `js/auth-config.js` | Supabase dashboard, Project Settings, API, Project URL | [ ] |
 | Publishable key | sb_publishable_standin (placeholder stand-in) | `js/auth-config.js` | Supabase dashboard, Project Settings, API Keys, publishable key. Never the secret key | [ ] |
 | Content Security Policy origin | https://standin.supabase.co | `vercel.json` | `connect-src` in the Content-Security-Policy header. Must name the same origin as `js/auth-config.js`; `node tools/check-auth.js csp` fails if they differ | [ ] |

@@ -47,20 +47,39 @@ Each client sees one row of information. You edit it in the Supabase website:
    - `first_name`: what the page calls them, for example `Alex`.
    - `plan_name`: for example `Growth Plan`.
    - `plan_items`: the list of things included in their plan. Add one line per item.
-   - `check_in`: when you next talk, for example `Every second Friday`.
+   - `check_in`: the human description of when you talk, for example `Every second Friday`.
+   - `plan_tier`: a dropdown, `basics` or `growth` (see "Changing a client's plan").
+   - `report_month`: always the 1st of the month, for example `2026-10-01`. The page shows "Figures for October 2026".
+   - `next_check_in` and `renewal_on`: date pickers for the next check-in and the plan renewal.
+   - `kpi1_label`, `kpi2_label`, `kpi3_label`: the three numbers you track for this client, for example `Phone calls`. Keep them the same every month so changes compare like with like.
    - `is_sample`: leave on (true) for practice content, turn off for real content.
-   - `steps`: their next steps. Copy this example and change the words, keeping the punctuation exactly as it is:
-
-```
-[
-  {"title":"Pick your favourite shop photos","detail":"Choose five photos you like.","due":"This week","is_sample":false},
-  {"title":"Approve the first week of posts","detail":"Reply with a thumbs up or changes.","due":"Next week","is_sample":false}
-]
-```
-
-A typing mistake in `steps` (a missing quote or comma, say) does not break the page. The steps just don't show, so look at the page after saving to check.
+   - `steps`: no longer shown on the page. You can leave it as it is.
 
 Changes appear the next time the client loads the page. Clients cannot edit any of this themselves.
+
+## Every month (about 5 minutes per client)
+
+1. **monthly_metrics:** open last month's row, use the row menu to **Duplicate row**, change the month to the 1st of the new month and type the three numbers.
+2. **client_dashboards:** set `report_month` to that month and update `next_check_in` and `renewal_on`.
+3. **dashboard_items:** change finished items from waiting to done and set `item_date` to the day they were done (only items dated inside the report month show under "Done this month"). Add new waiting items and use `sort_order` to put them in order.
+4. **Growth clients only:** add `content_calendar` rows for the next 2 weeks, one `ad_results` row per campaign for the month, and one `report_archive` row with an https link.
+
+Tip on `user_id`: copy it from the client's `client_dashboards` row (or from **Authentication**, **Users**). The **Duplicate row** shortcut keeps it, so you rarely need to paste it.
+
+### Error messages you might see
+
+- A date that is not the 1st in a month column is refused.
+- Negative numbers are refused.
+- Report links must start with `https://` or they are refused.
+- If `report_month` is missing, the client sees "Your first numbers will appear here...".
+
+## Changing a client's plan
+
+Edit `plan_tier` on their `client_dashboards` row. The change applies on their next page load.
+
+- Local Basics clients see the four Growth cards locked, with an "Ask about Growth" email link.
+- The lock is enforced by the database, so a Basics client cannot read Growth rows even through the API.
+- Downgrading deletes nothing. The Growth rows stay and show again if the client goes back to Growth.
 
 ## Removing a client
 
