@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: 07-05 done offline (stand-in config); 07-04 Task 2 awaits the Supabase project
-last_updated: "2026-11-22T20:50:40.843Z"
+last_updated: "2026-11-22T21:00:30.218Z"
 last_activity: 2026-11-22
 progress:
   total_phases: 9
   completed_phases: 5
   total_plans: 31
-  completed_plans: 25
+  completed_plans: 26
   percent: 56
 ---
 
@@ -26,12 +26,12 @@ See: .planning/PROJECT.md (updated 2026-10-12)
 ## Current Position
 
 Phase: 07.1 (useful-client-dashboard) — EXECUTING
-Plan: 4 of 9 (next; 07.1-05 done out of order)
+Plan: 5 of 9 (next; 07.1-05 done out of order)
 Status: Ready to execute
 Last activity: 2026-11-22
 Hosting: https://tester-five-sage.vercel.app (pushes to main redeploy). GitHub Pages at https://kelvon-lawth.github.io/tester/ still serves its last deploy; its workflow is removed.
 
-Progress: [████████░░] 81%
+Progress: [████████░░] 84%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [████████░░] 81%
 | Phase 5 P01 | 1h | 3 tasks | 12 files |
 | 5 | 1 | - | - |
 | Phase 07 P01 | 25min | 3 tasks | 5 files |
+| Phase 07.1 P04 | 40min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,7 @@ Progress: [████████░░] 81%
 - [Phase 1]: Phase 1 Plan 02: --color-on-navy-hover token added; guards ignore @font-face and data-URIs
 - [Phase 01]: 01-03: Fraunces fallback uses local(Georgia Bold) at weight 600
 - [Phase 6]: Deploy uses an allowlist build (tools/build-site.sh to _site); a build-SHA comment in the deployed index.html proves redeploys over HTTP
+- [Phase ?]: [07.1-04] Live migration applied by Management API after user said 'apply migration'; RLS OK recorded
 
 ### Phase 7 known limits and open checks (2026-11-22)
 
@@ -116,6 +118,6 @@ No blockers. Human checks still open: real-device animation smoothness (HERO-06)
 
 ## Session Continuity
 
-Last session: 2026-11-22T20:50:40.838Z
+Last session: 2026-11-22T21:00:27.282Z
 Stopped at: 07-05 done offline (stand-in config); 07-04 Task 2 awaits the Supabase project
 Resume file: None
