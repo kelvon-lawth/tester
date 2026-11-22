@@ -2471,8 +2471,6 @@ html.has-motion .text-coral-on-navy {
   .dash__grid > .dash__calendar,
   .dash__grid > .dash__ads,
   .dash__grid > .dash__reports { grid-column: span 6; }
-  .dash__charts { grid-template-columns: repeat(3, 1fr); }
-  .dash__tiles { grid-template-columns: repeat(3, 1fr); }
   .dash__grid > .dash__empty { grid-column: 1 / -1; }
 }
 
@@ -2553,3 +2551,8 @@ html.has-motion .text-coral-on-navy {
 .dash__list { display: grid; gap: var(--space-md); list-style: none; padding-inline-start: 0; }
 .dash__grid .dash__list { padding-inline-start: 0; }
 .dash__list li > strong { display: block; font-weight: var(--fw-semibold); }
+
+@media (min-width: 1024px) {
+  .dash__tiles,
+  .dash__charts { grid-template-columns: repeat(3, 1fr); }
+}
