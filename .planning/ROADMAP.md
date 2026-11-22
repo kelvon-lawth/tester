@@ -252,7 +252,7 @@ Plans:
 **Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, DASH-08, DASH-09, DASH-10, DASH-11
 **Depends on:** Phase 7
 **Before executing**: work happens on a new branch `phase-07.1-dashboard` made from the `phase-07-client-login` tip (07.1-01 Task 1 creates it); main stays at f7d593d until 07.1-09. Do not run this phase through `/gsd-autonomous`; it has approvals that must stop for the user (live migration, screenshots, two pushes).
-**Plans:** 4/9 plans executed
+**Plans:** 5/9 plans executed
 
 Plans:
 - [x] 07.1-01-PLAN.md — Branch phase-07.1-dashboard, branch guard, DASH requirement IDs, banned static headings (wave 1)
@@ -260,7 +260,7 @@ Plans:
 - [x] 07.1-03-PLAN.md — Live RLS test cases G1-G9 for the plan-tier lock (wave 2)
 - [x] 07.1-05-PLAN.md — Browser tests first: core sections, locked/Growth cards, CSP with SVG, live A/B (wave 2)
 - [ ] 07.1-04-PLAN.md — Approved live migration via Management API, read-back, RLS OK (wave 3, checkpoint)
-- [ ] 07.1-06-PLAN.md — Core sections: At a glance, Waiting on you, Done this month, Coming up + contact, Your plan (wave 3)
+- [x] 07.1-06-PLAN.md — Core sections: At a glance, Waiting on you, Done this month, Coming up + contact, Your plan (wave 3)
 - [ ] 07.1-07-PLAN.md — Growth area: locked cards, Growth fetch, inline SVG trend chart; screenshot approval (wave 4, checkpoint)
 - [ ] 07.1-08-PLAN.md — CLIENT-GUIDE monthly routine, REPLACE-ME, pre-push gate (wave 5)
 - [ ] 07.1-09-PLAN.md — Preview push, main push, deployed checks on both hosts, requirement evidence (wave 6, checkpoints)
