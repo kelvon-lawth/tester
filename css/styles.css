@@ -2553,6 +2553,5 @@ html.has-motion .text-coral-on-navy {
 .dash__list li > strong { display: block; font-weight: var(--fw-semibold); }
 
 @media (min-width: 1024px) {
-  .dash__tiles,
-  .dash__charts { grid-template-columns: repeat(3, 1fr); }
+  .dash__tiles { grid-template-columns: repeat(3, 1fr); }
 }
