@@ -32,8 +32,8 @@ const ROOT = path.resolve(__dirname, "..");
 const SITE = path.join(ROOT, "_site");
 const CHROME = process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const OFFLINE = ["harness", "sdk", "public", "file-login", "file-dashboard", "file-setpass",
-  "stub-login", "stub-dashboard", "stub-reset", "stub-setpass", "stub-change", "csp"];
-const EXTRA = ["live", "deployed", "rollback"];
+  "stub-login", "stub-dashboard", "stub-growth", "stub-reset", "stub-setpass", "stub-change", "csp"];
+const EXTRA = ["live", "deployed", "rollback", "shots"];
 const ALL = OFFLINE.concat(EXTRA);
 
 // ---------------------------------------------------------------------------
@@ -69,6 +69,12 @@ if (groups.includes("rollback") && (!BASE_URL || !EXPECT_SHA)) { out("NOT RUN: r
 if (groups.includes("live")) {
   const need = authEnv.NAMES.filter((n) => !process.env[n]);
   if (need.length) { out("LIVE TESTS NOT RUN: missing " + need.join(", ")); process.exit(2); }
+}
+if (groups.includes("shots")) {
+  const sd = process.env.SHOT_DIR || "";
+  if (!sd) { out("NOT RUN: set SHOT_DIR"); process.exit(2); }
+  const rel = path.relative(ROOT, path.resolve(sd));
+  if (!rel.startsWith("..") && !path.isAbsolute(rel)) { out("NOT RUN: SHOT_DIR must be outside the repo"); process.exit(2); }
 }
 if (!fs.existsSync(CHROME)) { out("FAIL chrome not found at " + CHROME); process.exit(1); }
 
@@ -1067,6 +1073,174 @@ results["stub-dashboard"] = async () => {
       done.push("back button");
     });
   }
+  // change wording matrix, every addendum case, matched by month string
+  {
+    const mk = (k) => Object.assign({}, SAMPLE_ROW, k);
+    const m = (cur, prev) => [{ month: "2026-10-01", kpi1: cur[0], kpi2: cur[1], kpi3: cur[2] }]
+      .concat(prev ? [{ month: "2026-09-01", kpi1: prev[0], kpi2: prev[1], kpi3: prev[2] }] : []);
+    const cases = [
+      { rows: m([905, 300, 40], [810, 400, 40]), want: ["Up 12% on last month", "Down 25% on last month", "Same as last month"] },
+      { rows: m([0, 5, 7], [0, 0, 5]), want: ["Same as last month", "Up from none last month", "Up 2 on last month"] },
+      { rows: m([4, 1001, 7], [6, 1000, null]), want: ["Down 2 on last month", "About the same as last month", "First month we\u2019ve tracked this"] },
+      { rows: [{ month: "2026-10-01", kpi1: null, kpi2: 9, kpi3: 9 }, { month: "2026-08-01", kpi1: 5, kpi2: 5, kpi3: 5 }],
+        want: ["No figure for this month yet", "First month we\u2019ve tracked this"] },
+    ];
+    for (const c of cases) {
+      const st = mkStub({ rowData: mk({ monthly_metrics: c.rows }) });
+      await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+        await dashReady(pg);
+        for (const w of c.want) await pg.needText(w, 2000);
+        const v = await pg.ev("()=>({t:document.querySelector('.dash__glance')?document.querySelector('.dash__glance').innerText:'',arrows:document.querySelectorAll('.dash__glance [aria-hidden=\"true\"]').length})");
+        must(!/Infinity|NaN/.test(v.t), "the glance card printed Infinity or NaN");
+        if (c.want.length === 3) must(v.arrows >= 1, "the change arrows are not aria-hidden spans");
+        done.push("change wording: " + c.want[0]);
+      });
+    }
+  }
+  // empty states and missing dates
+  {
+    const st = mkStub({ rowData: Object.assign({}, SAMPLE_ROW, { report_month: null, monthly_metrics: [], dashboard_items: [],
+      next_check_in: null, renewal_on: null, check_in: "" }) });
+    await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+      await dashReady(pg);
+      for (const s of ["Your first numbers will appear here after your first monthly report.", "Nothing marked as done yet.",
+        "Nothing waiting on you right now.", "To be arranged"]) await pg.needText(s, 2000);
+      done.push("empty states");
+    });
+  }
+  // contact links
+  {
+    const st = mkStub();
+    await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+      await dashReady(pg);
+      const links = await pg.ev("()=>{const f=t=>{const a=[...document.querySelectorAll('main a')].find(x=>x.textContent.trim()===t);return a?a.getAttribute('href'):null;};return {call:f('Call 01632 960 123'),mail:f('Email Sam'),book:f('Book a chat')};}");
+      must(links.call === "tel:+441632960123", "Call link href is " + links.call);
+      must(links.mail === "mailto:hello@samwhitlock.example", "Email Sam href is " + links.mail);
+      must(links.book === "mailto:hello@samwhitlock.example?subject=Book%20a%20chat", "Book a chat href is " + links.book);
+      done.push("contact links");
+    });
+  }
+  // dates do not shift with the visitor's timezone
+  for (const tz of ["America/Los_Angeles", "Pacific/Auckland"]) {
+    const st = mkStub();
+    await openHttp(origin, "dashboard.html", { stub: st, session: true, timezone: tz }, async (pg) => {
+      await dashReady(pg);
+      await pg.needText("Friday 4 December 2026", 2000);
+      await pg.needText("Figures for October 2026", 2000);
+      done.push("timezone " + tz);
+    });
+  }
+  return done.join(", ");
+};
+
+// ----- stub-growth
+const GROWTH_PATHS = ["/rest/v1/content_calendar", "/rest/v1/ad_results", "/rest/v1/report_archive"];
+const MAIL_GROWTH = "mailto:hello@samwhitlock.example?subject=Growth%20plan";
+const LOCKED = [
+  ["Your last 6 months", "See the last 6 months of your numbers as a simple chart."],
+  ["Posts for the next 2 weeks", "See every post planned for the next 2 weeks."],
+  ["Ad results", "See what your ads cost and what they brought in."],
+  ["Monthly reports", "Open every monthly report in one place."],
+];
+results["stub-growth"] = async () => {
+  const origin = await originFor("stub-growth");
+  const done = [];
+  const GROWTH_STRINGS = ["Sample: bake sale post", "Sample: half-term offer", "Sample: October report"];
+  // Basics, unknown tier and missing tier: locked, and not one request to a Growth table
+  for (const [label, row] of [["basics", SAMPLE_ROW], ["unknown tier", Object.assign({}, SAMPLE_ROW, { plan_tier: "premium" })],
+    ["missing tier", Object.assign({}, SAMPLE_ROW, { plan_tier: undefined })]]) {
+    const st = mkStub({ rowData: row });
+    await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+      await dashReady(pg);
+      for (const [h, sentence] of LOCKED) { await pg.needText(h, 2000); await pg.needText(sentence, 2000); }
+      await sleep(1500);
+      const v = await pg.ev(`()=>({badges:[...document.querySelectorAll('.dash__badge')].filter(e=>e.textContent.trim()==='Growth plan').length,
+        text:(document.body.innerText.match(/Growth plan/g)||[]).length,
+        asks:[...document.querySelectorAll('main a')].filter(a=>a.textContent.trim()==='Ask about Growth'&&a.getAttribute('href')===${JSON.stringify(MAIL_GROWTH)}).length,
+        charts:document.querySelectorAll('svg.dash-chart').length, html:document.documentElement.outerHTML})`);
+      must(v.text === 4, label + ": 'Growth plan' appears " + v.text + " times, expected 4");
+      must(v.asks === 4, label + ": expected four 'Ask about Growth' links, saw " + v.asks);
+      must(v.charts === 0, label + ": a chart was drawn for a locked client");
+      for (const g of GROWTH_STRINGS) must(!v.html.includes(g), label + ": locked page contains " + g);
+      for (const gp of GROWTH_PATHS) must(stubCount(st, gp) === 0, label + ": requested " + gp + " while locked");
+      await pg.clean("growth locked " + label);
+      done.push("locked: " + label);
+    });
+  }
+  // Growth content
+  {
+    const st = mkStub({ rowData: SAMPLE_GROWTH_ROW });
+    await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+      await pg.needText("Hello, Blake", 8000);
+      await pg.needText("Your last 6 months", 4000);
+      await pg.needText("Sample: bake sale post", 4000);
+      await pg.needText("Sample: October report", 4000);
+      const v = await pg.ev(`()=>({charts:[...document.querySelectorAll('svg.dash-chart')].map(c=>({role:c.getAttribute('role'),label:c.getAttribute('aria-label')||''})),
+        report:(()=>{const a=[...document.querySelectorAll('main a')].find(x=>x.textContent.trim()==='Sample: October report');return a?{href:a.getAttribute('href'),rel:a.getAttribute('rel')}:null;})(),
+        js:document.querySelectorAll('a[href^="javascript:"]').length, styled:document.querySelectorAll('.dash [style]').length,
+        ask:document.body.innerText.includes('Ask about Growth'), badge:document.body.innerText.includes('Growth plan')})`);
+      must(v.charts.length === 3, "expected 3 charts, saw " + v.charts.length);
+      for (const c of v.charts) must(c.role === "img" && /last 6 months/.test(c.label), "a chart lacks role=img or a 'last 6 months' aria-label");
+      for (const s of ["Sample: newsletter teaser", "Sample: Christmas hours", "Sample: half-term offer", "£120.50", "340 clicks", "18 enquiries"]) await pg.needText(s, 2000);
+      await pg.lacksText("Sample: old post");
+      await pg.lacksText("Sample: far post");
+      must(v.report && v.report.href === "https://example.com/sample-report-2026-10.pdf", "report link href is wrong");
+      must(v.report.rel === "noopener noreferrer", "report link rel is " + v.report.rel);
+      await pg.needText("Sample: bad link", 2000);
+      await pg.needText("(link not available)", 2000);
+      must(v.js === 0, "a javascript: link exists");
+      must(v.styled === 0, "a style attribute exists inside .dash");
+      must(!v.ask && !v.badge, "a Growth client sees the locked wording");
+      for (const gp of GROWTH_PATHS) must(stubCount(st, gp, "GET") === 1, gp + " was requested " + stubCount(st, gp, "GET") + " times, expected 1");
+      await pg.clean("growth content");
+      done.push("growth content");
+    });
+  }
+  // fewer than two months of metrics
+  {
+    const st = mkStub({ rowData: Object.assign({}, SAMPLE_GROWTH_ROW, { monthly_metrics: SAMPLE_GROWTH_ROW.monthly_metrics.slice(0, 1) }) });
+    await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+      await pg.needText("Your trend will appear after your second monthly report.", 8000);
+      must((await pg.ev("()=>document.querySelectorAll('svg.dash-chart').length")) === 0, "a chart was drawn with under two months");
+      done.push("short trend");
+    });
+  }
+  // one Growth request fails: that card only, retry refetches Growth only
+  {
+    const st = mkStub({ rowData: SAMPLE_GROWTH_ROW, growthMode: { ad_results: "500" } });
+    await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+      await pg.needText("I couldn’t load this section.", 8000);
+      await pg.needText("Sample: bake sale post", 3000);
+      await pg.needText("Sample: October report", 3000);
+      await pg.needText("At a glance", 1000);
+      await pg.lacksText("Ask about Growth");
+      must(await pg.ev("()=>!!byText('Try again')"), "no Try again button in the failed card");
+      const rows = st.rowCount;
+      st.growthMode = {};
+      await pg.clickText("Try again");
+      await pg.needText("Sample: half-term offer", 5000);
+      must(st.rowCount === rows, "Try again re-read client_dashboards");
+      await pg.lacksText("I couldn’t load this section.");
+      done.push("section failure and retry");
+    });
+  }
+  // markup in Growth data stays text
+  {
+    const g = growthStub();
+    g.calendar[0].title = '<img src=x onerror="window.__xss=1">cal';
+    g.ads[0].campaign = '<b onmouseover="window.__xss=2">camp</b>';
+    g.reports[0].title = '<script>window.__xss=3</script>';
+    const st = mkStub({ rowData: SAMPLE_GROWTH_ROW, growth: g });
+    await openHttp(origin, "dashboard.html", { stub: st, session: true }, async (pg) => {
+      await pg.needText("<img src=x", 8000);
+      await pg.needText("<script>window.__xss=3</script>", 3000);
+      const v = await pg.ev("()=>({xss:window.__xss===undefined,els:document.querySelectorAll('main img, main b, main script').length,svg:document.querySelectorAll('main svg:not(.dash-chart)').length})");
+      must(v.xss, "Growth content ran as script");
+      must(v.els === 0 && v.svg === 0, "Growth content created elements");
+      await pg.clean("growth xss");
+      done.push("growth text stays text");
+    });
+  }
   return done.join(", ");
 };
 
@@ -1333,10 +1507,20 @@ results.csp = async () => {
     }
     {
       const tag = "dashboard@" + w;
-      await openHttp(origin, "dashboard.html", { width: w, height: h, stub: mkStub(), session: true }, async (pg) => {
-        await dashReady(pg);
+      await openHttp(origin, "dashboard.html", { width: w, height: h, stub: mkStub({ rowData: SAMPLE_GROWTH_ROW }), session: true }, async (pg) => {
+        await dashReady(pg, "Hello, Blake");
+        await pg.needText("Your last 6 months", 4000);
+        await pg.ev("()=>waitFor(()=>document.querySelectorAll('svg.dash-chart').length===3,4000)");
         await pg.clean(tag);
         await checkResponseHeaders(pg, origin + "/dashboard.html", tag);
+        notes.push(tag);
+      });
+    }
+    {
+      const tag = "dashboard-basics@" + w;
+      await openHttp(origin, "dashboard.html", { width: w, height: h, stub: mkStub({ rowData: SAMPLE_ROW }), session: true }, async (pg) => {
+        await dashReady(pg);
+        await pg.clean(tag);
         notes.push(tag);
       });
     }
@@ -1395,6 +1579,25 @@ results.live = async () => {
   return done.join(", ");
 };
 
+results.shots = async () => {
+  const origin = await originFor("shots");
+  const dir = path.resolve(process.env.SHOT_DIR);
+  fs.mkdirSync(dir, { recursive: true });
+  const done = [];
+  for (const [kind, row, hello] of [["basics", SAMPLE_ROW, "Hello, Alex"], ["growth", SAMPLE_GROWTH_ROW, "Hello, Blake"]]) {
+    for (const [w, h] of [[1280, 900], [375, 812]]) {
+      await openHttp(origin, "dashboard.html", { width: w, height: h, stub: mkStub({ rowData: row }), session: true }, async (pg) => {
+        await dashReady(pg, hello);
+        await sleep(1500);
+        const shot = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true }, pg.sid);
+        fs.writeFileSync(path.join(dir, "dash-" + kind + "-" + w + ".png"), Buffer.from(shot.data, "base64"));
+        done.push(kind + "@" + w);
+      });
+    }
+  }
+  return "screenshots written: " + done.join(", ");
+};
+
 // ----- deployed and rollback
 async function fetchText(u) {
   const r = await fetch(u, { redirect: "manual", cache: "no-store" });
@@ -1425,7 +1628,8 @@ results.deployed = async () => {
   }
   done.push("five pages answer 200");
   for (const p of ["tools/check-auth.js", "supabase/schema.sql", "CLIENT-GUIDE.md", "REPLACE-ME.md", "CLAUDE.md", ".env.local",
-    "styleguide.html", "js/styleguide.js", ".planning/STATE.md"]) {
+    "styleguide.html", "js/styleguide.js", ".planning/STATE.md", "supabase/migration-07.1.sql", "supabase/seed-07.1-live.sql",
+    "supabase/rollback-07.1.sql", ".planning/phases/07.1-useful-client-dashboard/07.1-LIVE-EVIDENCE.md"]) {
     const r = await fetchText(BASE_URL + "/" + p);
     must(r.status === 404, p + " answered " + r.status + ", expected 404");
   }
