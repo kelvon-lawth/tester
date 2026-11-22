@@ -88,7 +88,7 @@ Requirements for the show-ready prototype. Each maps to roadmap phases.
 - [x] **DASH-08**: Growth clients see a 6-month trend chart (inline SVG), the content calendar for the next 2 weeks, ad results (spend, clicks, results) and the monthly report archive links
 - [x] **DASH-09**: A live RLS test proves Basics denied, Growth own-only, signed-out none, no writes and no self-upgrade, against seeded hidden Growth rows
 - [x] **DASH-10**: The additive migration is applied to the live project before the new page ships, both test clients are re-seeded (A basics, B growth), and CLIENT-GUIDE.md explains the monthly routine
-- [ ] **DASH-11**: No regression: Home and Contact load no auth code and are unchanged, the CSP and vercel.json are unchanged, the page-weight budget holds, the file:// card still shows, and all guards pass
+- [x] **DASH-11**: No regression: Home and Contact load no auth code and are unchanged, the CSP and vercel.json are unchanged, the page-weight budget holds, the file:// card still shows, and all guards pass
 
 ## v2 Requirements
 
@@ -177,7 +177,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DASH-08 | Phase 07.1 | Complete |
 | DASH-09 | Phase 07.1 | Complete |
 | DASH-10 | Phase 07.1 | Complete |
-| DASH-11 | Phase 07.1 | Pending |
+| DASH-11 | Phase 07.1 | Complete |
 | OPS-05 | Phase 6 | Partial: workflow removed, Pages not yet disabled |
 
 **Coverage:**
