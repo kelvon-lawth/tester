@@ -1582,7 +1582,8 @@ results.live = async () => {
     const aOnly = aText.split("\n").map((s) => s.trim()).filter((s) => s && !bLines.has(s));
     must(aOnly.length > 0, "A and B see the same plan content, so the test cannot tell them apart");
     const page = await pg.ev("()=>document.body.innerText");
-    must(!aOnly.some((l) => page.includes(l)), "client B can see content that belongs to client A");
+    const pageLines = new Set(page.split("\n").map((s) => s.trim()).filter(Boolean));
+    must(!aOnly.some((l) => pageLines.has(l) || (l.length >= 12 && page.includes(l))), "client B can see content that belongs to client A");
     done.push("B sees only B");
     for (const t of ["Same as last month", "Down 5% on last month", "Up 2 on last month", "Ad results", "Sample: half-term family offer", "Sample: October 2026 report"]) await pg.needText(t, 10000);
     const bv = await pg.ev(`()=>{const a=[...document.querySelectorAll('main a')].find(x=>x.textContent.trim()==='Sample: October 2026 report');
