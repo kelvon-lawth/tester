@@ -1551,6 +1551,16 @@ results.live = async () => {
     aText = await gridText(pg);
     must(aText.length > 0, "client A sees no plan content");
     done.push("A signs in and sees own content");
+    for (const t of ["Figures for October 2026", "Up 12% on last month", "Sample: refreshed your Google opening hours"]) await pg.needText(t, 10000);
+    await pg.lacksText("Sample: set up your monthly report");
+    const av = await pg.ev(`()=>({badges:(document.body.innerText.match(/Growth plan/g)||[]).length,
+      ask:document.body.innerText.includes('Ask about Growth'),charts:document.querySelectorAll('svg.dash-chart').length,
+      html:document.documentElement.outerHTML+document.body.innerText})`);
+    must(av.badges === 4, "client A: expected 4 locked 'Growth plan' badges, saw " + av.badges);
+    must(av.ask, "client A: no 'Ask about Growth' link");
+    must(av.charts === 0, "client A: a chart is drawn on a Basics plan");
+    must(!av.html.includes("Sample Alex hidden") && !av.html.includes("Sample Blake"), "client A can see hidden or client B content");
+    done.push("A sees locked Growth cards");
     await pg.goto(origin + "/dashboard.html");
     await pg.needText("Hello, Sample Alex", 15000);
     must((await gridText(pg)) === aText, "content changed after a reload");
@@ -1574,6 +1584,18 @@ results.live = async () => {
     const page = await pg.ev("()=>document.body.innerText");
     must(!aOnly.some((l) => page.includes(l)), "client B can see content that belongs to client A");
     done.push("B sees only B");
+    for (const t of ["Same as last month", "Down 5% on last month", "Up 2 on last month", "Ad results", "Sample: half-term family offer", "Sample: October 2026 report"]) await pg.needText(t, 10000);
+    const bv = await pg.ev(`()=>{const a=[...document.querySelectorAll('main a')].find(x=>x.textContent.trim()==='Sample: October 2026 report');
+      const t=document.body.innerText;
+      return {charts:document.querySelectorAll('svg.dash-chart').length,href:a?a.getAttribute('href'):'',
+        posts:/Sample:/.test((document.querySelector('.dash__calendar')||{innerText:''}).innerText)||t.includes('Nothing planned for the next 2 weeks.'),
+        ask:t.includes('Ask about Growth'),hidden:(document.documentElement.outerHTML+t).includes('Sample Alex hidden')};}`);
+    must(bv.charts === 3, "client B: expected 3 charts, saw " + bv.charts);
+    must(/^https:\/\//.test(bv.href), "client B: the report link is not https");
+    must(bv.posts, "client B: the calendar card shows neither a Sample post nor the empty message");
+    must(!bv.ask, "client B sees the locked wording");
+    must(!bv.hidden, "client B can see Sample Alex hidden content");
+    done.push("B sees Growth content");
     await pg.clean("live");
   });
   return done.join(", ");
