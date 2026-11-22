@@ -2,16 +2,20 @@
 
 This guide is for you, the marketer. It explains how to give a client a login, change what they see, and keep the project healthy. You do not need to write any code. It is not part of the website: it never gets published.
 
-## Read this first: email limits (what email can't do yet)
+## Read this first: email limits (what email can do now)
 
-Supabase's built-in email only reaches members of your own Supabase team, and only 2 emails an hour. That means real clients will not receive invite or password-reset emails yet.
+Since 19 November 2026 the project sends its emails through Resend, from no-reply@samwhitlockmarketing.com.de. Invite and password-reset emails now reach any client's address, not only your Supabase team.
 
-So, for now:
+The limits that remain:
 
-1. You create each client's account yourself, with a temporary password (see "Adding a client").
-2. If a client forgets their password, they contact you and you set a new one (see "Setting a temporary password").
+1. Supabase sends at most 30 emails an hour across the project. Resend's free plan also has its own daily and monthly caps (check your Resend dashboard).
+2. If an email doesn't arrive, ask the client to check their spam folder, wait a few minutes, then send it again. Resend's **Logs** page shows whether it went out.
+3. You can still create a client yourself with a temporary password (see "Adding a client"). This works even if email is down.
 
-The "forgotten password" and invite pages exist and work, but they only help people on your Supabase team until an email service is added. Adding one is future work. It normally needs a sending domain (an address like hello@yourbusiness.co.uk that you own).
+Two ways to give a client a login:
+
+- **Invite by email:** in **Authentication**, **Users**, press **Add user**, then **Send invitation**, and type their email. They get a link and choose their own password.
+- **Temporary password:** follow "Adding a client" below.
 
 ## Adding a client
 

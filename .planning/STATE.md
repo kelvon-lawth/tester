@@ -74,6 +74,14 @@ Progress: [████████░░] 77%
 - [Phase 01]: 01-03: Fraunces fallback uses local(Georgia Bold) at weight 600
 - [Phase 6]: Deploy uses an allowlist build (tools/build-site.sh to _site); a build-SHA comment in the deployed index.html proves redeploys over HTTP
 
+### Phase 7 known limits and open checks (2026-11-22)
+
+- D-12: lifted on 2026-11-19. Custom SMTP through Resend (samwhitlockmarketing.com.de) now delivers invite and reset email to any address. Remaining limits: Supabase sends at most 30 emails an hour, and Resend's free-plan caps apply. Temporary passwords still work as a fallback.
+- D-14: the free Supabase project pauses after about 7 days of low activity, with no keep-alive. Check it before a demo, as described in CLIENT-GUIDE.md.
+- D-11: the human security check (07-09 part E) is NOT YET done. Real client data stays out of scope until the user passes it. This also blocks Phase 8 going live with real payments.
+- 07-09 part D (look and feel on a real phone and laptop, plus the double-click check) is NOT YET done.
+- All seven AUTH requirements are ticked with evidence (07-LIVE-EVIDENCE.md, "Requirement evidence"). The phase stays open until D and E are reported.
+
 ### Roadmap Evolution
 
 - Phase 8 added (2026-11-22): Paid sign-up, automatic onboarding and plan-tier gating (Stripe Checkout + webhook to Supabase Edge Function; Growth features visible but locked for Local Basics).

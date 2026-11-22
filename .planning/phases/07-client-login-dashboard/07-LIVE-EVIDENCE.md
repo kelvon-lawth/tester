@@ -104,3 +104,25 @@ MAIN_SHA: f7d593d4473f98a4e06afb28119ebff43d7de4de
 - https://tester-five-sage.vercel.app: deployed PASS (stamp matches, five pages 200, dev files 404, secret scan clean over 16 files); csp PASS (10 loads, scroll and resize, no violation); live sign-in PASS (A own content, reload, sign-out, wrong password, B only B).
 - https://www.samwhitlockmarketing.com.de: deployed PASS, csp PASS, live sign-in PASS.
 - RLS re-run: RLS OK (own line below).
+
+## Human checks (2026-11-22)
+
+Results were reported by the user, with no addresses or passwords in chat. The checks ran on https://www.samwhitlockmarketing.com.de, with email through Resend custom SMTP (the plan predates it, so invites can go to any address and the limit is 30 an hour).
+
+- A. Real invite: PASS (user: "the rest is fine").
+- B. Real reset: PASS.
+- C. CLIENT-GUIDE.md walkthrough: PASS, with no confusing steps reported. Separately, Claude found the guide's email section outdated (it still described the old 2-an-hour, team-only limit) and rewrote it for Resend SMTP and invite-by-email. check-auth docs passes.
+- D. Look and feel on a real phone and laptop: NOT YET (the user deferred it).
+- E. Human security check (D-11): NOT YET (the user deferred it). Real client data stays out of scope until it is passed.
+
+## Requirement evidence
+
+| Req | Status | Evidence |
+|-----|--------|----------|
+| AUTH-01 | Complete | nav guard (check-auth nav); deployed PASS on both hosts 2026-11-21, five pages 200 with the Client login link |
+| AUTH-02 | Complete | `auth-browser-test live` PASS on the deployed address, both hosts (sign in, reload keeps session, sign out, wrong password refused) |
+| AUTH-03 | Complete | reset-copy and setpass guards and stubs; human A (invite) and B (reset) PASS on the live site. D-12's team-only limit was lifted by Resend SMTP on 2026-11-19; the limit is now 30 emails an hour |
+| AUTH-04 | Complete | dashboard-page guard and stubs; `live` shows each client their own content, signed-out redirect to login. The view-source spot check (E-14) is still with the user |
+| AUTH-05 | Complete | latest RLS line from tools/auth-rls-test.js, live direct requests as signed-out and as a second client: `RLS-RUN | 2026-11-21 | f7d593d4473f98a4e06afb28119ebff43d7de4de | RLS OK` |
+| AUTH-06 | Complete | S1 live (disable_signup true, sign-up refused 422); human C guide walkthrough PASS |
+| AUTH-07 | Complete | public and file-* guards, smoke-test and qa weight (403KB/362KB first view) PASS 14/14 at 911b34d; deployed checks show Home and Contact load no auth code. Human D-12 double-click check is still with the user |
